@@ -1,0 +1,53 @@
+{
+  "name": "vue-print-next",
+  "version": "0.1.10",
+  "author": "zi.yang <pcy1314@163.com> (https://github.com/Alessandro-Pang)",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "vue-print",
+    "vue3-print",
+    "print"
+  ],
+  "description": "This is a directive wrapper for printed, Simple, fast, convenient, light.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Alessandro-Pang/vue-print-next"
+  },
+  "homepage": "https://github.com/Alessandro-Pang/vue-print-next#readme",
+  "bugs": "https://github.com/Alessandro-Pang/vue-print-next/issues",
+  "types": "types/index.d.ts",
+  "files": [
+    "types",
+    "dist"
+  ],
+  "main": "./dist/vue-print-next.umd.cjs",
+  "module": "./dist/vue-print-next.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./types/index.d.ts",
+        "default": "./dist/vue-print-next.js"
+      },
+      "require": {
+        "types": "./types/index.d.ts",
+        "default":  "./dist/vue-print-next.umd.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.4.30"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.8",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.1",
+    "vue-tsc": "^2.0.22"
+  }
+}
