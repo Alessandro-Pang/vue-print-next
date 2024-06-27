@@ -14,7 +14,7 @@ import type {App} from "vue";
  */
 const printPlugin = {
 	install(Vue: App) {
-		Vue.directive('print', vPrint);
+		Vue.directive(vPrint.directiveName, vPrint);
 	}
 }
 

@@ -1,38 +1,38 @@
-var y = Object.defineProperty, b = Object.defineProperties;
+var y = Object.defineProperty, g = Object.defineProperties;
 var x = Object.getOwnPropertyDescriptors;
-var g = Object.getOwnPropertySymbols;
-var B = Object.prototype.hasOwnProperty, C = Object.prototype.propertyIsEnumerable;
-var v = (a, e, t) => e in a ? y(a, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : a[e] = t, m = (a, e) => {
+var f = Object.getOwnPropertySymbols;
+var b = Object.prototype.hasOwnProperty, B = Object.prototype.propertyIsEnumerable;
+var v = (n, e, t) => e in n ? y(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t, u = (n, e) => {
   for (var t in e || (e = {}))
-    B.call(e, t) && v(a, t, e[t]);
-  if (g)
-    for (var t of g(e))
-      C.call(e, t) && v(a, t, e[t]);
-  return a;
-}, f = (a, e) => b(a, x(e));
-var p = (a, e, t) => v(a, typeof e != "symbol" ? e + "" : e, t);
-class E {
+    b.call(e, t) && v(n, t, e[t]);
+  if (f)
+    for (var t of f(e))
+      B.call(e, t) && v(n, t, e[t]);
+  return n;
+}, m = (n, e) => g(n, x(e));
+var c = (n, e, t) => v(n, typeof e != "symbol" ? e + "" : e, t);
+class C {
   constructor(e) {
     // html 文档标准
-    p(this, "standards", {
+    c(this, "standards", {
       strict: "strict",
       loose: "loose",
       html5: "html5"
     });
-    // 打印窗口的 iframe id;
-    p(this, "iframeId", "");
+    // 打印窗口的 iframe id
+    c(this, "iframeId", "");
     // 预览窗口的 body
-    p(this, "previewBody", null);
+    c(this, "previewBody", null);
     // 预览窗口的 关闭按钮
-    p(this, "close", null);
+    c(this, "close", null);
     // 打印按钮
-    p(this, "previewBodyUtilPrintBtn", null);
+    c(this, "previewBodyUtilPrintBtn", null);
     // 调用次数，用于生成唯一 Id
-    p(this, "counter", 0);
+    c(this, "counter", 0);
     // 需要打印的 DOM 内容
-    p(this, "printContentDom", null);
+    c(this, "printContentDom", null);
     // 用户设置
-    p(this, "settings", {
+    c(this, "settings", {
       standard: "html5",
       zIndex: 20002,
       previewTitle: "打印预览",
@@ -40,83 +40,74 @@ class E {
       preview: !1
     });
     const t = e.vue;
-    this.settings = Object.assign({}, this.settings, e, {
+    this.settings = m(u(u({}, this.settings), e), {
       previewBeforeOpenCallback() {
-        var i;
-        (i = e.previewBeforeOpenCallback) == null || i.call(e, t);
+        var s;
+        (s = e.previewBeforeOpenCallback) == null || s.call(e, t);
       },
       previewOpenCallback() {
-        var i;
-        (i = e.previewOpenCallback) == null || i.call(e, t);
+        var s;
+        (s = e.previewOpenCallback) == null || s.call(e, t);
       },
       openCallback() {
-        var i;
-        (i = e.openCallback) == null || i.call(e, t);
+        var s;
+        (s = e.openCallback) == null || s.call(e, t);
       },
       closeCallback() {
-        var i;
-        (i = e.closeCallback) == null || i.call(e, t);
+        var s;
+        (s = e.closeCallback) == null || s.call(e, t);
       },
       beforeOpenCallback() {
-        var i;
-        (i = e.beforeOpenCallback) == null || i.call(e, t);
+        var s;
+        (s = e.beforeOpenCallback) == null || s.call(e, t);
       }
     }), this.init();
   }
   init() {
-    this.counter++, this.iframeId = `printArea_${this.counter}`;
-    let e = "";
-    if (this.settings.url && !this.settings.asyncUrl && (e = this.settings.url), this.settings.asyncUrl) {
-      this.settings.asyncUrl((i) => {
-        let r = this.getPrintWindow(i);
-        this.settings.preview ? this.previewIframeLoad() : this.print(r);
+    if (this.counter++, this.iframeId = `printArea_${this.counter}`, this.settings.asyncUrl)
+      this.settings.asyncUrl((e) => {
+        const t = this.getPrintWindow(e);
+        this.settings.preview ? this.previewIframeLoad() : this.print(t);
       }, this.settings.vue);
-      return;
+    else {
+      const e = this.getPrintWindow(this.settings.url || "");
+      this.settings.url || this.write(e.doc), this.settings.preview ? this.previewIframeLoad() : this.print(e);
     }
-    const t = this.getPrintWindow(e);
-    this.settings.url || this.write(t.doc), this.settings.preview ? this.previewIframeLoad() : this.print(t);
   }
-  addEvent(e, t, i) {
-    e && (e.addEventListener ? e.addEventListener(t, i, !1) : e.attachEvent ? e.attachEvent("on" + t, i) : e["on" + t] = i);
+  addEvent(e, t, s) {
+    e && (e.addEventListener ? e.addEventListener(t, s, !1) : e.attachEvent ? e.attachEvent("on" + t, s) : e["on" + t] = s);
   }
   previewIframeLoad() {
-    var t, i;
-    let e = document.getElementById("vue-pirnt-next-previewBox");
-    if (e) {
-      let r = e.querySelector("iframe");
-      (i = (t = this.settings).previewBeforeOpenCallback) == null || i.call(t), this.addEvent(r, "load", () => {
-        var l, s;
-        this.previewBoxShow(), this.removeCanvasImg(), (s = (l = this.settings).previewOpenCallback) == null || s.call(l);
-      }), this.addEvent(e.querySelector(".previewBodyUtilPrintBtn"), "click", () => {
-        var l, s, n, o, d, c, h;
-        (s = (l = this.settings).beforeOpenCallback) == null || s.call(l), (o = (n = this.settings).openCallback) == null || o.call(n), (d = r == null ? void 0 : r.contentWindow) == null || d.print(), (h = (c = this.settings).closeCallback) == null || h.call(c);
-      });
-    }
+    var s, o;
+    const e = document.getElementById("vue-pirnt-next-previewBox");
+    if (!e) return;
+    const t = e.querySelector("iframe");
+    (o = (s = this.settings).previewBeforeOpenCallback) == null || o.call(s), this.addEvent(t, "load", () => {
+      var i, r;
+      this.previewBoxShow(), this.removeCanvasImg(), (r = (i = this.settings).previewOpenCallback) == null || r.call(i);
+    }), this.addEvent(e.querySelector(".previewBodyUtilPrintBtn"), "click", () => {
+      var i, r, l, d, a, p, h;
+      (r = (i = this.settings).beforeOpenCallback) == null || r.call(i), (d = (l = this.settings).openCallback) == null || d.call(l), (a = t == null ? void 0 : t.contentWindow) == null || a.print(), (h = (p = this.settings).closeCallback) == null || h.call(p);
+    });
   }
   // 删除所有 canvas 转换的图片
   removeCanvasImg() {
-    try {
-      if (this.printContentDom) {
-        let e = this.printContentDom.querySelectorAll(".canvasImg");
-        for (let t = 0; t < e.length; t++)
-          e[t].remove();
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    this.printContentDom && [...this.printContentDom.querySelectorAll(".canvasImg")].forEach((e) => e.remove());
   }
   print(e) {
-    var l, s;
-    let t = document.getElementById(this.iframeId) || e.f, i = t == null ? void 0 : t.contentWindow;
-    if (!i) return;
-    const r = () => {
-      var n, o, d, c;
-      i.focus(), (o = (n = this.settings).openCallback) == null || o.call(n), i.print(), t.remove(), (c = (d = this.settings).closeCallback) == null || c.call(d), this.removeCanvasImg();
+    var i, r;
+    const t = document.getElementById(this.iframeId) || e.f, s = t == null ? void 0 : t.contentWindow;
+    if (!s) return;
+    const o = () => {
+      var l, d, a, p;
+      s.focus(), (d = (l = this.settings).openCallback) == null || d.call(l), s.print(), t.remove(), (p = (a = this.settings).closeCallback) == null || p.call(a), this.removeCanvasImg();
     };
-    (s = (l = this.settings).beforeOpenCallback) == null || s.call(l), this.addEvent(t, "load", () => r());
+    (r = (i = this.settings).beforeOpenCallback) == null || r.call(i), this.addEvent(t, "load", o);
   }
   write(e) {
-    e.open(), e.write(`${this.docType()}<html lang="zh">${this.getHead()}${this.getBody()}</html>`), e.close();
+    e.open(), e.write(
+      `${this.docType()}<html lang='zh'>${this.getHead()}${this.getBody()}</html>`
+    ), e.close();
   }
   docType() {
     if (this.settings.standard === this.standards.html5)
@@ -125,162 +116,159 @@ class E {
     return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01${e}//EN" "http://www.w3.org/TR/html4/${t}.dtd">`;
   }
   getHead() {
-    var l;
-    let e = "", t = "", i = "";
-    this.settings.extraHead && (e = this.settings.extraHead.split(",").map((s) => s.trim()).filter((s) => s.length > 0).join("")), t = Array.from(document.querySelectorAll("link")).filter((s) => s.href.includes(".css")).map((s) => `<link type="text/css" rel="stylesheet" href="${s.href}">`).join("");
-    let r = document.styleSheets;
-    if (r && r.length > 0)
-      for (let s = 0; s < r.length; s++)
-        try {
-          if (r[s].cssRules || r[s].rules) {
-            let n = r[s].cssRules || r[s].rules;
-            for (let o = 0; o < n.length; o++)
-              i += n[o].cssText;
-          }
-        } catch (n) {
-          console.log((((l = r[s]) == null ? void 0 : l.href) || "") + n);
+    const e = (this.settings.extraHead || "").split(",").map((i) => i.trim()).filter((i) => i.length > 0).join(""), t = Array.from(document.querySelectorAll("link")).filter((i) => i.href.includes(".css")).map((i) => `<link type="text/css" rel="stylesheet" href='${i.href}'>`).join(""), s = Array.from(document.styleSheets).reduce((i, r) => {
+      try {
+        if (r.cssRules || r.rules) {
+          const l = r.cssRules || r.rules;
+          i += Array.from(l).reduce((d, a) => d + a.cssText, "");
         }
-    return this.settings.extraCss && (t += this.settings.extraCss.split(",").filter((s) => s.trim().length > 0).map((s) => `<link type="text/css" rel="stylesheet" href="${s.trim()}">`).join("")), `<head><title>${this.settings.popTitle}</title>${e}${t}<style>${i}</style></head>`;
+      } catch (l) {
+        console.log((r.href || "") + l);
+      }
+      return i;
+    }, ""), o = (this.settings.extraCss || "").split(",").filter((i) => i.trim().length > 0).map((i) => `<link type="text/css" rel="stylesheet" href='${i.trim()}'>`).join("");
+    return `<head><title>${this.settings.popTitle}</title>${e}${t}<style>${s}</style>${o}</head>`;
   }
   getBody() {
-    const t = this.settings.id.replace(new RegExp("#", "g"), ""), i = document.getElementById(t);
-    if (!i)
+    const e = this.settings.id.replace(new RegExp("#", "g"), ""), t = document.getElementById(e);
+    if (!t)
       throw new Error("dom is not found！");
-    return this.printContentDom = this.beforeHandler(i), "<body>" + this.getFormData(this.printContentDom).outerHTML + "</body>";
+    return this.printContentDom = this.beforeHandler(t), `<body>${this.getFormData(this.printContentDom).outerHTML}</body>`;
   }
   // 处理 canvas 转成图片
   beforeHandler(e) {
-    let t = e.querySelectorAll("canvas");
-    for (let i = 0; i < t.length; i++)
-      if (!t[i].style.display) {
-        let r = t[i].parentNode, l = t[i].toDataURL("image/png"), s = new Image();
-        s.className = "canvasImg", s.style.display = "none", s.src = l, r == null || r.appendChild(s);
-      }
-    return e;
+    return e.querySelectorAll("canvas").forEach((t) => {
+      const s = t.parentNode, o = t.toDataURL("image/png"), i = new Image();
+      i.className = "canvasImg", i.style.display = "none", i.src = o, s == null || s.appendChild(i);
+    }), e;
   }
   // 根据type去处理form表单
   getFormData(e) {
-    let t = e.cloneNode(!0), i = t.querySelectorAll("input,select,textarea"), r = t.querySelectorAll(".canvasImg,canvas"), l = -1;
-    for (let s = 0; s < r.length; s++) {
-      let n = r[s].parentNode, o = r[s];
-      o.tagName.toLowerCase() === "canvas" ? n == null || n.removeChild(o) : o.style.display = "block";
-    }
-    for (let s = 0; s < i.length; s++) {
-      const n = i[s], o = n.value, d = i[s];
-      let c = n.getAttribute("type");
-      if (c || (c = n.tagName === "SELECT" ? "select" : n.tagName === "TEXTAREA" ? "textarea" : ""), n.tagName === "INPUT")
-        c === "radio" || c === "checkbox" ? n.checked && d.setAttribute("checked", String(n.checked)) : (d.value = o, d.setAttribute("value", o));
-      else if (c === "select") {
-        l++;
-        for (let h = 0; h < e.querySelectorAll("select").length; h++) {
-          let u = e.querySelectorAll("select")[h];
-          if (!u.getAttribute("newbs") && u.setAttribute("newbs", h.toString()), u.getAttribute("newbs") === l.toString()) {
-            let w = e.querySelectorAll("select")[l].selectedIndex;
-            n.options[w].setAttribute("selected", "true");
+    const t = e.cloneNode(!0), s = t.querySelectorAll("input,select,textarea"), o = t.querySelectorAll(".canvasImg, canvas");
+    let i = -1;
+    return o.forEach((r) => {
+      const l = r.parentNode;
+      r.tagName.toLowerCase() === "canvas" ? l == null || l.removeChild(r) : r.style.display = "block";
+    }), s.forEach((r) => {
+      var a;
+      const l = r.value;
+      switch ((a = r.getAttribute("type")) != null ? a : r.tagName.toLowerCase()) {
+        case "select":
+          i++;
+          const p = e.querySelectorAll("select")[i];
+          if (p) {
+            const h = p.selectedIndex;
+            r.options[h].setAttribute("selected", "true");
           }
-        }
-      } else
-        d.innerHTML = o, d.setAttribute("html", o);
-    }
-    return t;
+          break;
+        case "textarea":
+          r.innerHTML = l, r.setAttribute("html", l);
+          break;
+        case "radio":
+        case "checkbox":
+          r.checked && r.setAttribute("checked", "true");
+          break;
+        case "input":
+          r.value = l, r.setAttribute("value", l);
+          break;
+      }
+    }), t;
   }
+  // 生成并返回打印窗口的 iframe 和文档对象
   getPrintWindow(e) {
-    var r;
-    const t = this.Iframe(e), i = t.contentDocument || ((r = t.contentWindow) == null ? void 0 : r.document) || t.document;
-    if (!i)
+    var o;
+    const t = this.createIframe(e), s = t.contentDocument || ((o = t.contentWindow) == null ? void 0 : o.document) || t.document;
+    if (!s)
       throw new Error("Cannot find document.");
-    return {
-      f: t,
-      win: t.contentWindow || t,
-      doc: i
-    };
+    return { f: t, win: t.contentWindow || t, doc: s };
   }
+  // 显示预览窗口
   previewBoxShow() {
     var t;
-    let e = document.getElementById("vue-pirnt-next-previewBox");
+    const e = document.getElementById("vue-pirnt-next-previewBox");
     e && ((t = document.querySelector("html")) == null || t.setAttribute("style", "overflow: hidden"), e.style.display = "block");
   }
+  // 隐藏预览窗口
   previewBoxHide() {
-    var t, i;
-    let e = document.getElementById("vue-pirnt-next-previewBox");
-    e && ((t = document.querySelector("html")) == null || t.setAttribute("style", "overflow: visible;"), (i = e.querySelector("iframe")) == null || i.remove(), e.style.display = "none");
+    var t, s;
+    const e = document.getElementById("vue-pirnt-next-previewBox");
+    e && ((t = document.querySelector("html")) == null || t.setAttribute("style", "overflow: visible;"), (s = e.querySelector("iframe")) == null || s.remove(), e.style.display = "none");
   }
+  // 创建或获取打印预览的框架
   previewBox() {
-    var h, u;
-    let e = document.getElementById("vue-pirnt-next-previewBox"), t = "previewBody";
+    var s;
+    let e = document.getElementById("vue-pirnt-next-previewBox");
     if (e)
-      return (h = e.querySelector("iframe")) == null || h.remove(), {
-        close: e.querySelector(".previewClose"),
-        previewBody: e.querySelector(`.${t}`)
-      };
-    let i = document.createElement("div");
-    i.setAttribute("id", "vue-pirnt-next-previewBox"), i.setAttribute("style", "position: fixed;top: 0px;left: 0px;width: 100%;height: 100%;background: white;display:none"), i.style.zIndex = ((u = this.settings.zIndex) == null ? void 0 : u.toString()) || "1";
-    let r = document.createElement("div");
-    r.setAttribute("class", "previewHeader"), r.setAttribute("style", "padding: 5px 20px;"), r.innerHTML = this.settings.previewTitle || "", i.appendChild(r), this.close = document.createElement("div");
-    let l = this.close;
-    l.setAttribute("class", "previewClose"), l.setAttribute("style", "position: absolute;top: 5px;right: 20px;width: 25px;height: 20px;cursor: pointer;");
-    let s = document.createElement("div"), n = document.createElement("div");
-    s.setAttribute("class", "closeBefore"), s.setAttribute("style", "position: absolute;width: 3px;height: 100%;background: #040404;transform: rotate(45deg); top: 0px;left: 50%;"), n.setAttribute("class", "closeAfter"), n.setAttribute("style", "position: absolute;width: 3px;height: 100%;background: #040404;transform: rotate(-45deg); top: 0px;left: 50%;"), l.appendChild(s), l.appendChild(n), r.appendChild(l), this.previewBody = document.createElement("div");
-    let o = this.previewBody;
-    o.setAttribute("class", t), o.setAttribute("style", "display: flex;flex-direction: column; height: 100%;"), i.appendChild(o);
-    let d = document.createElement("div");
-    d.setAttribute("class", "previewBodyUtil"), d.setAttribute("style", "height: 32px;background: #474747;position: relative;"), o.appendChild(d), this.previewBodyUtilPrintBtn = document.createElement("div");
-    let c = this.previewBodyUtilPrintBtn;
-    return c.setAttribute("class", "previewBodyUtilPrintBtn"), c.innerHTML = this.settings.previewPrintBtnLabel || "", c.setAttribute("style", "position: absolute;padding: 2px 10px;margin-top: 3px;left: 24px;font-size: 14px;color: white;cursor: pointer;background-color: rgba(0,0,0,.12);background-image: linear-gradient(hsla(0,0%,100%,.05),hsla(0,0%,100%,0));background-clip: padding-box;border: 1px solid rgba(0,0,0,.35);border-color: rgba(0,0,0,.32) rgba(0,0,0,.38) rgba(0,0,0,.42);box-shadow: inset 0 1px 0 hsla(0,0%,100%,.05), inset 0 0 1px hsla(0,0%,100%,.15), 0 1px 0 hsla(0,0%,100%,.05);"), d.appendChild(c), document.body.appendChild(i), {
-      close: this.close,
-      previewBody: this.previewBody
-    };
+      return (s = e.querySelector("iframe")) == null || s.remove(), { close: e.querySelector(".previewClose"), previewBody: e.querySelector(".previewBody") };
+    e = document.createElement("div"), e.setAttribute("id", "vue-pirnt-next-previewBox"), e.setAttribute(
+      "style",
+      "position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: white; display: none; z-index: " + this.settings.zIndex
+    );
+    const t = document.createElement("div");
+    return t.setAttribute("class", "previewHeader"), t.setAttribute("style", "padding: 5px 20px;"), t.innerHTML = this.settings.previewTitle || "", this.close = this.createCloseButton(), t.appendChild(this.close), e.appendChild(t), this.previewBody = this.createPreviewBody(), e.appendChild(this.previewBody), document.body.appendChild(e), { close: this.close, previewBody: this.previewBody };
   }
-  iframeBox(e, t) {
-    let i = document.createElement("iframe");
-    return i.style.border = "0px", i.style.position = "absolute", i.style.width = "0px", i.style.height = "0px", i.style.right = "0px", i.style.top = "0px", i.setAttribute("id", e), i.setAttribute("src", t), i;
-  }
-  Iframe(e) {
-    e = e || (/* @__PURE__ */ new Date()).getTime().toString();
-    let t = this.iframeBox(this.iframeId, e);
-    try {
-      if (!this.settings.preview)
-        document.body.appendChild(t);
-      else {
-        t.setAttribute("style", "border: 0px;flex: 1;");
-        let i = this.previewBox(), r = i.previewBody, l = i.close;
-        r == null || r.appendChild(t), this.addEvent(l, "click", () => {
-          this.previewBoxHide();
-        });
-      }
-    } catch (i) {
-      throw new Error(i + ". iframes may not be supported in this browser.");
+  // 创建iframe元素
+  createIframe(e) {
+    const t = document.createElement("iframe");
+    if (t.id = this.iframeId, t.src = e || (/* @__PURE__ */ new Date()).getTime().toString(), t.style.border = "0px", t.style.position = "absolute", t.style.width = "0px", t.style.height = "0px", t.style.right = "0px", t.style.top = "0px", !this.settings.preview)
+      document.body.appendChild(t);
+    else {
+      t.setAttribute("style", "border: 0px; flex: 1;");
+      const { close: s, previewBody: o } = this.previewBox();
+      o && o.appendChild(t), this.addEvent(s, "click", this.previewBoxHide.bind(this));
     }
     return t;
   }
+  // 创建关闭按钮
+  createCloseButton() {
+    const e = document.createElement("div");
+    e.setAttribute("class", "previewClose"), e.setAttribute("style", "position: absolute; top: 5px; right: 20px; width: 25px; height: 20px; cursor: pointer;");
+    const t = document.createElement("div"), s = document.createElement("div"), o = "position: absolute; width: 3px; height: 100%; background: #040404; top: 0px; left: 50%;";
+    return t.setAttribute("class", "closeBefore"), t.setAttribute("style", `${o} transform: rotate(45deg);`), s.setAttribute("class", "closeAfter"), s.setAttribute("style", `${o} transform: rotate(-45deg);`), e.appendChild(t), e.appendChild(s), e;
+  }
+  // 创建预览主体
+  createPreviewBody() {
+    const e = document.createElement("div");
+    e.className = "previewBody", e.style.cssText = "display: flex; flex-direction: column; height: 100%;";
+    const t = document.createElement("div");
+    return t.className = "previewBodyUtil", t.style.cssText = "height: 32px; background: #474747; position: relative;", this.previewBodyUtilPrintBtn = document.createElement("div"), this.previewBodyUtilPrintBtn.className = "previewBodyUtilPrintBtn", this.previewBodyUtilPrintBtn.style.cssText = "position: absolute; padding: 2px 10px; margin-top: 3px; left: 24px; font-size: 14px; color: white; cursor: pointer; background: rgba(0,0,0,.12); border: 1px solid rgba(0,0,0,.35); box-shadow: inset 0 1px 0 hsla(0,0%,100%,.05), inset 0 0 1px hsla(0,0%,100%,.15);", this.previewBodyUtilPrintBtn.innerHTML = this.settings.previewPrintBtnLabel || "", t.appendChild(this.previewBodyUtilPrintBtn), e.appendChild(t), e;
+  }
 }
-const A = (a, e, t) => {
-  a.addEventListener ? a.addEventListener(e, t, !1) : a.attacattachEventhEvent ? a.attachEvent("on" + e, t) : a["on" + e] = t;
-}, k = {
+const E = (n, e, t) => {
+  n.addEventListener ? n.addEventListener(e, t, !1) : n.attachEvent ? n.attachEvent("on" + e, t) : n["on" + e] = t;
+}, w = {
   directiveName: "print",
-  mounted(a, e) {
-    let t = "", i = {};
-    A(a, "click", () => {
+  // vue3 指定挂载
+  mounted(n, e) {
+    let t = e.value, s = {};
+    E(n, "click", () => {
       if (typeof e.value == "string")
         t = e.value;
       else if (typeof e.value == "object" && e.value.id) {
-        t = e.value.id, i = e.value;
-        let r = t.replace(new RegExp("#", "g"), "");
-        document.getElementById(r) || console.log("id in Error");
+        t = e.value.id, s = e.value;
+        const o = t.replace(/#/g, "");
+        if (!document.getElementById(o)) {
+          console.error("Can't find element with id", t);
+          return;
+        }
       } else {
         window.print();
         return;
       }
-      new E(f(m({}, i), { id: t, vue: e.instance }));
+      new C(m(u({}, s), { id: t, vue: e.instance }));
     });
+  },
+  // 兼容 Vue2 指定挂载
+  bind(n, e, t) {
+    e.instance = t.context, w.mounted(n, e);
   }
-}, S = {
-  install(a) {
-    a.directive("print", k);
+}, I = {
+  install(n) {
+    n.directive(w.directiveName, w);
   }
 };
 export {
-  E as VuePrintNext,
-  S as printPlugin,
-  k as vPrint
+  C as VuePrintNext,
+  I as printPlugin,
+  w as vPrint
 };

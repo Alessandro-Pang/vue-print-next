@@ -1,6 +1,6 @@
 import type {App, DirectiveBinding} from "vue";
 
-export declare interface PrintAreaOption {
+export interface PrintAreaOption {
 	// 局部打印必传入id
 	id: string,
 	// 文档类型，默认是html5，可选 html5，loose，strict
@@ -37,19 +37,19 @@ export declare interface PrintAreaOption {
 	vue?: any;
 }
 
-export declare interface PrintAreaWindow {
+export interface PrintAreaWindow {
 	f: HTMLIFrameElement;
 	win: Window | HTMLIFrameElement;
 	doc: Document;
 }
 
-export declare type Standards = {
+export type Standards = {
 	strict: 'strict';
 	loose: 'loose';
 	html5: 'html5';
 };
 
-export declare class VuePrintNext {
+export class VuePrintNext {
 	private readonly standards: Standards;
 	private iframeId: string;
 	private previewBody: HTMLElement | null;
@@ -59,30 +59,31 @@ export declare class VuePrintNext {
 	private printContentDom: HTMLElement | null;
 	private settings: PrintAreaOption;
 	constructor(option: PrintAreaOption);
-	init(): void;
-	addEvent(element: HTMLElement | null, type: string, callback: EventListenerOrEventListenerObject): void;
-	previewIframeLoad(): void;
-	removeCanvasImg(): void;
-	print(iframe: PrintAreaWindow): void;
-	write(PADocument: Document): void;
-	docType(): string;
-	getHead(): string;
-	getBody(): string;
-	beforeHandler(printContentDom: HTMLElement): HTMLElement;
-	getFormData(ele: HTMLElement): HTMLElement;
-	getPrintWindow(url: string): PrintAreaWindow;
-	previewBoxShow(): void;
-	previewBoxHide(): void;
-	previewBox(): { close: HTMLElement | null; previewBody: HTMLElement | null };
-	iframeBox(frameId: string, url: string): HTMLIFrameElement;
-	Iframe(url: string): HTMLIFrameElement;
+
+	private init(): void;
+	private addEvent(element: HTMLElement | null, type: string, callback: EventListenerOrEventListenerObject): void;
+	private previewIframeLoad(): void;
+	private removeCanvasImg(): void;
+	private print(iframe: PrintAreaWindow): void;
+	private write(PADocument: Document): void;
+	private docType(): string;
+	private getHead(): string;
+	private getBody(): string;
+	private beforeHandler(printContentDom: HTMLElement): HTMLElement;
+	private getFormData(ele: HTMLElement): HTMLElement;
+	private getPrintWindow(url: string): PrintAreaWindow;
+	private previewBoxShow(): void;
+	private previewBoxHide(): void;
+	private previewBox(): { close: HTMLElement | null; previewBody: HTMLElement | null };
+	private iframeBox(frameId: string, url: string): HTMLIFrameElement;
 }
 
-export declare interface vPrint {
+export const vPrint: {
 	directiveName: string;
 	mounted(el: HTMLElement, binding: DirectiveBinding<PrintAreaOption | string>): void;
+	bind(el: HTMLElement, binding: DirectiveBinding<PrintAreaOption | string>, vnode: any): void;
 }
 
-export declare interface printPlugin {
+export const printPlugin: {
 	install(vue: App): void;
 }

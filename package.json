@@ -7,7 +7,9 @@
   "keywords": [
     "vue-print",
     "vue3-print",
-    "print"
+    "print",
+    "vue-print-nb",
+    "vue3-print-nb"
   ],
   "description": "This is a directive wrapper for printed, Simple, fast, convenient, light.",
   "repository": {
@@ -40,6 +42,7 @@
     "build": "vue-tsc -b && vite build",
     "serve": "vite preview"
   },
+  "packageManager": "^pnpm@7.0.0",
   "dependencies": {
     "vue": "^3.4.30"
   },
