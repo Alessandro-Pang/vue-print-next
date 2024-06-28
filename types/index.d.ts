@@ -1,10 +1,12 @@
 import type {App, DirectiveBinding} from "vue";
 
 export interface PrintAreaOption {
-	// 局部打印必传入id
-	id: string,
+	// 局部打印的元素，支持 css 选择器或 dom 节点
+	el: string | HTMLElement,
 	// 文档类型，默认是html5，可选 html5，loose，strict
 	standard?: 'strict' | 'loose' | 'html5';
+	// 忽略打印元素的的选择器
+	noPrintSelector?: string[] | string;
 	// 打印指定的网址，这里不能跟id共存 如果共存id的优先级会比较高
 	url?: string;
 	// 异步 URL 回调函数

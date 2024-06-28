@@ -1,6 +1,6 @@
 import {PrintAreaOption, PrintAreaWindow, Standards} from '../../../types';
 
-export default class VuePrintNext{
+export default class VuePrintNext {
 	// html 文档标准
 	private readonly standards: Standards = {
 		strict: 'strict',
@@ -129,6 +129,24 @@ export default class VuePrintNext{
 		this.addEvent(iframeDom, 'load', _loaded);
 	}
 
+	/**
+	 * 获取打印需要隐藏的 css
+	 * @private
+	 */
+	private getNoPrintMediaStyle() {
+		const noPrintSelector = this.settings.noPrintSelector;
+		if (!noPrintSelector) return
+		const isArray = Array.isArray(noPrintSelector);
+		const isString = typeof noPrintSelector ==='string';
+		if(!isArray && !isString) {
+			console.error('noPrintSelector 必须是数组或者字符串');
+			return
+		}
+		const noPrintSelectorList = Array.isArray(noPrintSelector)? noPrintSelector : [noPrintSelector];
+		const selectorStr = noPrintSelectorList.filter((selector) => selector.trim()).join(',');
+		return `@media print { ${selectorStr} { display: none; } }`;
+	}
+
 	private write(PADocument: Document) {
 		PADocument.open();
 		PADocument.write(
@@ -149,7 +167,6 @@ export default class VuePrintNext{
 	private getHead(): string {
 		const extraHead = (this.settings.extraHead || '')
 			.split(',')
-			.map((m) => m.trim())
 			.filter((m) => m.length > 0)
 			.join('');
 
@@ -177,23 +194,55 @@ export default class VuePrintNext{
 			.map((m) => `<link type="text/css" rel="stylesheet" href='${m.trim()}'>`)
 			.join('');
 
-		return `<head><title>${this.settings.popTitle}</title>${extraHead}${links}<style>${style}</style>${extraCss}</head>`;
+		const noPrintMediaStyle = this.getNoPrintMediaStyle()
+		return `<head>
+							<title>${this.settings.popTitle}</title>
+							${extraHead}${links}
+							<style type="text/css">${style}${noPrintMediaStyle}</style>
+							${extraCss}
+						</head>`;
+	}
+
+	/**
+	 * 获取打印区的 DOM
+	 */
+	getPrintAreaDom() {
+		const el = this.settings.el;
+		const isSelector = typeof el === 'string'
+		const divBox = document.createElement('div');
+		if (el instanceof HTMLElement) {
+			divBox.appendChild(el.cloneNode(true));
+			return divBox
+		}
+
+		if (!isSelector)  {
+			throw new Error("el type is not string or HTMLElement, but " + typeof el);
+		}
+
+		let contentDom: Element[] = Array.from(document.querySelectorAll(el));
+		if (!contentDom?.length) {
+			throw new Error(`Can't find element with selector: ${el}`);
+		}
+
+		contentDom.forEach((item) => divBox.appendChild(item.cloneNode(true)));
+		return divBox;
 	}
 
 	private getBody(): string {
-		const idStr = this.settings.id.replace(new RegExp('#', 'g'), '');
-		const dom = document.getElementById(idStr);
-		if (!dom) {
-			throw new Error('dom is not found！');
-		}
-		this.printContentDom = this.beforeHandler(dom);
-		const ele = this.getFormData(this.printContentDom);
-		return `<body>${ele.outerHTML}</body>`;
+		const printAreaDom = this.getPrintAreaDom();
+		this.canvasToImgHandler(printAreaDom);
+		this.formDataHandler(printAreaDom)
+		this.printContentDom = printAreaDom;
+		return `<body>${printAreaDom.innerHTML}</body>`;
 	}
 
-	// 处理 canvas 转成图片
-	private beforeHandler(printContentDom: HTMLElement): HTMLElement {
-		printContentDom.querySelectorAll('canvas').forEach((canvas) => {
+	/**
+	 * 处理 canvas 转成图片
+	 * @param element
+	 * @private
+	 */
+	private canvasToImgHandler(element: HTMLElement) {
+		element.querySelectorAll('canvas').forEach((canvas) => {
 			const _parent = canvas.parentNode;
 			const _canvasUrl = canvas.toDataURL('image/png');
 			const _img = new Image();
@@ -202,15 +251,17 @@ export default class VuePrintNext{
 			_img.src = _canvasUrl;
 			_parent?.appendChild(_img);
 		});
-		return printContentDom;
 	}
 
-	// 根据type去处理form表单
-	private getFormData(ele: HTMLElement): HTMLElement {
-		const copy = ele.cloneNode(true) as HTMLElement;
-		const copiedInputs = copy.querySelectorAll<
+	/**
+	 * 根据type去处理form表单
+	 * @param element
+	 * @private
+	 */
+	private formDataHandler(element: HTMLElement) {
+		const copiedInputs = element.querySelectorAll<
 			HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input,select,textarea');
-		const canvasImgList = copy.querySelectorAll<HTMLElement>('.canvasImg, canvas');
+		const canvasImgList = element.querySelectorAll<HTMLElement>('.canvasImg, canvas');
 		let selectCount = -1;
 
 		canvasImgList.forEach((item) => {
@@ -230,10 +281,10 @@ export default class VuePrintNext{
 			switch (typeInput) {
 				case 'select':
 					selectCount++;
-					const select = ele.querySelectorAll<HTMLElement>('select')[selectCount];
+					const select = element.querySelectorAll<HTMLSelectElement>('select')[selectCount];
 					if (select) {
-						const opSelectedIndex = (select as HTMLSelectElement).selectedIndex;
-						(item as HTMLSelectElement).options[opSelectedIndex].setAttribute('selected', 'true');
+						const opSelectedIndex = select.selectedIndex;
+						(item as HTMLSelectElement).options[opSelectedIndex].setAttribute('selected', 'selected');
 					}
 					break;
 				case 'textarea':
@@ -243,7 +294,7 @@ export default class VuePrintNext{
 				case 'radio':
 				case 'checkbox':
 					if ((item as HTMLInputElement).checked) {
-						item.setAttribute('checked', 'true');
+						item.setAttribute('checked', 'checked');
 					}
 					break;
 				case 'input':
@@ -252,11 +303,9 @@ export default class VuePrintNext{
 					break;
 			}
 		});
-
-		return copy;
 	}
 
-// 生成并返回打印窗口的 iframe 和文档对象
+	// 生成并返回打印窗口的 iframe 和文档对象
 	private getPrintWindow(url: string): PrintAreaWindow {
 		const iframe = this.createIframe(url);
 		// @ts-ignore
@@ -327,12 +376,7 @@ export default class VuePrintNext{
 		const iframe = document.createElement('iframe');
 		iframe.id = this.iframeId;
 		iframe.src = url || new Date().getTime().toString();
-		iframe.style.border = '0px';
-		iframe.style.position = 'absolute';
-		iframe.style.width = '0px';
-		iframe.style.height = '0px';
-		iframe.style.right = '0px';
-		iframe.style.top = '0px';
+		iframe.style.display = 'none';
 		if (!this.settings.preview) {
 			document.body.appendChild(iframe);
 		} else {

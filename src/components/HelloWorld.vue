@@ -6,11 +6,16 @@
  * @Description: file content
 -->
 <template>
-  <div id="printMe">
+  <div id="printMe" ref="printMe">
     <img alt="Vue logo" src="../assets/logo.png"/>
-    <h1>{{ msg }}</h1>
+    <h1 class="no-print">{{ msg }}</h1>
     <button @click="count++">count is: {{ count }}</button>
     <p>Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
+    <p>Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
+    <p>Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
+    <p>Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
+    <p class="no-print">Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
+    <p class="no-print">Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
   </div>
   <button v-print="printSetting">指令打印</button>
   <button @click="handlePrint">方法打印</button>
@@ -29,7 +34,8 @@ defineProps({
 const pringLoading = ref(false)
 const count = ref(0)
 const printSetting: PrintAreaOption = {
-  id: 'printMe',
+  el: '#printMe',
+  noPrintSelector: '.no-print',
   beforeOpenCallback() {
     pringLoading.value = true
   },
@@ -40,7 +46,9 @@ const printSetting: PrintAreaOption = {
   }
 }
 
+const printMe = ref(null)
 function handlePrint() {
-  new VuePrintNext({...printSetting, id: '#printMe'})
+  if (!printMe.value) return
+  new VuePrintNext({...printSetting, el: 'p'})
 }
 </script>

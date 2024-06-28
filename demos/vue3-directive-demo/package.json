@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "echarts": "^5.5.1",
     "vue": "^3.4.29",
     "vue-print-next": "workspace:*"
   },
