@@ -22,12 +22,14 @@ a:hover {
   color: #535bf2;
 }
 
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   margin: 0;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -58,11 +60,15 @@ button:focus-visible {
   padding: 2em;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 #app {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  height: 100%;
+  width: 100%;
 }
 
 @media (prefers-color-scheme: light) {
@@ -77,3 +83,9 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.a4-page {
+  width: 595px;
+  height: 842px;
+}
+

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import * as echarts from 'echarts';
 import {nextTick, onMounted} from "vue";
+import { vPrint} from "vue-print-next";
 
 const option = {
   color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
   title: {
-    text: 'Gradient Stacked Area Chart'
+    text: 'Gradient Stacked Area Chart',
   },
   tooltip: {
     trigger: 'axis',
@@ -195,11 +196,15 @@ onMounted(()=>{
 </script>
 
 <template>
-  <div id="main" style="width: 500px; height: 300px; "></div>
+  <div class="box"><div id="main" class="a4-page"></div></div>
+  <button class="print-btn" v-print="'#main'">打印</button>
 </template>
 
-<style scoped>
-.read-the-docs {
-  color: #888;
+<style>
+.box {
+  display: flex;
+  justify-content: center;
 }
 </style>
+
+

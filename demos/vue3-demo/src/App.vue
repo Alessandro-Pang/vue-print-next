@@ -1,36 +1,53 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import {vPrint} from "vue-print-next";
+import {routes} from "./router";
+
 </script>
 
 <template>
-  <div id="printMe">
-    <div>
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo" alt="Vite logo"/>
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo"/>
-      </a>
-    </div>
-    <HelloWorld msg="Vite + Vue"/>
-  </div>
-  <button v-print="'#printMe'">打印</button>
+  <main class="main">
+    <aside class="aside-nav--box">
+      <div class="aside-nav">
+        <div v-for="item of routes" class="nav-item">
+          <router-link :to="item.path">{{item.meta.title}}</router-link>
+        </div>
+      </div>
+    </aside>
+    <article class="view">
+      <router-view/>
+    </article>
+  </main>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.main {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  padding: 20px 10px;
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.aside-nav--box {
+  width: 180px;
+
 }
 
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+.aside-nav--box > .aside-nav {
+  height: 100%;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 12px;
+}
+
+.aside-nav > .nav-item {
+  width: 100%;
+  height: 34px;
+  line-height: 34px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.view {
+  height: 100%;
+  width: 100%;
 }
 </style>
