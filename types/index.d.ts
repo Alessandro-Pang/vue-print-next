@@ -2,7 +2,7 @@ import type {App, DirectiveBinding} from "vue";
 
 export interface PrintAreaOption {
 	// 局部打印的元素，支持 css 选择器或 dom 节点
-	el: string | HTMLElement,
+	el?: string | HTMLElement,
 	// 文档类型，默认是html5，可选 html5，loose，strict
 	standard?: 'strict' | 'loose' | 'html5';
 	// 忽略打印元素的的选择器
@@ -56,9 +56,7 @@ export class VuePrintNext {
 	private iframeId: string;
 	private previewBody: HTMLElement | null;
 	private close: HTMLElement | null;
-	private previewBodyUtilPrintBtn: HTMLElement | null;
 	private counter: number;
-	private printContentDom: HTMLElement | null;
 	private settings: PrintAreaOption;
 	constructor(option: PrintAreaOption);
 

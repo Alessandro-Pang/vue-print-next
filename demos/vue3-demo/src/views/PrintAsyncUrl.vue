@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {vPrint} from "vue-print-next";
+import {PrintAreaOption, vPrint} from "vue-print-next";
 import {ref} from "vue";
 
 const loading = ref(false)
-function getAsyncUrl() {
+function getAsyncUrl(): Promise<string> {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve('/print-form')
@@ -13,13 +13,12 @@ function getAsyncUrl() {
 }
 
 
-const printOps = {
-  el: '1',
-  asyncUrl: (callback: () => void) => {
+const printOps: PrintAreaOption = {
+  asyncUrl: (callback: (url: string) => void): void => {
     loading.value = true;
     getAsyncUrl().then(callback)
   },
-  preview: true
+  preview: true,
 }
 </script>
 

@@ -3,7 +3,6 @@ import {vPrint} from "vue-print-next";
 
 const printOps = {
   el: 'form',
-  // preview: true
 }
 </script>
 

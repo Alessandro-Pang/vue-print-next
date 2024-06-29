@@ -1,5 +1,7 @@
 import {PrintAreaOption, PrintAreaWindow, Standards} from '../../../types';
 
+const FUNC_NAME = '[VuePrintNext]'
+
 export default class VuePrintNext {
 	// html 文档标准
 	private readonly standards: Standards = {
@@ -14,12 +16,8 @@ export default class VuePrintNext {
 	private previewBody: HTMLElement | null = null;
 	// 预览窗口的 关闭按钮
 	private close: HTMLElement | null = null;
-	// 打印按钮
-	private previewBodyUtilPrintBtn: HTMLElement | null = null;
 	// 调用次数，用于生成唯一 Id
 	private counter = 0;
-	// 需要打印的 DOM 内容
-	// private printContentDom: HTMLElement | null = null;
 	// 用户设置
 	private readonly settings: PrintAreaOption = {
 		standard: 'html5',
@@ -57,18 +55,22 @@ export default class VuePrintNext {
 		this.counter++;
 		this.iframeId = `printArea_${this.counter}`;
 
-		if (!this.settings.asyncUrl) {
-			const printAreaWindow = this.getPrintWindow(this.settings.url || '');
-			if (!this.settings.url) {
-				this.write(printAreaWindow.doc); // 写入内容
-			}
+		const printUrl = this.settings.el ? '' : this.settings.url
+		if (printUrl) {
+			const printAreaWindow = this.getPrintWindow(printUrl);
+			printUrl && this.write(printAreaWindow.doc)
 			this.settings.preview ? this.previewIframeLoad() : this.print(printAreaWindow);
-		} else {
+			return
+		}
+		if (this.settings.asyncUrl) {
 			this.settings.asyncUrl((url) => {
 				const printAreaWindow = this.getPrintWindow(url); // 创建iframe
 				this.settings.preview ? this.previewIframeLoad() : this.print(printAreaWindow);
 			}, this.settings.vue);
+			return
 		}
+
+		throw new Error(`${FUNC_NAME}: Either "el"、"url" or "asyncUrl" parameter must be provided in the settings.`);
 	}
 
 	private addEvent(
@@ -130,7 +132,7 @@ export default class VuePrintNext {
 		const isArray = Array.isArray(noPrintSelector);
 		const isString = typeof noPrintSelector === 'string';
 		if (!isArray && !isString) {
-			console.error('noPrintSelector 必须是数组或者字符串');
+			console.error(new TypeError(`${FUNC_NAME}: The "noPrintSelector" must be either a string or an array of strings. Please check your settings.`));
 			return
 		}
 		const noPrintSelectorList = Array.isArray(noPrintSelector) ? noPrintSelector : [noPrintSelector];
@@ -168,14 +170,9 @@ export default class VuePrintNext {
 
 		const style = Array.from(document.styleSheets)
 			.reduce((acc, styleSheet) => {
-				try {
-					if (styleSheet.cssRules || styleSheet.rules) {
-						const rules = styleSheet.cssRules || styleSheet.rules;
-						acc += Array.from(rules).reduce((innerAcc, rule) => innerAcc + rule.cssText, '');
-					}
-				} catch (e) {
-					console.log((styleSheet.href || '') + e);
-				}
+				const rules = styleSheet.cssRules || styleSheet.rules;
+				if(!rules) return acc;
+				acc += Array.from(rules).reduce((innerAcc, rule) => innerAcc + rule.cssText, '');
 				return acc;
 			}, '');
 
@@ -202,12 +199,12 @@ export default class VuePrintNext {
 		const isSelector = typeof el === 'string'
 		if (el instanceof HTMLElement) return [el]
 		if (!isSelector) {
-			throw new Error("el type is not string or HTMLElement, but " + typeof el);
+			throw new TypeError(`${FUNC_NAME}: The "el" property should be either a string (CSS selector) or an HTMLElement, but received type "${typeof el}".`);
 		}
 
 		let contentDom: HTMLElement[] = Array.from(document.querySelectorAll(el));
 		if (!contentDom?.length) {
-			throw new Error(`Can't find element with selector: ${el}`);
+			throw new Error(`${FUNC_NAME}: No elements found matching the selector: "${el}".`);
 		}
 
 		return contentDom;
@@ -297,7 +294,7 @@ export default class VuePrintNext {
 		// @ts-ignore
 		const doc = iframe.contentDocument || iframe.contentWindow?.document || iframe.document;
 		if (!doc) {
-			throw new Error('Cannot find document.');
+			throw new Error(`${FUNC_NAME}: Unable to find the document object within the created iframe. Please ensure the iframe is correctly created and loaded.`);
 		}
 		return {f: iframe, win: iframe.contentWindow || iframe, doc: doc};
 	}
@@ -407,13 +404,13 @@ export default class VuePrintNext {
 		previewBodyUtil.className = 'previewBodyUtil';
 		previewBodyUtil.style.cssText = 'height: 32px; background: #474747; position: relative;';
 
-		this.previewBodyUtilPrintBtn = document.createElement('div');
-		this.previewBodyUtilPrintBtn.className = 'previewBodyUtilPrintBtn';
-		this.previewBodyUtilPrintBtn.style.cssText =
+		const previewBodyUtilPrintBtn = document.createElement('div');
+		previewBodyUtilPrintBtn.className = 'previewBodyUtilPrintBtn';
+		previewBodyUtilPrintBtn.style.cssText =
 			'position: absolute; padding: 2px 10px; margin-top: 3px; left: 24px; font-size: 14px; color: white; cursor: pointer; background: rgba(0,0,0,.12); border: 1px solid rgba(0,0,0,.35); box-shadow: inset 0 1px 0 hsla(0,0%,100%,.05), inset 0 0 1px hsla(0,0%,100%,.15);';
-		this.previewBodyUtilPrintBtn.innerHTML = this.settings.previewPrintBtnLabel || '';
+		previewBodyUtilPrintBtn.innerHTML = this.settings.previewPrintBtnLabel || '';
 
-		previewBodyUtil.appendChild(this.previewBodyUtilPrintBtn);
+		previewBodyUtil.appendChild(previewBodyUtilPrintBtn);
 		previewBody.appendChild(previewBodyUtil);
 
 		return previewBody;

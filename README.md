@@ -1,373 +1,262 @@
-# vue-print-next
+# Vue Print Next
 
-This is a directive wrapper for printed, Simple, fast, convenient, light.
+Vue 打印插件，简单、快速、方便、轻巧，支持 Vue 2 和 Vue 3。
 
-基于 [vue3-print-nb](https://github.com/Power-kxLee/vue3-print-nb) 开发，使用 TypeScript 重写了核心方法，对于 vue3 setup 有了更好的支持。
+本插件基于 [vue3-print-nb](https://github.com/Power-kxLee/vue3-print-nb) 开发，并使用 TypeScript 完全重写，以更好地支持
+Vue 3 的 setup 函数。
 
-与 vue3-print-np 主要区别：
+## 特性
 
-- 不仅支持指令调用，支持手动调用 `VuePrintNext` 方法进行打印
+- 支持指令调用和手动调用 `VuePrintNext` 方法进行打印。
+- 更好地支持 Vue 3 的 setup 函数。
+- 支持全局和局部内容打印，以及打印预览功能。
+- 支持设置指定 class 样式的元素忽略打印
+- 支持通过 css 选择器、手动传入 Dom 节点进行局部打印。
+
+## 安装
+
+你可以通过 npm、 yarn 或 pnpm 安装该插件：
+
+```bash
+npm install vue-print-next --save
+# or
+yarn add vue-print-next
+# or 
+pnpm add vue-print-next
+```
+
+## 快速开始
+
+### 1. 全局使用插件
+
+在你的 `main.ts` 文件中：
+
+```typescript
+import {createApp} from 'vue';
+import App from './App.vue';
+import {printPlugin} from 'vue-print-next';
+
+const app = createApp(App);
+app.use(printPlugin);
+app.mount('#app');
+```
+
+### 2. Vue3 在组件中使用指令
+
 ```vue
-<template>
-  <div id="printMe" style="background:red;">
-    <p>叮当当咚咚当当　浇不大</p>
-    <p>叮当当咚咚当当 是我家</p>
-    <p>啦啦啦啦</p>
-    <p>...</p>
-  </div>
 
-<button @clock="handlePrint">Print local range</button>
+<template>
+  <div>
+    <button v-print>打印整个页面</button>
+    <button v-print="'#printMe'">打印局部内容</button>
+    <div id="printMe">
+      <p>这是需要打印的局部内容</p>
+      <p>更多内容...</p>
+    </div>
+  </div>
 </template>
 
 <script setup>
-  import { VuePrintNext } from 'vue-print-next'
-  function handlePrint() {
-    new VuePrintNext({id: '#printMe', /** other options **/})
+  // 直接导入指令
+  import {vPrint} from 'vue-print-next';
+</script>
+```
+
+### 2. Vue2 在组件中使用指令
+
+```vue
+
+<template>
+  <div>
+    <button v-print>打印整个页面</button>
+    <button v-print="'#printMe'">打印局部内容</button>
+    <div id="printMe">
+      <p>这是需要打印的局部内容</p>
+      <p>更多内容...</p>
+    </div>
+  </div>
+</template>
+
+<script>
+  import {vPrint} from "vue-print-next";
+
+  export default {
+    name: 'App',
+    directives: {
+      print: vPrint
+    },
   }
 </script>
 ```
-- vue setup 可以直接局部导入指令
-```vue
-<template>
-  <div id="printMe" style="background:red;">
-    <p>叮当当咚咚当当　浇不大</p>
-    <p>叮当当咚咚当当 是我家</p>
-    <p>啦啦啦啦</p>
-    <p>...</p>
-  </div>
 
-  <button v-print="'#printMe'">Print local range</button>
+### 4. 使用 `VuePrintNext` 类
+
+如果你需要更复杂的打印逻辑，可以直接使用 `VuePrintNext` 类：
+
+```vue
+
+<template>
+  <div>
+    <button @click="handlePrint">打印局部内容</button>
+    <div id="printMe">
+      <p>这是需要打印的内容</p>
+    </div>
+  </div>
 </template>
 
 <script setup>
-  // 直接导入即可！
-  import { vPrint } from 'vue-print-next'
+  import {VuePrintNext} from 'vue-print-next';
+
+  function handlePrint() {
+    new VuePrintNext({el: '#printMe', /** 其他参数 */});
+  }
 </script>
 ```
 
-<!-- TOC -->
+## API 详解
 
-- [vue-print-next](#vue3-print-next)
-  - [Install](#install)
-    - [Vue3 Version:](#vue3-version)
-  - [Description](#description)
-  - [Usage Method:](#usage-method)
-    - [Print the entire page:](#print-the-entire-page)
-    - [Print local range:](#print-local-range)
-    - [Print local range More:](#print-local-range-more)
-    - [Print URL:](#print-url)
-    - [Print Preview](#print-preview)
-      - [Print Url Preview:](#print-url-preview)
-      - [Print local range Preview](#print-local-range-preview)
-    - [Print Async Url](#print-async-url)
-  - [v-print API](#v-print-api)
+### `vPrint` 指令
 
-<!-- /TOC -->
-## Install
+- **全屏打印**：`<button v-print>打印整个页面</button>`
+- **局部打印**：`<button v-print="'#printMe'">打印局部内容</button>`，其中 `#printMe` 是需要打印的 DOM 元素选择器。
 
-### Vue3 Version:
-```bash
-npm install vue-print-next --save
+### `VuePrintNext` 类
+
+用于手动调用打印功能。
+
+#### 参数说明
+
+| 参数                          | 类型                        | 说明                                  | 默认值     |
+|-----------------------------|---------------------------|-------------------------------------|---------|
+| `el`                        | `string` \| `HtmlElement` | 需要打印的元素，支持 css 选择器或 dom 节点          | -       |
+| `standard`                  | `string`                  | 文档类型，默认是html5，可选 html5，loose，strict | 'html5' |
+| `noPrintSelector`           | `string[]` \| `string`    | 打印时需要忽略的 css 选择器                    | -       |
+| `preview`                   | `boolean`                 | 是否启用打印预览功能                          | `false` |
+| `previewTitle`              | `string`                  | 预览窗口的标题                             | '打印预览'  |
+| `previewPrintBtnLabel`      | `string`                  | 预览窗口中的打印按钮标签                        | '打印'    |
+| `extraCss`                  | `string`                  | 额外的 CSS 文件路径                        | -       |
+| `extraHead`                 | `string`                  | 额外的 `<head>` 内容                     | -       |
+| `url`                       | `string`                  | 打印指定的网址                             | -       |
+| `asyncUrl`                  | `function`                | 异步加载 URL 内容的方法                      | -       |
+| `zIndex`                    | `number`                  | 预览窗口的 `z-index`值                    | 20002   |
+| `openCallback`              | `function`                | 打印窗口打开时的回调                          | -       |
+| `closeCallback`             | `function`                | 打印窗口关闭时的回调                          | -       |
+| `beforeOpenCallback`        | `function`                | 打印窗口打开前的回调（打印预览使用）                  | -       |
+| `previewBeforeOpenCallback` | `function`                | 预览框架 iframe 加载前的回调（预览使用）            | -       |
+| `previewOpenCallback`       | `function`                | 预览框架 iframe 加载完成后的回调（预览使用）          | -       |
+
+## 使用示例
+
+### 打印整个页面
+
+```vue
+
+<button v-print>打印整个页面</button>
 ```
 
-```javascript
-// Global instruction 
-import { createApp } from 'vue'
-import App from './App.vue'
-import { PrintPlugin } from 'vue-print-next'
-const app = createApp(App)
-app.use(PrintPlugin)
-app.mount('#app')
+### 打印局部内容
 
-//or
+```vue
 
-// Local instruction
-import { vPrint } from 'vue-print-next'
-
-// or 
-
-// use methods
-import { VuePrintNext } from 'vue-print-next'
-VuePrintNext({id: '#xxx'});
+<div id="printMe">
+  <p>这是需要打印的内容</p>
+  <button v-print="'#printMe'">打印局部内容</button>
+</div>
 ```
 
+### 传递对象参数
 
-![](https://github.com/Power-kxLee/vue-print-next/blob/master/src/img/Chrome.png)
+```vue
 
-## Description
-
-Support two printing methods, direct printing page HTML, and printing URL
-
-It's easy to use, Support Vue compatible browser version
-
-
-## Usage Method:
-
-### Print the entire page:
-
-```
-<button v-print>Print the entire page</button>
-```
-
-
-### Print local range:
-
-HTML:
-```
-    <div id="printMe" style="background:red;">
-        <p>葫芦娃，葫芦娃</p>
-        <p>一根藤上七朵花 </p>
-        <p>小小树藤是我家 啦啦啦啦 </p>
-        <p>叮当当咚咚当当　浇不大</p>
-        <p> 叮当当咚咚当当 是我家</p>
-        <p> 啦啦啦啦</p>
-        <p>...</p>
+<template>
+  <div>
+    <button v-print="printObj">打印局部内容</button>
+    <div id="printMe">
+      <p>这是需要打印的内容</p>
     </div>
+  </div>
+</template>
 
-    <button v-print="'#printMe'">Print local range</button>
-```
-Pass in a string type directly
-* `id`: ID of local print range
-
-### Print local range More:
-HTML:
-```
- <button v-print="printObj">Print local range</button><div id="loading" v-show="printLoading"></div>
- 
-  <div id="printMe" style="background:red;">
-        <p>葫芦娃，葫芦娃</p>
-        <p>一根藤上七朵花 </p>
-        <p>小小树藤是我家 啦啦啦啦 </p>
-        <p>叮当当咚咚当当　浇不大</p>
-        <p> 叮当当咚咚当当 是我家</p>
-        <p> 啦啦啦啦</p>
-        <p>...</p>
-    </div>
-```
-JavaScript:
-```
-export default {
-    data() {
-        return {
-           printLoading: true,
-            printObj: {
-              id: "printMe",
-              popTitle: 'good print',
-              extraCss: "https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.compat.css, https://cdn.bootcdn.net/ajax/libs/hover.css/2.3.1/css/hover-min.css",
-              extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>',
-              beforeOpenCallback (vue) {
-                vue.printLoading = true
-                console.log('打开之前')
-              },
-              openCallback (vue) {
-                vue.printLoading = false
-                console.log('执行了打印')
-              },
-              closeCallback (vue) {
-                console.log('关闭了打印工具')
-              }
-            }
-        };
+<script setup>
+  const printObj = {
+    el: "#printMe",
+    preview: true,
+    extraCss: "https://cdn.example.com/extra.css",
+    openCallback() {
+      console.log('执行了打印');
+    },
+    closeCallback() {
+      console.log('关闭了打印工具');
     }
-}
-```
-You can also pass in an object type `Objcet`
-
-
-### Print URL:
-
-If you need to print the specified URL, you can use the following method:
-(Ensure that your URL is the same source policy)
-
-HTML:
-```
- <button v-print="printObj">Print local range</button>
+  }
+</script>
 ```
 
-JavaScript:
+### 打印 URL
+
+通过指定 URL 打印，并确保你的 URL 符合同源策略：
+
+```vue
+
+<template>
+  <button v-print="printObj">打印指定 URL</button>
+</template>
+
+<script setup>
+  const printObj = {
+    url: 'https://example.com/print-content'
+  }
+</script>
 ```
-export default {
-    data() {
-        return {
-            printObj: {
-              url: 'http://localhost:8080/'
-              beforeOpenCallback (vue) {
-                console.log('打开之前')
-              },
-              openCallback (vue) {
-                console.log('执行了打印')
-              },
-              closeCallback (vue) {
-                console.log('关闭了打印工具')
-              }
-            }
-        };
+
+### 异步加载 URL 内容
+
+如果你的 URL 需要异步加载，可以使用以下方法：
+
+```vue
+
+<template>
+  <button v-print="printObj">异步加载 URL 并打印</button>
+</template>
+
+<script setup>
+  const printObj = {
+    asyncUrl(resolve) {
+      setTimeout(() => {
+        resolve('https://example.com/print-content');
+      }, 2000);
     }
-}
+  }
+</script>
 ```
 
-### Print Preview
-Support print preview, pass in` preview:true `, All printing methods are supported
+## FAQ
 
-#### Print Url Preview:
+### 1. 插件、方法支持 Vue2 吗？
 
-HTML:
-```
- <button v-print="printObj">Print local range</button>
-```
+该插件对 Vue2 的指令插件机制做了兼容，是可以在 Vue2 环境下使用的，但由于本身是为了 Vue3 而设计的，所以在没有处理 IE
+浏览器的兼容，如果想考虑兼容的情况下还是使用 [vue-print-nb](https://github.com/Power-kxLee/vue2-print-nb) 插件。
 
-JavaScript:
-```
-export default {
-    data() {
-        return {
-            
-            printObj: {
-              url: 'http://localhost:8080/'
-              preview: true,
-              previewTitle: 'Test Title', // The title of the preview window. The default is 打印预览
-              previewBeforeOpenCallback () {
-                console.log('正在加载预览窗口')
-              },
-              previewOpenCallback () {
-                console.log('已经加载完预览窗口')
-              },
-              beforeOpenCallback (vue) {
-                console.log('打开之前')
-              },
-              openCallback (vue) {
-                console.log('执行了打印')
-              },
-              closeCallback (vue) {
-                console.log('关闭了打印工具')
-              }
-            }
-        };
-    }
-}
-```
-![](2021-05-12-18-28-08.png)
+### 2. `VuePrintNext` 必传参数 `id`, 不支持全屏打印?
 
+`v-print` 指令允许不传入 `id` 参数，此时会打印整个页面，
+但 `VuePrintNext` 类必须传入 `id` 参数，这是因为考虑到当需要手动调用全屏打印时，
+用户完全可以直接使用 `window.print()` 方法进行打印，而不需要使用 `VuePrintNext` 类。
 
-#### Print local range Preview
-HTML:
-```
- <button v-print="printObj">Print local range</button><div id="loading" v-show="printLoading"></div>
- 
-  <div id="printMe" style="background:red;">
-        <p>葫芦娃，葫芦娃</p>
-        <p>一根藤上七朵花 </p>
-        <p>小小树藤是我家 啦啦啦啦 </p>
-        <p>叮当当咚咚当当　浇不大</p>
-        <p> 叮当当咚咚当当 是我家</p>
-        <p> 啦啦啦啦</p>
-        <p>...</p>
-    </div>
-```
-JavaScript:
-```
-export default {
-    data() {
-        return {
-           printLoading: true,
-            printObj: {
-              id: "printMe",
-              preview: true,
-              previewTitle: 'print Title', // The title of the preview window. The default is 打印预览
-              popTitle: 'good print',
-              extraCss: "https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.compat.css, https://cdn.bootcdn.net/ajax/libs/hover.css/2.3.1/css/hover-min.css",
-              extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>',
-              previewBeforeOpenCallback () {
-                console.log('正在加载预览窗口')
-              },
-              previewOpenCallback () {
-                console.log('已经加载完预览窗口')
-              },
-              beforeOpenCallback (vue) {
-                vue.printLoading = true
-                console.log('打开之前')
-              },
-              openCallback (vue) {
-                vue.printLoading = false
-                console.log('执行了打印')
-              },
-              closeCallback (vue) {
-                console.log('关闭了打印工具')
-              }
-            }
-        };
-    }
-}
-```
+### 3. 不支持打印窗口的确认和取消按钮的回调？
 
-![](2021-05-12-18-28-56.png)
+因为打印窗口的确认和取消按钮是由浏览器提供的，所以无法直接在 `VuePrintNext`
+类中监听点击事件进行回调，所以只提供了 `closeCallback` 回调函数无论在确认还是取消时都会触发 `closeCallback`。
 
-### Print Async Url
+### 4. 其他框架下（原生JS）下能否调用？
 
-Perhaps, your URL is obtained asynchronously. You can use the following method
+`VuePrintNext` 是一个纯 JS 实现的类，原则上与框架无关，所以可以在任何框架、或无框架下使用，用户只需要通过调用 `VuePrintNext`
+即可，区别是其他框架下无法继承指令、插件模式，只能通过 API 调用。
 
-HTML:
-```
- <button v-print="printObj">Print local range</button>
-```
-
-JavaScript:
-```
-export default {
-    data() {
-        return {
-            printObj: {
-              asyncUrl (reslove, vue) {
-                setTimeout(() => {
-                  reslove('http://localhost:8080/')
-                }, 2000)
-              },
-              previewBeforeOpenCallback () {
-                console.log('正在加载预览窗口')
-              },
-              previewOpenCallback () {
-                console.log('已经加载完预览窗口')
-              },
-              beforeOpenCallback (vue) {
-                console.log('打开之前')
-              },
-              openCallback (vue) {
-                console.log('执行了打印')
-              },
-              closeCallback (vue) {
-                console.log('关闭了打印工具')
-              }
-            }
-        };
-    }
-}
-```
-Finally, use `reslove()` to return your URL
-
-
-## v-print API
-
-| Parame                    | Explain                                                                                                 | Type          | OptionalValue                                     | DefaultValue |
-| ------------------------- | ------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------- | ------------ |
-| id                        | Range print ID, required value                                                                          | String        | —                                                 | —            |
-| standard                  | Document type (Print local range only)                                                                  | String        | html5/loose/strict                                | html5        |
-| extraHead                 | `<head></head>`Add DOM nodes in the node, and separate multiple nodes with `,` (Print local range only) | String        | —                                                 | —            |
-| extraCss                  | `<link>` New CSS style sheet , and separate multiple nodes with `,`(Print local range only)             | String        | —                                                 | -            |
-| popTitle                  | `<title></title>` Content of label (Print local range only)                                             | String        | —                                                 | -            |
-| openCallback              | Call the successful callback function of the printing tool                                              | Function      | Returns the instance of `Vue` called at that time | -            |
-| closeCallback             | Close the callback function of printing tool success                                                    | Function      | Returns the instance of `Vue` called at that time | -            |
-| beforeOpenCallback        | Callback function before calling printing tool                                                          | Function      | Returns the instance of `Vue` called at that time | -            |
-| url                       | Print the specified URL. (It is not allowed to set the ID at the same time)                             | string        | -                                                 | -            |
-| asyncUrl                  | Return URL through 'resolve()'                                                                          | Function      | -                                                 | -            |
-| preview                   | Preview tool                                                                                            | Boolean       | -                                                 | false        |
-| previewTitle              | Preview tool Title                                                                                      | String        | -                                                 | '打印预览'   |
-| previewPrintBtnLabel      | The name of the preview tool button                                                                     | String        | -                                                 | '打印'       |
-| zIndex                    | CSS of preview tool: z-index                                                                            | String,Number | -                                                 | 20002        |
-| previewBeforeOpenCallback | Callback function before starting preview tool                                                          | Function      | Returns the instance of `Vue`                     | -            |
-| previewOpenCallback       | Callback function after fully opening preview tool                                                      | Function      | Returns the instance of `Vue`                     | -            |
-
-
-
-License：
+## License
 
 [MIT](http://opensource.org/licenses/MIT)
+
+---
+
+欢迎在 [GitHub Issues](https://github.com/Alessandro-Pang/vue-print-next/issues) 上讨论并提出问题或提交 Pull Request！

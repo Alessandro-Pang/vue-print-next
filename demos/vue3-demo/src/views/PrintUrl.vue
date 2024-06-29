@@ -7,7 +7,6 @@ import {vPrint} from "vue-print-next";
  * url: 跨域时无法进行打印
  */
 const printOps = {
-  el: '1',
   url: '/print-form',
   preview: true
 }

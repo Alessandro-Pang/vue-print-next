@@ -17,7 +17,7 @@
     <p class="no-print">Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
     <p class="no-print">Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
   </div>
-  <button v-print="printSetting">指令打印</button>
+  <button v-print="printSetting" style="margin-right: 10px;">指令打印</button>
   <button @click="handlePrint">方法打印</button>
   <div v-show="pringLoading"> loading....</div>
 </template>

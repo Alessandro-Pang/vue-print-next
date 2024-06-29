@@ -1,38 +1,35 @@
-var m = Object.defineProperty, g = Object.defineProperties;
+var g = Object.defineProperty, b = Object.defineProperties;
 var x = Object.getOwnPropertyDescriptors;
-var w = Object.getOwnPropertySymbols;
-var b = Object.prototype.hasOwnProperty, B = Object.prototype.propertyIsEnumerable;
-var u = (n, e, t) => e in n ? m(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t, h = (n, e) => {
+var m = Object.getOwnPropertySymbols;
+var B = Object.prototype.hasOwnProperty, C = Object.prototype.propertyIsEnumerable;
+var v = (n, e, t) => e in n ? g(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t, u = (n, e) => {
   for (var t in e || (e = {}))
-    b.call(e, t) && u(n, t, e[t]);
-  if (w)
-    for (var t of w(e))
-      B.call(e, t) && u(n, t, e[t]);
+    B.call(e, t) && v(n, t, e[t]);
+  if (m)
+    for (var t of m(e))
+      C.call(e, t) && v(n, t, e[t]);
   return n;
-}, v = (n, e) => g(n, x(e));
-var p = (n, e, t) => u(n, typeof e != "symbol" ? e + "" : e, t);
-class C {
+}, y = (n, e) => b(n, x(e));
+var h = (n, e, t) => v(n, typeof e != "symbol" ? e + "" : e, t);
+const p = "[VuePrintNext]";
+class E {
   constructor(e) {
     // html 文档标准
-    p(this, "standards", {
+    h(this, "standards", {
       strict: "strict",
       loose: "loose",
       html5: "html5"
     });
     // 打印窗口的 iframe id
-    p(this, "iframeId", "");
+    h(this, "iframeId", "");
     // 预览窗口的 body
-    p(this, "previewBody", null);
+    h(this, "previewBody", null);
     // 预览窗口的 关闭按钮
-    p(this, "close", null);
-    // 打印按钮
-    p(this, "previewBodyUtilPrintBtn", null);
+    h(this, "close", null);
     // 调用次数，用于生成唯一 Id
-    p(this, "counter", 0);
-    // 需要打印的 DOM 内容
-    // private printContentDom: HTMLElement | null = null;
+    h(this, "counter", 0);
     // 用户设置
-    p(this, "settings", {
+    h(this, "settings", {
       standard: "html5",
       zIndex: 20002,
       previewTitle: "打印预览",
@@ -40,65 +37,71 @@ class C {
       preview: !1
     });
     const t = e.vue;
-    this.settings = v(h(h({}, this.settings), e), {
+    this.settings = y(u(u({}, this.settings), e), {
       previewBeforeOpenCallback() {
-        var s;
-        (s = e.previewBeforeOpenCallback) == null || s.call(e, t);
+        var r;
+        (r = e.previewBeforeOpenCallback) == null || r.call(e, t);
       },
       previewOpenCallback() {
-        var s;
-        (s = e.previewOpenCallback) == null || s.call(e, t);
+        var r;
+        (r = e.previewOpenCallback) == null || r.call(e, t);
       },
       openCallback() {
-        var s;
-        (s = e.openCallback) == null || s.call(e, t);
+        var r;
+        (r = e.openCallback) == null || r.call(e, t);
       },
       closeCallback() {
-        var s;
-        (s = e.closeCallback) == null || s.call(e, t);
+        var r;
+        (r = e.closeCallback) == null || r.call(e, t);
       },
       beforeOpenCallback() {
-        var s;
-        (s = e.beforeOpenCallback) == null || s.call(e, t);
+        var r;
+        (r = e.beforeOpenCallback) == null || r.call(e, t);
       }
     }), this.init();
   }
   init() {
-    if (this.counter++, this.iframeId = `printArea_${this.counter}`, this.settings.asyncUrl)
-      this.settings.asyncUrl((e) => {
-        const t = this.getPrintWindow(e);
-        this.settings.preview ? this.previewIframeLoad() : this.print(t);
-      }, this.settings.vue);
-    else {
-      const e = this.getPrintWindow(this.settings.url || "");
-      this.settings.url || this.write(e.doc), this.settings.preview ? this.previewIframeLoad() : this.print(e);
+    this.counter++, this.iframeId = `printArea_${this.counter}`;
+    const e = this.settings.el ? "" : this.settings.url;
+    if (e) {
+      const t = this.getPrintWindow(e);
+      e && this.write(t.doc), this.settings.preview ? this.previewIframeLoad() : this.print(t);
+      return;
     }
+    if (this.settings.asyncUrl) {
+      this.settings.asyncUrl((t) => {
+        const r = this.getPrintWindow(t);
+        this.settings.preview ? this.previewIframeLoad() : this.print(r);
+      }, this.settings.vue);
+      return;
+    }
+    throw new Error(`${p}: Either "el"、"url" or "asyncUrl" parameter must be provided in the settings.`);
   }
-  addEvent(e, t, s) {
-    e && (e.addEventListener ? e.addEventListener(t, s, !1) : e.attachEvent ? e.attachEvent("on" + t, s) : e["on" + t] = s);
+  addEvent(e, t, r) {
+    e && (e.addEventListener ? e.addEventListener(t, r, !1) : e.attachEvent ? e.attachEvent("on" + t, r) : e["on" + t] = r);
   }
   previewIframeLoad() {
-    var s, o;
+    var r, o;
     const e = document.getElementById("vue-pirnt-next-previewBox");
     if (!e) return;
     const t = e.querySelector("iframe");
-    (o = (s = this.settings).previewBeforeOpenCallback) == null || o.call(s), this.addEvent(t, "load", () => {
-      var i, r;
-      this.previewBoxShow(), (r = (i = this.settings).previewOpenCallback) == null || r.call(i);
+    (o = (r = this.settings).previewBeforeOpenCallback) == null || o.call(r), this.addEvent(t, "load", () => {
+      var i, s;
+      this.previewBoxShow(), (s = (i = this.settings).previewOpenCallback) == null || s.call(i);
     }), this.addEvent(e.querySelector(".previewBodyUtilPrintBtn"), "click", () => {
-      var i, r, a, l, d, c, f;
-      (r = (i = this.settings).beforeOpenCallback) == null || r.call(i), (l = (a = this.settings).openCallback) == null || l.call(a), (d = t == null ? void 0 : t.contentWindow) == null || d.print(), (f = (c = this.settings).closeCallback) == null || f.call(c);
+      var i, s, d, l, c, a, w;
+      (s = (i = this.settings).beforeOpenCallback) == null || s.call(i), (l = (d = this.settings).openCallback) == null || l.call(d), (c = t == null ? void 0 : t.contentWindow) == null || c.print(), (w = (a = this.settings).closeCallback) == null || w.call(a);
     });
   }
   print(e) {
-    var i, r;
-    const t = document.getElementById(this.iframeId) || e.f, s = t == null ? void 0 : t.contentWindow;
-    if (!s) return;
+    var i, s;
+    const t = document.getElementById(this.iframeId) || e.f, r = t == null ? void 0 : t.contentWindow;
+    if (!r) return;
     const o = () => {
-      var a, l, d, c;
-      s.focus(), (l = (a = this.settings).openCallback) == null || l.call(a), s.print(), t.remove(), (c = (d = this.settings).closeCallback) == null || c.call(d);
+      var d, l, c, a;
+      r.focus(), (l = (d = this.settings).openCallback) == null || l.call(d), r.print(), t.remove(), (a = (c = this.settings).closeCallback) == null || a.call(c);
     };
-    (r = (i = this.settings).beforeOpenCallback) == null || r.call(i), this.addEvent(t, "load", o);
+    (s = (i = this.settings).beforeOpenCallback) == null || s.call(i), this.addEvent(t, "load", o);
   }
   /**
    * 获取打印需要隐藏的 css
@@ -108,10 +111,10 @@ class C {
     const e = this.settings.noPrintSelector;
     if (!e) return;
     if (!Array.isArray(e) && !(typeof e == "string")) {
-      console.error("noPrintSelector 必须是数组或者字符串");
+      console.error(new TypeError(`${p}: The "noPrintSelector" must be either a string or an array of strings. Please check your settings.`));
       return;
     }
-    return `${(Array.isArray(e) ? e : [e]).filter((r) => r.trim()).join(",")} { display: none; }`;
+    return `${(Array.isArray(e) ? e : [e]).filter((s) => s.trim()).join(",")} { display: none; }`;
   }
   write(e) {
     e.open(), e.write(
@@ -125,21 +128,14 @@ class C {
     return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01${e}//EN" "http://www.w3.org/TR/html4/${t}.dtd">`;
   }
   getHead() {
-    const e = (this.settings.extraHead || "").split(",").filter((r) => r.length > 0).join(""), t = Array.from(document.querySelectorAll("link")).filter((r) => r.href.includes(".css")).map((r) => `<link type="text/css" rel="stylesheet" href='${r.href}'>`).join(""), s = Array.from(document.styleSheets).reduce((r, a) => {
-      try {
-        if (a.cssRules || a.rules) {
-          const l = a.cssRules || a.rules;
-          r += Array.from(l).reduce((d, c) => d + c.cssText, "");
-        }
-      } catch (l) {
-        console.log((a.href || "") + l);
-      }
-      return r;
-    }, ""), o = (this.settings.extraCss || "").split(",").filter((r) => r.trim().length > 0).map((r) => `<link type="text/css" rel="stylesheet" href='${r.trim()}'>`).join(""), i = this.getNoPrintMediaStyle();
+    const e = (this.settings.extraHead || "").split(",").filter((s) => s.length > 0).join(""), t = Array.from(document.querySelectorAll("link")).filter((s) => s.href.includes(".css")).map((s) => `<link type="text/css" rel="stylesheet" href='${s.href}'>`).join(""), r = Array.from(document.styleSheets).reduce((s, d) => {
+      const l = d.cssRules || d.rules;
+      return l && (s += Array.from(l).reduce((c, a) => c + a.cssText, "")), s;
+    }, ""), o = (this.settings.extraCss || "").split(",").filter((s) => s.trim().length > 0).map((s) => `<link type="text/css" rel="stylesheet" href='${s.trim()}'>`).join(""), i = this.getNoPrintMediaStyle();
     return `<head>
 							<title>${this.settings.popTitle}</title>
 							${e}${t}
-							<style type="text/css">${s}${i}</style>
+							<style type="text/css">${r}${i}</style>
 							${o}
 						</head>`;
   }
@@ -150,17 +146,17 @@ class C {
     const e = this.settings.el, t = typeof e == "string";
     if (e instanceof HTMLElement) return [e];
     if (!t)
-      throw new Error("el type is not string or HTMLElement, but " + typeof e);
-    let s = Array.from(document.querySelectorAll(e));
-    if (!(s != null && s.length))
-      throw new Error(`Can't find element with selector: ${e}`);
-    return s;
+      throw new TypeError(`${p}: The "el" property should be either a string (CSS selector) or an HTMLElement, but received type "${typeof e}".`);
+    let r = Array.from(document.querySelectorAll(e));
+    if (!(r != null && r.length))
+      throw new Error(`${p}: No elements found matching the selector: "${e}".`);
+    return r;
   }
   getBody() {
     const e = this.getPrintAreaDom(), t = document.createElement("div");
-    return e.forEach((s) => {
-      const o = s.cloneNode(!0);
-      this.canvasToImgHandler(s, o), this.formDataHandler(s, o), t.appendChild(o);
+    return e.forEach((r) => {
+      const o = r.cloneNode(!0);
+      this.canvasToImgHandler(r, o), this.formDataHandler(r, o), t.appendChild(o);
     }), `<body>${t.innerHTML}</body>`;
   }
   /**
@@ -170,10 +166,10 @@ class C {
    * @private
    */
   canvasToImgHandler(e, t) {
-    const s = e.querySelectorAll("canvas");
-    t.querySelectorAll("canvas").forEach((i, r) => {
-      const a = s[r], l = i.parentNode, d = a.toDataURL("image/png"), c = new Image();
-      c.className = "canvasImg", c.style.display = "block", c.src = d, l == null || l.appendChild(c), i.remove();
+    const r = e.querySelectorAll("canvas");
+    t.querySelectorAll("canvas").forEach((i, s) => {
+      const d = r[s], l = i.parentNode, c = d.toDataURL("image/png"), a = new Image();
+      a.className = "canvasImg", a.style.display = "block", a.src = c, l == null || l.appendChild(a), i.remove();
     });
   }
   /**
@@ -183,29 +179,29 @@ class C {
    * @private
    */
   formDataHandler(e, t) {
-    const s = t.querySelectorAll("input,select,textarea");
+    const r = t.querySelectorAll("input,select,textarea");
     let o = -1;
-    s.forEach((i) => {
+    r.forEach((i) => {
       var l;
-      const r = i.value;
+      const s = i.value;
       switch ((l = i.getAttribute("type")) != null ? l : i.tagName.toLowerCase()) {
         case "select":
           o++;
-          const d = e.querySelectorAll("select")[o];
-          if (d) {
-            const c = d.selectedIndex;
-            i.options[c].setAttribute("selected", "selected");
+          const c = e.querySelectorAll("select")[o];
+          if (c) {
+            const a = c.selectedIndex;
+            i.options[a].setAttribute("selected", "selected");
           }
           break;
         case "textarea":
-          i.innerHTML = r, i.setAttribute("html", r);
+          i.innerHTML = s, i.setAttribute("html", s);
           break;
         case "radio":
         case "checkbox":
           i.checked && i.setAttribute("checked", "checked");
           break;
         default:
-          i.value = r, i.setAttribute("value", r);
+          i.value = s, i.setAttribute("value", s);
           break;
       }
     });
@@ -213,10 +209,10 @@ class C {
   // 生成并返回打印窗口的 iframe 和文档对象
   getPrintWindow(e) {
     var o;
-    const t = this.createIframe(e), s = t.contentDocument || ((o = t.contentWindow) == null ? void 0 : o.document) || t.document;
-    if (!s)
-      throw new Error("Cannot find document.");
-    return { f: t, win: t.contentWindow || t, doc: s };
+    const t = this.createIframe(e), r = t.contentDocument || ((o = t.contentWindow) == null ? void 0 : o.document) || t.document;
+    if (!r)
+      throw new Error(`${p}: Unable to find the document object within the created iframe. Please ensure the iframe is correctly created and loaded.`);
+    return { f: t, win: t.contentWindow || t, doc: r };
   }
   // 显示预览窗口
   previewBoxShow() {
@@ -226,16 +222,16 @@ class C {
   }
   // 隐藏预览窗口
   previewBoxHide() {
-    var t, s;
+    var t, r;
     const e = document.getElementById("vue-pirnt-next-previewBox");
-    e && ((t = document.querySelector("html")) == null || t.setAttribute("style", "overflow: visible;"), (s = e.querySelector("iframe")) == null || s.remove(), e.style.display = "none");
+    e && ((t = document.querySelector("html")) == null || t.setAttribute("style", "overflow: visible;"), (r = e.querySelector("iframe")) == null || r.remove(), e.style.display = "none");
   }
   // 创建或获取打印预览的框架
   previewBox() {
-    var s;
+    var r;
     let e = document.getElementById("vue-pirnt-next-previewBox");
     if (e)
-      return (s = e.querySelector("iframe")) == null || s.remove(), { close: e.querySelector(".previewClose"), previewBody: e.querySelector(".previewBody") };
+      return (r = e.querySelector("iframe")) == null || r.remove(), { close: e.querySelector(".previewClose"), previewBody: e.querySelector(".previewBody") };
     e = document.createElement("div"), e.setAttribute("id", "vue-pirnt-next-previewBox"), e.setAttribute(
       "style",
       "position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: white; display: none; z-index: " + this.settings.zIndex
@@ -250,8 +246,8 @@ class C {
       document.body.appendChild(t);
     else {
       t.setAttribute("style", "border: 0px; flex: 1;");
-      const { close: s, previewBody: o } = this.previewBox();
-      o && o.appendChild(t), this.addEvent(s, "click", this.previewBoxHide.bind(this));
+      const { close: r, previewBody: o } = this.previewBox();
+      o && o.appendChild(t), this.addEvent(r, "click", this.previewBoxHide.bind(this));
     }
     return t;
   }
@@ -259,47 +255,45 @@ class C {
   createCloseButton() {
     const e = document.createElement("div");
     e.setAttribute("class", "previewClose"), e.setAttribute("style", "position: absolute; top: 5px; right: 20px; width: 25px; height: 20px; cursor: pointer;");
-    const t = document.createElement("div"), s = document.createElement("div"), o = "position: absolute; width: 3px; height: 100%; background: #040404; top: 0px; left: 50%;";
-    return t.setAttribute("class", "closeBefore"), t.setAttribute("style", `${o} transform: rotate(45deg);`), s.setAttribute("class", "closeAfter"), s.setAttribute("style", `${o} transform: rotate(-45deg);`), e.appendChild(t), e.appendChild(s), e;
+    const t = document.createElement("div"), r = document.createElement("div"), o = "position: absolute; width: 3px; height: 100%; background: #040404; top: 0px; left: 50%;";
+    return t.setAttribute("class", "closeBefore"), t.setAttribute("style", `${o} transform: rotate(45deg);`), r.setAttribute("class", "closeAfter"), r.setAttribute("style", `${o} transform: rotate(-45deg);`), e.appendChild(t), e.appendChild(r), e;
   }
   // 创建预览主体
   createPreviewBody() {
     const e = document.createElement("div");
     e.className = "previewBody", e.style.cssText = "display: flex; flex-direction: column; height: 100%;";
     const t = document.createElement("div");
-    return t.className = "previewBodyUtil", t.style.cssText = "height: 32px; background: #474747; position: relative;", this.previewBodyUtilPrintBtn = document.createElement("div"), this.previewBodyUtilPrintBtn.className = "previewBodyUtilPrintBtn", this.previewBodyUtilPrintBtn.style.cssText = "position: absolute; padding: 2px 10px; margin-top: 3px; left: 24px; font-size: 14px; color: white; cursor: pointer; background: rgba(0,0,0,.12); border: 1px solid rgba(0,0,0,.35); box-shadow: inset 0 1px 0 hsla(0,0%,100%,.05), inset 0 0 1px hsla(0,0%,100%,.15);", this.previewBodyUtilPrintBtn.innerHTML = this.settings.previewPrintBtnLabel || "", t.appendChild(this.previewBodyUtilPrintBtn), e.appendChild(t), e;
+    t.className = "previewBodyUtil", t.style.cssText = "height: 32px; background: #474747; position: relative;";
+    const r = document.createElement("div");
+    return r.className = "previewBodyUtilPrintBtn", r.style.cssText = "position: absolute; padding: 2px 10px; margin-top: 3px; left: 24px; font-size: 14px; color: white; cursor: pointer; background: rgba(0,0,0,.12); border: 1px solid rgba(0,0,0,.35); box-shadow: inset 0 1px 0 hsla(0,0%,100%,.05), inset 0 0 1px hsla(0,0%,100%,.15);", r.innerHTML = this.settings.previewPrintBtnLabel || "", t.appendChild(r), e.appendChild(t), e;
   }
 }
 const A = (n, e, t) => {
   n.addEventListener ? n.addEventListener(e, t, !1) : n.attachEvent ? n.attachEvent("on" + e, t) : n["on" + e] = t;
-}, y = {
+}, f = {
   directiveName: "print",
   // vue3 指定挂载
   mounted(n, e) {
-    let t = "", s = {};
+    let t, r = {};
     A(n, "click", () => {
-      if (typeof e.value == "string")
-        t = e.value;
-      else if (typeof e.value == "object" && e.value.el)
-        t = e.value.el, s = e.value;
-      else {
+      if (!e.value) {
         window.print();
         return;
       }
-      new C(v(h({}, s), { el: t, vue: e.instance }));
+      typeof e.value == "string" ? t = e.value : typeof e.value == "object" && (t = e.value.el, r = e.value), new E(y(u({}, r), { el: t, vue: e.instance }));
     });
   },
   // 兼容 Vue2 指令挂载
   bind(n, e, t) {
-    e.instance = t.context, y.mounted(n, e);
+    e.instance = t.context, f.mounted(n, e);
   }
-}, k = {
+}, S = {
   install(n) {
-    n.directive(y.directiveName, y);
+    n.directive(f.directiveName, f);
   }
 };
 export {
-  C as VuePrintNext,
-  k as printPlugin,
-  y as vPrint
+  E as VuePrintNext,
+  S as printPlugin,
+  f as vPrint
 };
