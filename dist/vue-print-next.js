@@ -2,15 +2,15 @@ var g = Object.defineProperty, b = Object.defineProperties;
 var x = Object.getOwnPropertyDescriptors;
 var m = Object.getOwnPropertySymbols;
 var B = Object.prototype.hasOwnProperty, C = Object.prototype.propertyIsEnumerable;
-var v = (n, e, t) => e in n ? g(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t, u = (n, e) => {
+var v = (o, e, t) => e in o ? g(o, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : o[e] = t, u = (o, e) => {
   for (var t in e || (e = {}))
-    B.call(e, t) && v(n, t, e[t]);
+    B.call(e, t) && v(o, t, e[t]);
   if (m)
     for (var t of m(e))
-      C.call(e, t) && v(n, t, e[t]);
-  return n;
-}, y = (n, e) => b(n, x(e));
-var h = (n, e, t) => v(n, typeof e != "symbol" ? e + "" : e, t);
+      C.call(e, t) && v(o, t, e[t]);
+  return o;
+}, y = (o, e) => b(o, x(e));
+var h = (o, e, t) => v(o, typeof e != "symbol" ? e + "" : e, t);
 const p = "[VuePrintNext]";
 class E {
   constructor(e) {
@@ -62,16 +62,16 @@ class E {
   }
   init() {
     this.counter++, this.iframeId = `printArea_${this.counter}`;
-    const e = this.settings.el ? "" : this.settings.url;
-    if (e) {
-      const t = this.getPrintWindow(e);
-      e && this.write(t.doc), this.settings.preview ? this.previewIframeLoad() : this.print(t);
+    const { el: e, url: t } = this.settings;
+    if (e || t) {
+      const r = e ? "" : t || "", i = this.getPrintWindow(r);
+      e && this.write(i.doc), this.settings.preview ? this.previewIframeLoad() : this.print(i);
       return;
     }
     if (this.settings.asyncUrl) {
-      this.settings.asyncUrl((t) => {
-        const r = this.getPrintWindow(t);
-        this.settings.preview ? this.previewIframeLoad() : this.print(r);
+      this.settings.asyncUrl((r) => {
+        const i = this.getPrintWindow(r);
+        this.settings.preview ? this.previewIframeLoad() : this.print(i);
       }, this.settings.vue);
       return;
     }
@@ -81,27 +81,27 @@ class E {
     e && (e.addEventListener ? e.addEventListener(t, r, !1) : e.attachEvent ? e.attachEvent("on" + t, r) : e["on" + t] = r);
   }
   previewIframeLoad() {
-    var r, o;
+    var r, i;
     const e = document.getElementById("vue-pirnt-next-previewBox");
     if (!e) return;
     const t = e.querySelector("iframe");
-    (o = (r = this.settings).previewBeforeOpenCallback) == null || o.call(r), this.addEvent(t, "load", () => {
-      var i, s;
-      this.previewBoxShow(), (s = (i = this.settings).previewOpenCallback) == null || s.call(i);
+    (i = (r = this.settings).previewBeforeOpenCallback) == null || i.call(r), this.addEvent(t, "load", () => {
+      var n, s;
+      this.previewBoxShow(), (s = (n = this.settings).previewOpenCallback) == null || s.call(n);
     }), this.addEvent(e.querySelector(".previewBodyUtilPrintBtn"), "click", () => {
-      var i, s, d, l, c, a, w;
-      (s = (i = this.settings).beforeOpenCallback) == null || s.call(i), (l = (d = this.settings).openCallback) == null || l.call(d), (c = t == null ? void 0 : t.contentWindow) == null || c.print(), (w = (a = this.settings).closeCallback) == null || w.call(a);
+      var n, s, d, l, c, a, w;
+      (s = (n = this.settings).beforeOpenCallback) == null || s.call(n), (l = (d = this.settings).openCallback) == null || l.call(d), (c = t == null ? void 0 : t.contentWindow) == null || c.print(), (w = (a = this.settings).closeCallback) == null || w.call(a);
     });
   }
   print(e) {
-    var i, s;
+    var n, s;
     const t = document.getElementById(this.iframeId) || e.f, r = t == null ? void 0 : t.contentWindow;
     if (!r) return;
-    const o = () => {
+    const i = () => {
       var d, l, c, a;
       r.focus(), (l = (d = this.settings).openCallback) == null || l.call(d), r.print(), t.remove(), (a = (c = this.settings).closeCallback) == null || a.call(c);
     };
-    (s = (i = this.settings).beforeOpenCallback) == null || s.call(i), this.addEvent(t, "load", o);
+    (s = (n = this.settings).beforeOpenCallback) == null || s.call(n), this.addEvent(t, "load", i);
   }
   /**
    * 获取打印需要隐藏的 css
@@ -131,12 +131,12 @@ class E {
     const e = (this.settings.extraHead || "").split(",").filter((s) => s.length > 0).join(""), t = Array.from(document.querySelectorAll("link")).filter((s) => s.href.includes(".css")).map((s) => `<link type="text/css" rel="stylesheet" href='${s.href}'>`).join(""), r = Array.from(document.styleSheets).reduce((s, d) => {
       const l = d.cssRules || d.rules;
       return l && (s += Array.from(l).reduce((c, a) => c + a.cssText, "")), s;
-    }, ""), o = (this.settings.extraCss || "").split(",").filter((s) => s.trim().length > 0).map((s) => `<link type="text/css" rel="stylesheet" href='${s.trim()}'>`).join(""), i = this.getNoPrintMediaStyle();
+    }, ""), i = (this.settings.extraCss || "").split(",").filter((s) => s.trim().length > 0).map((s) => `<link type="text/css" rel="stylesheet" href='${s.trim()}'>`).join(""), n = this.getNoPrintMediaStyle();
     return `<head>
 							<title>${this.settings.popTitle}</title>
 							${e}${t}
-							<style type="text/css">${r}${i}</style>
-							${o}
+							<style type="text/css">${r}${n}</style>
+							${i}
 						</head>`;
   }
   /**
@@ -155,8 +155,8 @@ class E {
   getBody() {
     const e = this.getPrintAreaDom(), t = document.createElement("div");
     return e.forEach((r) => {
-      const o = r.cloneNode(!0);
-      this.canvasToImgHandler(r, o), this.formDataHandler(r, o), t.appendChild(o);
+      const i = r.cloneNode(!0);
+      this.canvasToImgHandler(r, i), this.formDataHandler(r, i), t.appendChild(i);
     }), `<body>${t.innerHTML}</body>`;
   }
   /**
@@ -167,9 +167,9 @@ class E {
    */
   canvasToImgHandler(e, t) {
     const r = e.querySelectorAll("canvas");
-    t.querySelectorAll("canvas").forEach((i, s) => {
-      const d = r[s], l = i.parentNode, c = d.toDataURL("image/png"), a = new Image();
-      a.className = "canvasImg", a.style.display = "block", a.src = c, l == null || l.appendChild(a), i.remove();
+    t.querySelectorAll("canvas").forEach((n, s) => {
+      const d = r[s], l = n.parentNode, c = d.toDataURL("image/png"), a = new Image();
+      a.className = "canvasImg", a.style.display = "block", a.src = c, l == null || l.appendChild(a), n.remove();
     });
   }
   /**
@@ -180,36 +180,36 @@ class E {
    */
   formDataHandler(e, t) {
     const r = t.querySelectorAll("input,select,textarea");
-    let o = -1;
-    r.forEach((i) => {
+    let i = -1;
+    r.forEach((n) => {
       var l;
-      const s = i.value;
-      switch ((l = i.getAttribute("type")) != null ? l : i.tagName.toLowerCase()) {
+      const s = n.value;
+      switch ((l = n.getAttribute("type")) != null ? l : n.tagName.toLowerCase()) {
         case "select":
-          o++;
-          const c = e.querySelectorAll("select")[o];
+          i++;
+          const c = e.querySelectorAll("select")[i];
           if (c) {
             const a = c.selectedIndex;
-            i.options[a].setAttribute("selected", "selected");
+            n.options[a].setAttribute("selected", "selected");
           }
           break;
         case "textarea":
-          i.innerHTML = s, i.setAttribute("html", s);
+          n.innerHTML = s, n.setAttribute("html", s);
           break;
         case "radio":
         case "checkbox":
-          i.checked && i.setAttribute("checked", "checked");
+          n.checked && n.setAttribute("checked", "checked");
           break;
         default:
-          i.value = s, i.setAttribute("value", s);
+          n.value = s, n.setAttribute("value", s);
           break;
       }
     });
   }
   // 生成并返回打印窗口的 iframe 和文档对象
   getPrintWindow(e) {
-    var o;
-    const t = this.createIframe(e), r = t.contentDocument || ((o = t.contentWindow) == null ? void 0 : o.document) || t.document;
+    var i;
+    const t = this.createIframe(e), r = t.contentDocument || ((i = t.contentWindow) == null ? void 0 : i.document) || t.document;
     if (!r)
       throw new Error(`${p}: Unable to find the document object within the created iframe. Please ensure the iframe is correctly created and loaded.`);
     return { f: t, win: t.contentWindow || t, doc: r };
@@ -246,8 +246,8 @@ class E {
       document.body.appendChild(t);
     else {
       t.setAttribute("style", "border: 0px; flex: 1;");
-      const { close: r, previewBody: o } = this.previewBox();
-      o && o.appendChild(t), this.addEvent(r, "click", this.previewBoxHide.bind(this));
+      const { close: r, previewBody: i } = this.previewBox();
+      i && i.appendChild(t), this.addEvent(r, "click", this.previewBoxHide.bind(this));
     }
     return t;
   }
@@ -255,8 +255,8 @@ class E {
   createCloseButton() {
     const e = document.createElement("div");
     e.setAttribute("class", "previewClose"), e.setAttribute("style", "position: absolute; top: 5px; right: 20px; width: 25px; height: 20px; cursor: pointer;");
-    const t = document.createElement("div"), r = document.createElement("div"), o = "position: absolute; width: 3px; height: 100%; background: #040404; top: 0px; left: 50%;";
-    return t.setAttribute("class", "closeBefore"), t.setAttribute("style", `${o} transform: rotate(45deg);`), r.setAttribute("class", "closeAfter"), r.setAttribute("style", `${o} transform: rotate(-45deg);`), e.appendChild(t), e.appendChild(r), e;
+    const t = document.createElement("div"), r = document.createElement("div"), i = "position: absolute; width: 3px; height: 100%; background: #040404; top: 0px; left: 50%;";
+    return t.setAttribute("class", "closeBefore"), t.setAttribute("style", `${i} transform: rotate(45deg);`), r.setAttribute("class", "closeAfter"), r.setAttribute("style", `${i} transform: rotate(-45deg);`), e.appendChild(t), e.appendChild(r), e;
   }
   // 创建预览主体
   createPreviewBody() {
@@ -268,14 +268,14 @@ class E {
     return r.className = "previewBodyUtilPrintBtn", r.style.cssText = "position: absolute; padding: 2px 10px; margin-top: 3px; left: 24px; font-size: 14px; color: white; cursor: pointer; background: rgba(0,0,0,.12); border: 1px solid rgba(0,0,0,.35); box-shadow: inset 0 1px 0 hsla(0,0%,100%,.05), inset 0 0 1px hsla(0,0%,100%,.15);", r.innerHTML = this.settings.previewPrintBtnLabel || "", t.appendChild(r), e.appendChild(t), e;
   }
 }
-const A = (n, e, t) => {
-  n.addEventListener ? n.addEventListener(e, t, !1) : n.attachEvent ? n.attachEvent("on" + e, t) : n["on" + e] = t;
+const A = (o, e, t) => {
+  o.addEventListener ? o.addEventListener(e, t, !1) : o.attachEvent ? o.attachEvent("on" + e, t) : o["on" + e] = t;
 }, f = {
   directiveName: "print",
   // vue3 指定挂载
-  mounted(n, e) {
+  mounted(o, e) {
     let t, r = {};
-    A(n, "click", () => {
+    A(o, "click", () => {
       if (!e.value) {
         window.print();
         return;
@@ -284,12 +284,12 @@ const A = (n, e, t) => {
     });
   },
   // 兼容 Vue2 指令挂载
-  bind(n, e, t) {
-    e.instance = t.context, f.mounted(n, e);
+  bind(o, e, t) {
+    e.instance = t.context, f.mounted(o, e);
   }
 }, S = {
-  install(n) {
-    n.directive(f.directiveName, f);
+  install(o) {
+    o.directive(f.directiveName, f);
   }
 };
 export {
