@@ -103,7 +103,7 @@ class E {
         r.focus(), (c = (l = this.settings).openCallback) == null || c.call(l), r.print(), t.remove(), (p = (a = this.settings).closeCallback) == null || p.call(a), clearTimeout(d);
       });
     };
-    (s = (n = this.settings).beforeOpenCallback) == null || s.call(n), t.addEventListener("load", i);
+    (s = (n = this.settings).beforeOpenCallback) == null || s.call(n), this.addEvent(t, "load", i);
   }
   /**
    * 获取打印需要隐藏的 css
@@ -244,7 +244,7 @@ class E {
   // 创建iframe元素
   createIframe(e) {
     const t = document.createElement("iframe");
-    if (t.id = this.iframeId, t.src = e || (/* @__PURE__ */ new Date()).getTime().toString(), t.style.display = "block", !this.settings.preview)
+    if (t.id = this.iframeId, t.src = e || (/* @__PURE__ */ new Date()).getTime().toString(), t.style.display = "none", !this.settings.preview)
       document.body.appendChild(t);
     else {
       t.setAttribute("style", "border: 0px; flex: 1;");
