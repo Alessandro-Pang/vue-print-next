@@ -45,6 +45,11 @@ app.mount('#app');
 
 ```vue
 
+<script setup>
+  // 直接导入指令
+  import {vPrint} from 'vue-print-next';
+</script>
+
 <template>
   <div>
     <button v-print>打印整个页面</button>
@@ -55,27 +60,11 @@ app.mount('#app');
     </div>
   </div>
 </template>
-
-<script setup>
-  // 直接导入指令
-  import {vPrint} from 'vue-print-next';
-</script>
 ```
 
 ### 2. Vue2 在组件中使用指令
 
 ```vue
-
-<template>
-  <div>
-    <button v-print>打印整个页面</button>
-    <button v-print="'#printMe'">打印局部内容</button>
-    <div id="printMe">
-      <p>这是需要打印的局部内容</p>
-      <p>更多内容...</p>
-    </div>
-  </div>
-</template>
 
 <script>
   import {vPrint} from "vue-print-next";
@@ -87,6 +76,17 @@ app.mount('#app');
     },
   }
 </script>
+
+<template>
+  <div>
+    <button v-print>打印整个页面</button>
+    <button v-print="'#printMe'">打印局部内容</button>
+    <div id="printMe">
+      <p>这是需要打印的局部内容</p>
+      <p>更多内容...</p>
+    </div>
+  </div>
+</template>
 ```
 
 ### 4. 使用 `VuePrintNext` 类
@@ -94,6 +94,14 @@ app.mount('#app');
 如果你需要更复杂的打印逻辑，可以直接使用 `VuePrintNext` 类：
 
 ```vue
+
+<script setup>
+  import {VuePrintNext} from 'vue-print-next';
+
+  function handlePrint() {
+    new VuePrintNext({el: '#printMe', /** 其他参数 */});
+  }
+</script>
 
 <template>
   <div>
@@ -103,14 +111,6 @@ app.mount('#app');
     </div>
   </div>
 </template>
-
-<script setup>
-  import {VuePrintNext} from 'vue-print-next';
-
-  function handlePrint() {
-    new VuePrintNext({el: '#printMe', /** 其他参数 */});
-  }
-</script>
 ```
 
 ## API 详解
@@ -136,7 +136,7 @@ app.mount('#app');
 | `previewPrintBtnLabel`      | `string`                  | 预览窗口中的打印按钮标签                        | '打印'    |
 | `extraCss`                  | `string`                  | 额外的 CSS 文件路径                        | -       |
 | `extraHead`                 | `string`                  | 额外的 `<head>` 内容                     | -       |
-| `url`                       | `string`                  | 打印指定的网址                             | -       |
+| `url`                       | `string`                  | 打印指定的网址内容                           | -       |
 | `asyncUrl`                  | `function`                | 异步加载 URL 内容的方法                      | -       |
 | `zIndex`                    | `number`                  | 预览窗口的 `z-index`值                    | 20002   |
 | `openCallback`              | `function`                | 打印窗口打开时的回调                          | -       |
@@ -156,25 +156,48 @@ app.mount('#app');
 
 ### 打印局部内容
 
-```vue
+通过指定 `id` 参数打印局部内容：
 
+```vue
 <div id="printMe">
   <p>这是需要打印的内容</p>
-  <button v-print="'#printMe'">打印局部内容</button>
 </div>
+
+<button v-print="'#printMe'">打印局部内容</button>
+```
+
+允许传入一个 dom 节点，如下，可以通过 `ref` 获取打印元素
+
+```vue
+<script setup lang="ts">
+  import {ref, type Ref} from 'vue';
+  import {VuePrintNext} from "vue-print-next";
+  function handlePrint() {
+    const printEle = ref(null) as Ref<HTMLElement>;
+    new VuePrintNext({ el: printEle })
+  }
+</script>
+
+<template>
+  <div ref="printEle">
+    <p>这是需要打印的内容</p>
+  </div>
+
+  <button v-print="handlePrint">打印局部内容</button>
+</template>
 ```
 
 ### 传递对象参数
 
 ```vue
-
 <template>
   <div>
-    <button v-print="printObj">打印局部内容</button>
     <div id="printMe">
       <p>这是需要打印的内容</p>
     </div>
   </div>
+  
+  <button v-print="printObj">打印局部内容</button>
 </template>
 
 <script setup>
@@ -205,6 +228,33 @@ app.mount('#app');
 <script setup>
   const printObj = {
     url: 'https://example.com/print-content'
+  }
+</script>
+```
+
+### 忽略不需要打印的元素
+
+通过设置 `noPrintSelector` 参数忽略不需要打印的元素：
+
+```vue
+
+<template>
+  <div id="printMe">
+    <p>葫芦娃，葫芦娃</p>
+    <span class="no-print">这是<strong>不需要打印</strong></span>
+    <p>一根藤上七朵花</p>
+    <span class="no-print">这是<strong>不需要打印</strong></span>
+    <p>风吹雨打都不怕</p>
+    <span class="no-print">这是<strong>不需要打印</strong></span>
+  </div>
+  <button v-print="printObj">忽略不需要打印的元素</button>
+</template>
+
+<script setup>
+  const printObj = {
+    el: '#printMe',
+    // 允许使用 css 选择器，支持传入数组
+    noPrintSelector: '.no-print'
   }
 </script>
 ```
