@@ -112,11 +112,15 @@ export default class VuePrintNext {
 		const iframeWin = (iframeDom as HTMLIFrameElement)?.contentWindow;
 		if (!iframeWin) return;
 		const _loaded = () => {
-			iframeWin.focus();
-			this.settings.openCallback?.();
-			iframeWin.print();
-			iframeDom.remove(); // 删除iframe元素
-			this.settings.closeCallback?.();
+			// setTimeout 用于处理异步 url 无法成功打开 print 弹框问题
+			const timer = setTimeout(() => {
+				iframeWin.focus();
+				this.settings.openCallback?.();
+				iframeWin.print();
+				iframeDom.remove(); // 删除iframe元素
+				this.settings.closeCallback?.();
+				clearTimeout(timer)
+			})
 		};
 
 		this.settings.beforeOpenCallback?.();
@@ -297,7 +301,7 @@ export default class VuePrintNext {
 		if (!doc) {
 			throw new Error(`${FUNC_NAME}: Unable to find the document object within the created iframe. Please ensure the iframe is correctly created and loaded.`);
 		}
-		return {f: iframe, win: iframe.contentWindow || iframe, doc: doc};
+		return {f: iframe, win: iframe.contentWindow || iframe, doc};
 	}
 
 	// 显示预览窗口

@@ -1,17 +1,17 @@
 var g = Object.defineProperty, b = Object.defineProperties;
 var x = Object.getOwnPropertyDescriptors;
-var m = Object.getOwnPropertySymbols;
+var w = Object.getOwnPropertySymbols;
 var B = Object.prototype.hasOwnProperty, C = Object.prototype.propertyIsEnumerable;
-var v = (o, e, t) => e in o ? g(o, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : o[e] = t, u = (o, e) => {
+var y = (o, e, t) => e in o ? g(o, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : o[e] = t, v = (o, e) => {
   for (var t in e || (e = {}))
-    B.call(e, t) && v(o, t, e[t]);
-  if (m)
-    for (var t of m(e))
-      C.call(e, t) && v(o, t, e[t]);
+    B.call(e, t) && y(o, t, e[t]);
+  if (w)
+    for (var t of w(e))
+      C.call(e, t) && y(o, t, e[t]);
   return o;
-}, y = (o, e) => b(o, x(e));
-var h = (o, e, t) => v(o, typeof e != "symbol" ? e + "" : e, t);
-const p = "[VuePrintNext]";
+}, f = (o, e) => b(o, x(e));
+var h = (o, e, t) => y(o, typeof e != "symbol" ? e + "" : e, t);
+const u = "[VuePrintNext]";
 class E {
   constructor(e) {
     // html 文档标准
@@ -37,7 +37,7 @@ class E {
       preview: !1
     });
     const t = e.vue;
-    this.settings = y(u(u({}, this.settings), e), {
+    this.settings = f(v(v({}, this.settings), e), {
       previewBeforeOpenCallback() {
         var r;
         (r = e.previewBeforeOpenCallback) == null || r.call(e, t);
@@ -75,7 +75,7 @@ class E {
       }, this.settings.vue);
       return;
     }
-    throw new Error(`${p}: Either "el"、"url" or "asyncUrl" parameter must be provided in the settings.`);
+    throw new Error(`${u}: Either "el"、"url" or "asyncUrl" parameter must be provided in the settings.`);
   }
   addEvent(e, t, r) {
     e && (e.addEventListener ? e.addEventListener(t, r, !1) : e.attachEvent ? e.attachEvent("on" + t, r) : e["on" + t] = r);
@@ -89,8 +89,8 @@ class E {
       var n, s;
       this.previewBoxShow(), (s = (n = this.settings).previewOpenCallback) == null || s.call(n);
     }), this.addEvent(e.querySelector(".previewBodyUtilPrintBtn"), "click", () => {
-      var n, s, d, l, c, a, w;
-      (s = (n = this.settings).beforeOpenCallback) == null || s.call(n), (l = (d = this.settings).openCallback) == null || l.call(d), (c = t == null ? void 0 : t.contentWindow) == null || c.print(), (w = (a = this.settings).closeCallback) == null || w.call(a);
+      var n, s, d, l, c, a, p;
+      (s = (n = this.settings).beforeOpenCallback) == null || s.call(n), (l = (d = this.settings).openCallback) == null || l.call(d), (c = t == null ? void 0 : t.contentWindow) == null || c.print(), (p = (a = this.settings).closeCallback) == null || p.call(a);
     });
   }
   print(e) {
@@ -98,10 +98,12 @@ class E {
     const t = document.getElementById(this.iframeId) || e.f, r = t == null ? void 0 : t.contentWindow;
     if (!r) return;
     const i = () => {
-      var d, l, c, a;
-      r.focus(), (l = (d = this.settings).openCallback) == null || l.call(d), r.print(), t.remove(), (a = (c = this.settings).closeCallback) == null || a.call(c);
+      const d = setTimeout(() => {
+        var l, c, a, p;
+        r.focus(), (c = (l = this.settings).openCallback) == null || c.call(l), r.print(), t.remove(), (p = (a = this.settings).closeCallback) == null || p.call(a), clearTimeout(d);
+      });
     };
-    (s = (n = this.settings).beforeOpenCallback) == null || s.call(n), this.addEvent(t, "load", i);
+    (s = (n = this.settings).beforeOpenCallback) == null || s.call(n), t.addEventListener("load", i);
   }
   /**
    * 获取打印需要隐藏的 css
@@ -111,7 +113,7 @@ class E {
     const e = this.settings.noPrintSelector;
     if (!e) return;
     if (!Array.isArray(e) && !(typeof e == "string")) {
-      console.error(new TypeError(`${p}: The "noPrintSelector" must be either a string or an array of strings. Please check your settings.`));
+      console.error(new TypeError(`${u}: The "noPrintSelector" must be either a string or an array of strings. Please check your settings.`));
       return;
     }
     return `${(Array.isArray(e) ? e : [e]).filter((s) => s.trim()).join(",")} { display: none; }`;
@@ -146,10 +148,10 @@ class E {
     const e = this.settings.el, t = typeof e == "string";
     if (e instanceof HTMLElement) return [e];
     if (!t)
-      throw new TypeError(`${p}: The "el" property should be either a string (CSS selector) or an HTMLElement, but received type "${typeof e}".`);
+      throw new TypeError(`${u}: The "el" property should be either a string (CSS selector) or an HTMLElement, but received type "${typeof e}".`);
     let r = Array.from(document.querySelectorAll(e));
     if (!(r != null && r.length))
-      throw new Error(`${p}: No elements found matching the selector: "${e}".`);
+      throw new Error(`${u}: No elements found matching the selector: "${e}".`);
     return r;
   }
   getBody() {
@@ -211,7 +213,7 @@ class E {
     var i;
     const t = this.createIframe(e), r = t.contentDocument || ((i = t.contentWindow) == null ? void 0 : i.document) || t.document;
     if (!r)
-      throw new Error(`${p}: Unable to find the document object within the created iframe. Please ensure the iframe is correctly created and loaded.`);
+      throw new Error(`${u}: Unable to find the document object within the created iframe. Please ensure the iframe is correctly created and loaded.`);
     return { f: t, win: t.contentWindow || t, doc: r };
   }
   // 显示预览窗口
@@ -242,7 +244,7 @@ class E {
   // 创建iframe元素
   createIframe(e) {
     const t = document.createElement("iframe");
-    if (t.id = this.iframeId, t.src = e || (/* @__PURE__ */ new Date()).getTime().toString(), t.style.display = "none", !this.settings.preview)
+    if (t.id = this.iframeId, t.src = e || (/* @__PURE__ */ new Date()).getTime().toString(), t.style.display = "block", !this.settings.preview)
       document.body.appendChild(t);
     else {
       t.setAttribute("style", "border: 0px; flex: 1;");
@@ -270,7 +272,7 @@ class E {
 }
 const A = (o, e, t) => {
   o.addEventListener ? o.addEventListener(e, t, !1) : o.attachEvent ? o.attachEvent("on" + e, t) : o["on" + e] = t;
-}, f = {
+}, m = {
   directiveName: "print",
   // vue3 指定挂载
   mounted(o, e) {
@@ -280,20 +282,20 @@ const A = (o, e, t) => {
         window.print();
         return;
       }
-      typeof e.value == "string" ? t = e.value : typeof e.value == "object" && (t = e.value.el, r = e.value), new E(y(u({}, r), { el: t, vue: e.instance }));
+      typeof e.value == "string" ? t = e.value : typeof e.value == "object" && (t = e.value.el, r = e.value), new E(f(v({}, r), { el: t, vue: e.instance }));
     });
   },
   // 兼容 Vue2 指令挂载
   bind(o, e, t) {
-    e.instance = t.context, f.mounted(o, e);
+    e.instance = t.context, m.mounted(o, e);
   }
 }, S = {
   install(o) {
-    o.directive(f.directiveName, f);
+    o.directive(m.directiveName, m);
   }
 };
 export {
   E as VuePrintNext,
   S as printPlugin,
-  f as vPrint
+  m as vPrint
 };
