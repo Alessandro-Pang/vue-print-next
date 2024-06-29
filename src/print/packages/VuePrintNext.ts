@@ -55,10 +55,11 @@ export default class VuePrintNext {
 		this.counter++;
 		this.iframeId = `printArea_${this.counter}`;
 
-		const printUrl = this.settings.el ? '' : this.settings.url
-		if (printUrl) {
+		const { el, url} = this.settings;
+		if (el || url) {
+			const printUrl = el ? '' : url || '';
 			const printAreaWindow = this.getPrintWindow(printUrl);
-			printUrl && this.write(printAreaWindow.doc)
+			el && this.write(printAreaWindow.doc)
 			this.settings.preview ? this.previewIframeLoad() : this.print(printAreaWindow);
 			return
 		}
