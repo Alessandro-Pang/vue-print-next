@@ -131,14 +131,14 @@ export default class VuePrintNext {
 	 * 获取打印需要隐藏的 css
 	 * @private
 	 */
-	private getNoPrintMediaStyle() {
+	private getNoPrintMediaStyle(): string {
 		const noPrintSelector = this.settings.noPrintSelector;
-		if (!noPrintSelector) return
+		if (!noPrintSelector) return ''
 		const isArray = Array.isArray(noPrintSelector);
 		const isString = typeof noPrintSelector === 'string';
 		if (!isArray && !isString) {
 			console.error(new TypeError(`${FUNC_NAME}: The "noPrintSelector" must be either a string or an array of strings. Please check your settings.`));
-			return
+			return ''
 		}
 		const noPrintSelectorList = Array.isArray(noPrintSelector) ? noPrintSelector : [noPrintSelector];
 		const selectorStr = noPrintSelectorList.filter((selector) => selector.trim()).join(',');
@@ -160,6 +160,16 @@ export default class VuePrintNext {
 		const transitional = this.settings.standard === this.standards.loose ? ' Transitional' : '';
 		const dtd = this.settings.standard === this.standards.loose ? 'loose' : 'strict';
 		return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01${transitional}//EN" "http://www.w3.org/TR/html4/${dtd}.dtd">`;
+	}
+
+	/**
+	 * 获取媒体打印独有样式
+	 * @private
+	 */
+	private getPrintMediaStyle() {
+		// 修复打印时背景色失效
+		const fixBackgroundColorFailure = `body {-webkit-print-color-adjust: exact; -moz-print-color-adjust: exact; -ms-print-color-adjust: exact; print-color-adjust: exact;}`
+		return `${fixBackgroundColorFailure}`
 	}
 
 	private getHead(): string {
@@ -187,11 +197,12 @@ export default class VuePrintNext {
 			.map((m) => `<link type="text/css" rel="stylesheet" href='${m.trim()}'>`)
 			.join('');
 
+		const printMediaStyle = this.getPrintMediaStyle();
 		const noPrintMediaStyle = this.getNoPrintMediaStyle()
 		return `<head>
 							<title>${this.settings.popTitle}</title>
 							${extraHead}${links}
-							<style type="text/css">${style}${noPrintMediaStyle}</style>
+							<style type="text/css">${style}${noPrintMediaStyle}${printMediaStyle}</style>
 							${extraCss}
 						</head>`;
 	}
