@@ -27,15 +27,19 @@ importers:
       '@vue/cli-plugin-eslint': ~5.0.0
       '@vue/cli-service': ~5.0.0
       core-js: ^3.8.3
+      echarts: ^5.5.1
       eslint: ^7.32.0
       eslint-plugin-vue: ^8.0.3
       vue: ^2.6.14
       vue-print-next: workspace:*
+      vue-router: ^3.6.5
       vue-template-compiler: ^2.6.14
     dependencies:
       core-js: 3.37.1
+      echarts: 5.5.1
       vue: 2.7.16
       vue-print-next: link:../..
+      vue-router: 3.6.5_vue@2.7.16
     devDependencies:
       '@babel/core': 7.24.7
       '@babel/eslint-parser': 7.24.7_nsy4o2h7p5eogyfg3temzlflby
@@ -7428,6 +7432,14 @@ packages:
       watchpack: 2.4.1
       webpack: 5.92.1
     dev: true
+
+  /vue-router/3.6.5_vue@2.7.16:
+    resolution: {integrity: sha512-VYXZQLtjuvKxxcshuRAwjHnciqZVoXAjTjcqBTz4rKc8qih9g9pI3hbDjmqXaHdgL3v8pV6P8Z335XvHzESxLQ==}
+    peerDependencies:
+      vue: ^2
+    dependencies:
+      vue: 2.7.16
+    dev: false
 
   /vue-router/4.4.0_vue@3.4.30:
     resolution: {integrity: sha512-HB+t2p611aIZraV2aPSRNXf0Z/oLZFrlygJm+sZbdJaW6lcFqEDQwnzUBXn+DApw+/QzDU/I9TeWx9izEjTmsA==}
