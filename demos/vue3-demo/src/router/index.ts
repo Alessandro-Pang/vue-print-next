@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
 
 import PrintBasic from '../views/PrintBasic.vue'
-import PrintBasic2 from '../views/PrintBasic2.vue'
+import PrintBasic2 from '../views/PrintBasicTwo.vue'
 import PrintCanvas from '../views/PrintCanvas.vue'
 import PrintAsyncUrl from '../views/PrintAsyncUrl.vue'
 import PrintUrl from '../views/PrintUrl.vue'

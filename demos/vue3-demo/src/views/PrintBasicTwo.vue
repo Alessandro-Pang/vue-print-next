@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {vPrint} from "vue-print-next";
 </script>
 <template>

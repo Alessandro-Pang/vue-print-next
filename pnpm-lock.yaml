@@ -19,34 +19,7 @@ importers:
       vite: 5.3.1_@types+node@20.14.8
       vue-tsc: 2.0.22_typescript@5.5.2
 
-  demos/vue2-directive-demo:
-    specifiers:
-      '@babel/core': ^7.12.16
-      '@babel/eslint-parser': ^7.12.16
-      '@vue/cli-plugin-babel': ~5.0.0
-      '@vue/cli-plugin-eslint': ~5.0.0
-      '@vue/cli-service': ~5.0.0
-      core-js: ^3.8.3
-      eslint: ^7.32.0
-      eslint-plugin-vue: ^8.0.3
-      vue: ^2.6.14
-      vue-print-next: workspace:*
-      vue-template-compiler: ^2.6.14
-    dependencies:
-      core-js: 3.37.1
-      vue: 2.7.16
-      vue-print-next: link:../..
-    devDependencies:
-      '@babel/core': 7.24.7
-      '@babel/eslint-parser': 7.24.7_nsy4o2h7p5eogyfg3temzlflby
-      '@vue/cli-plugin-babel': 5.0.8_x2swguav2dw6raoqpp7dhkszkq
-      '@vue/cli-plugin-eslint': 5.0.8_yvnkslq6l73c7sesu7e5hzum2a
-      '@vue/cli-service': 5.0.8_kszqv4ntea7le2tfdnfsk4vbta
-      eslint: 7.32.0
-      eslint-plugin-vue: 8.7.1_eslint@7.32.0
-      vue-template-compiler: 2.7.16
-
-  demos/vue2-method-demo:
+  demos/vue2-demo:
     specifiers:
       '@babel/core': ^7.12.16
       '@babel/eslint-parser': ^7.12.16
@@ -88,42 +61,6 @@ importers:
       vue: 3.4.30_typescript@5.5.2
       vue-print-next: link:../..
       vue-router: 4.4.0_vue@3.4.30
-    devDependencies:
-      '@vitejs/plugin-vue': 5.0.5_vite@5.3.1+vue@3.4.30
-      typescript: 5.5.2
-      vite: 5.3.1
-      vue-tsc: 2.0.22_typescript@5.5.2
-
-  demos/vue3-directive-demo:
-    specifiers:
-      '@vitejs/plugin-vue': ^5.0.5
-      echarts: ^5.5.1
-      typescript: ^5.2.2
-      vite: ^5.3.1
-      vue: ^3.4.29
-      vue-print-next: workspace:*
-      vue-tsc: ^2.0.21
-    dependencies:
-      echarts: 5.5.1
-      vue: 3.4.30_typescript@5.5.2
-      vue-print-next: link:../..
-    devDependencies:
-      '@vitejs/plugin-vue': 5.0.5_vite@5.3.1+vue@3.4.30
-      typescript: 5.5.2
-      vite: 5.3.1
-      vue-tsc: 2.0.22_typescript@5.5.2
-
-  demos/vue3-method-demo:
-    specifiers:
-      '@vitejs/plugin-vue': ^5.0.5
-      typescript: ^5.2.2
-      vite: ^5.3.1
-      vue: ^3.4.29
-      vue-print-next: workspace:*
-      vue-tsc: ^2.0.21
-    dependencies:
-      vue: 3.4.30_typescript@5.5.2
-      vue-print-next: link:../..
     devDependencies:
       '@vitejs/plugin-vue': 5.0.5_vite@5.3.1+vue@3.4.30
       typescript: 5.5.2
@@ -2131,7 +2068,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.3.1
+      vite: 5.3.1_@types+node@20.14.8
       vue: 3.4.30_typescript@5.5.2
     dev: true
 
