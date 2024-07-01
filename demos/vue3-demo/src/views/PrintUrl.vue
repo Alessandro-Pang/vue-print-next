@@ -5,8 +5,8 @@ import {vPrint} from "vue-print-next";
  * url: 跨域时无法进行打印
  */
 const printOps = {
-  url: '/print-canvas',
-  // preview: true
+  url: '/print-basic2',
+  preview: true,
   openCallback(){
     console.log('打印之前')
   },

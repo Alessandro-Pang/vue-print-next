@@ -7,7 +7,7 @@ const printOps = {
 </script>
 
 <template>
-  <form class="a4-page">
+  <form>
     <div class="form-item">
       <label for="name">姓名:</label>
       <input type="text" id="name" name="user_name"/>
@@ -52,7 +52,7 @@ const printOps = {
     </div>
   </form>
 
-  <button v-print="printOps">打印</button>
+  <button v-print="printOps" class="mt-m">打印</button>
 </template>
 
 <style scoped>
@@ -74,7 +74,7 @@ div + div {
 
 label {
   display: inline-block;
-  width: 90px;
+  width: 60px;
   text-align: right;
   margin-right: 0.5em;
 }

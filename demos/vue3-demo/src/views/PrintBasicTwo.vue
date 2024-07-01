@@ -13,7 +13,7 @@ import {vPrint} from "vue-print-next";
     <p>啦啦啦啦</p>
   </div>
   <div>
-    <button v-print="'#print'">打印内容</button>
+    <button v-print="{el: '#print'}">打印内容</button>
   </div>
 </template>
 

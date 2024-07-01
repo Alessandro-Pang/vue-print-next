@@ -16,7 +16,7 @@ const printOps: PrintAreaOption = {
 </script>
 
 <template>
-  <div id="print-el" class="a4-page" style="margin: 0 auto;">
+  <div id="print-el" style="margin: 0 auto;">
     <div>
       <a target="_blank">
         <img src="/vite.svg" class="logo" alt="Vite logo"/>
@@ -46,7 +46,8 @@ const printOps: PrintAreaOption = {
     </p>
     <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
   </div>
-  <div>
+  <div class="mt-m">
+    <br/>
     <button class="print-btn" v-print>全屏打印</button>
     <button class="print-btn" v-print="'#print-el'">指令打印</button>
     <button class="print-btn" @click="handleBasicPrint">方法打印</button>
