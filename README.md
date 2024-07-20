@@ -13,6 +13,15 @@ Vue 3 的 setup 函数。
 - 支持设置指定 class 样式的元素忽略打印
 - 支持通过 css 选择器、手动传入 Dom 节点进行局部打印。
 
+## Demo
+
+项目中提供了 Vue2 和 Vue3 的 demo 源码，可以 clone 下本项目后进行查看
+
+- **Vue2：** /demos/vue2-demo
+- **Vue3：** /demos/vue3-demo
+
+在线 demo : [https://alexpang.cn/vue-print-next](https://alexpang.cn/vue-print-next/)
+
 ## 安装
 
 你可以通过 npm、 yarn 或 pnpm 安装该插件：
