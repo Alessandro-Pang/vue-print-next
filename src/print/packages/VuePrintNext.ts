@@ -19,19 +19,19 @@ export default class VuePrintNext {
 	// 调用次数，用于生成唯一 Id
 	private counter = 0;
 	// 用户设置
-	private readonly settings: PrintAreaOption = {
-		standard: 'html5',
-		zIndex: 20002,
-		previewTitle: '打印预览',
-		previewPrintBtnLabel: '打印',
-		preview: false,
-	} as PrintAreaOption;
+	private readonly settings: PrintAreaOption;
 
 	constructor(option: PrintAreaOption) {
 		const vue = option.vue;
+		const {standard, zIndex, previewTitle, previewPrintBtnLabel, preview, popTitle, ...otherOptions} = option;
 		this.settings = {
-			...this.settings,
-			...option,
+			standard: standard || 'html5',
+			zIndex: zIndex || 20002,
+			previewTitle: previewTitle || '打印预览',
+			previewPrintBtnLabel: previewPrintBtnLabel || '打印',
+			preview: preview || false,
+			popTitle: popTitle || document.title,
+			...otherOptions,
 			previewBeforeOpenCallback() {
 				option.previewBeforeOpenCallback?.(vue);
 			},
@@ -55,7 +55,7 @@ export default class VuePrintNext {
 		this.counter++;
 		this.iframeId = `printArea_${this.counter}`;
 
-		const { el, url} = this.settings;
+		const {el, url} = this.settings;
 		if (el || url) {
 			const printUrl = el ? '' : url || '';
 			const printAreaWindow = this.getPrintWindow(printUrl);
@@ -186,7 +186,7 @@ export default class VuePrintNext {
 		const style = Array.from(document.styleSheets)
 			.reduce((acc, styleSheet) => {
 				const rules = styleSheet.cssRules || styleSheet.rules;
-				if(!rules) return acc;
+				if (!rules) return acc;
 				acc += Array.from(rules).reduce((innerAcc, rule) => innerAcc + rule.cssText, '');
 				return acc;
 			}, '');

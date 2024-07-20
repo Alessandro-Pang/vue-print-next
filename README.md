@@ -135,24 +135,25 @@ app.mount('#app');
 
 #### 参数说明
 
-| 参数                          | 类型                        | 说明                                  | 默认值     |
-|-----------------------------|---------------------------|-------------------------------------|---------|
-| `el`                        | `string` \| `HtmlElement` | 需要打印的元素，支持 css 选择器或 dom 节点          | -       |
-| `standard`                  | `string`                  | 文档类型，默认是html5，可选 html5，loose，strict | 'html5' |
-| `noPrintSelector`           | `string[]` \| `string`    | 打印时需要忽略的 css 选择器                    | -       |
-| `preview`                   | `boolean`                 | 是否启用打印预览功能                          | `false` |
-| `previewTitle`              | `string`                  | 预览窗口的标题                             | '打印预览'  |
-| `previewPrintBtnLabel`      | `string`                  | 预览窗口中的打印按钮标签                        | '打印'    |
-| `extraCss`                  | `string`                  | 额外的 CSS 文件路径                        | -       |
-| `extraHead`                 | `string`                  | 额外的 `<head>` 内容                     | -       |
-| `url`                       | `string`                  | 打印指定的网址内容                           | -       |
-| `asyncUrl`                  | `function`                | 异步加载 URL 内容的方法                      | -       |
-| `zIndex`                    | `number`                  | 预览窗口的 `z-index`值                    | 20002   |
-| `openCallback`              | `function`                | 打印窗口打开时的回调                          | -       |
-| `closeCallback`             | `function`                | 打印窗口关闭时的回调                          | -       |
-| `beforeOpenCallback`        | `function`                | 打印窗口打开前的回调（打印预览使用）                  | -       |
-| `previewBeforeOpenCallback` | `function`                | 预览框架 iframe 加载前的回调（预览使用）            | -       |
-| `previewOpenCallback`       | `function`                | 预览框架 iframe 加载完成后的回调（预览使用）          | -       |
+| 参数                          | 类型                        | 说明                                  | 默认值        |
+|-----------------------------|---------------------------|-------------------------------------|------------|
+| `el`                        | `string` \| `HtmlElement` | 需要打印的元素，支持 css 选择器或 dom 节点          | -          |
+| `standard`                  | `string`                  | 文档类型，默认是html5，可选 html5，loose，strict | 'html5'    |
+| `noPrintSelector`           | `string[]` \| `string`    | 打印时需要忽略的 css 选择器                    | -          |
+| `popTitle`                  | `string`                  | 打印时的页眉                              | 默认当前 title |
+| `preview`                   | `boolean`                 | 是否启用打印预览功能                          | `false`    |
+| `previewTitle`              | `string`                  | 预览窗口的标题                             | '打印预览'     |
+| `previewPrintBtnLabel`      | `string`                  | 预览窗口中的打印按钮标签                        | '打印'       |
+| `extraCss`                  | `string`                  | 额外的 CSS 文件路径                        | -          |
+| `extraHead`                 | `string`                  | 额外的 `<head>` 内容                     | -          |
+| `url`                       | `string`                  | 打印指定的网址内容                           | -          |
+| `asyncUrl`                  | `function`                | 异步加载 URL 内容的方法                      | -          |
+| `zIndex`                    | `number`                  | 预览窗口的 `z-index`值                    | 20002      |
+| `openCallback`              | `function`                | 打印窗口打开时的回调                          | -          |
+| `closeCallback`             | `function`                | 打印窗口关闭时的回调                          | -          |
+| `beforeOpenCallback`        | `function`                | 打印窗口打开前的回调（打印预览使用）                  | -          |
+| `previewBeforeOpenCallback` | `function`                | 预览框架 iframe 加载前的回调（预览使用）            | -          |
+| `previewOpenCallback`       | `function`                | 预览框架 iframe 加载完成后的回调（预览使用）          | -          |
 
 ## 使用示例
 
@@ -168,6 +169,7 @@ app.mount('#app');
 通过指定 `id` 参数打印局部内容：
 
 ```vue
+
 <div id="printMe">
   <p>这是需要打印的内容</p>
 </div>
@@ -178,12 +180,14 @@ app.mount('#app');
 允许传入一个 dom 节点，如下，可以通过 `ref` 获取打印元素
 
 ```vue
+
 <script setup lang="ts">
   import {ref, type Ref} from 'vue';
   import {VuePrintNext} from "vue-print-next";
+
   function handlePrint() {
     const printEle = ref(null) as Ref<HTMLElement>;
-    new VuePrintNext({ el: printEle })
+    new VuePrintNext({el: printEle})
   }
 </script>
 
@@ -199,13 +203,14 @@ app.mount('#app');
 ### 传递对象参数
 
 ```vue
+
 <template>
   <div>
     <div id="printMe">
       <p>这是需要打印的内容</p>
     </div>
   </div>
-  
+
   <button v-print="printObj">打印局部内容</button>
 </template>
 
@@ -324,7 +329,7 @@ app.mount('#app');
 
 `iframe` 无法对跨域站点触发 `print` 方法，这是浏览器的安全策略导致的，
 
-我们可以通过一个折中的方法去实现，在页面中内嵌一个 `iframe` 去加载这个页面，再通过 `el: 'iframe'` 去将该页面进行打印。    
+我们可以通过一个折中的方法去实现，在页面中内嵌一个 `iframe` 去加载这个页面，再通过 `el: 'iframe'` 去将该页面进行打印。
 
 ### 6. 为什么打印出来的内容样式被改了？
 

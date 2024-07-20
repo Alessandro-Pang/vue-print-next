@@ -17,7 +17,7 @@ export interface PrintAreaOption {
 	extraHead?: string;
 	// 额外的css连接，多个逗号分开
 	extraCss?: string;
-	// title的标题
+	// 打印时页眉的title
 	popTitle?: string;
 	// 打印预览的标题
 	previewTitle?: string;
