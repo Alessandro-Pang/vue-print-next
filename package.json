@@ -33,7 +33,7 @@
       },
       "require": {
         "types": "./types/index.d.ts",
-        "default":  "./dist/vue-print-next.umd.cjs"
+        "default": "./dist/vue-print-next.umd.cjs"
       }
     }
   },
@@ -47,11 +47,11 @@
     "vue": "^2.0.0 || >=3.0.0"
   },
   "devDependencies": {
-    "vue": "^3.4.33",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.11",
     "@vitejs/plugin-vue": "^5.0.5",
-    "typescript": "^5.5.2",
-    "vite": "^5.3.1",
-    "vue-tsc": "^2.0.22"
+    "typescript": "^5.5.3",
+    "vite": "^5.3.4",
+    "vue": "^3.4.33",
+    "vue-tsc": "^2.0.26"
   }
 }
