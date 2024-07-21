@@ -34,7 +34,8 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - run: npm install -g pnpm@^7
-      - run: pnpm -r install
+      - run: pnpm install
+      - run: pnpm build
       - run: pnpm -r build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
