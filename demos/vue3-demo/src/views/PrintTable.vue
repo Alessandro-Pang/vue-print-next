@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import {vPrint, VuePrintNext} from "vue-print-next";
 
-const tableHead = [
+type TableHeadItem = {
+  label: string;
+  prop: string;
+  width: string;
+  align: 'center' | 'left' | 'right'
+}
+
+const tableHead: TableHeadItem[] = [
   {label: 'id', prop: 'id', width: '100px', align: 'center'},
   {label: '姓名', prop: 'name', width: '100px', align: 'center'},
   {label: '性别', prop: 'sex', width: '100px', align: 'center'},
@@ -16,7 +23,8 @@ type TableDataItem = {
   sex: string,
   age: number,
   height: number,
-  weight: number
+  weight: number,
+  [key: string]: any;
 }
 const tableData: TableDataItem[] = []
 

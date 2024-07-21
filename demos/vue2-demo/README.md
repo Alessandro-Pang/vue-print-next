@@ -1,4 +1,4 @@
-# vue2-directive-demo
+# vue2-demo
 
 ## Project setup
 ```
