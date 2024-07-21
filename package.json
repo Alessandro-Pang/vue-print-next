@@ -43,8 +43,8 @@
     "serve": "vite preview"
   },
   "packageManager": "^pnpm@7.0.0",
-  "dependencies": {
-    "vue": "^3.4.30"
+  "peerDependencies": {
+    "vue": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.8",
