@@ -183,13 +183,9 @@ export default class VuePrintNext {
 			.map((item) => `<link type="text/css" rel="stylesheet" href='${item.href}'>`)
 			.join('');
 
-		const style = Array.from(document.styleSheets)
-			.reduce((acc, styleSheet) => {
-				const rules = styleSheet.cssRules || styleSheet.rules;
-				if (!rules) return acc;
-				acc += Array.from(rules).reduce((innerAcc, rule) => innerAcc + rule.cssText, '');
-				return acc;
-			}, '');
+		const styles =  Array.from(document.querySelectorAll('style'))
+			.map((style)=>style.outerHTML)
+			.join('')
 
 		const extraCss = (this.settings.extraCss || '')
 			.split(',')
@@ -202,7 +198,8 @@ export default class VuePrintNext {
 		return `<head>
 							<title>${this.settings.popTitle}</title>
 							${extraHead}${links}
-							<style type="text/css">${style}${noPrintMediaStyle}${printMediaStyle}</style>
+							${styles}
+							<style type="text/css">${noPrintMediaStyle}${printMediaStyle}</style>
 							${extraCss}
 						</head>`;
 	}
