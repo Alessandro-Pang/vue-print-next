@@ -42,12 +42,11 @@ for (let i = 0; i < 1000; i++) {
 function handleBasicPrint() {
   new VuePrintNext({el: 'table', preview: true})
 }
-
 </script>
 
 <template>
   <div id="print-el" style="margin: 0 auto; height: 700px; overflow-y: auto">
-    <table border="">
+    <table border>
       <caption>
         <h3>打印表格示例</h3>
       </caption>
@@ -70,6 +69,11 @@ function handleBasicPrint() {
       </tfoot>
     </table>
   </div>
+
+  <div style="margin-top: 10px">
+    Firefox 打印时 table 边框会显示不完整，需要将边框设置为 2px 就可以了
+  </div>
+
   <div class="mt-m">
     <br/>
     <button class="print-btn" v-print>全屏打印</button>

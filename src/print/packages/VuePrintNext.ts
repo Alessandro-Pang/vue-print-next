@@ -229,11 +229,23 @@ export default class VuePrintNext {
 		const copyPrintAreaDom: HTMLElement = document.createElement('div')
 		printAreaDom.forEach((item) => {
 			const copy = item.cloneNode(true) as HTMLElement;
+			this.removeScriptHandler(copy)
 			this.canvasToImgHandler(item, copy)
 			this.formDataHandler(item, copy)
 			copyPrintAreaDom.appendChild(copy)
 		})
 		return `<body>${copyPrintAreaDom.innerHTML}</body>`;
+	}
+
+	/**
+	 * 移除 script 标签
+	 * @param clonedElement
+	 */
+	removeScriptHandler(clonedElement: HTMLElement) {
+		const clonedScripts = clonedElement.querySelectorAll('script')
+		clonedScripts.forEach((script)=>{
+			script.remove()
+		})
 	}
 
 	/**
