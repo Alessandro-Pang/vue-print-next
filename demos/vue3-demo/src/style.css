@@ -23,10 +23,6 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
-  -webkit-print-color-adjust: exact;
-  -moz-print-color-adjust: exact;
-  -ms-print-color-adjust: exact;
-  print-color-adjust: exact;
 }
 
 h1 {

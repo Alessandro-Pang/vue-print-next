@@ -27,10 +27,8 @@ const vPrint = {
 		addEvent(el, 'click', () => {
 			// 全屏打印时不需要传入任何参数
 			if(!binding.value) {
-				window.print();
-				return
-			}
-			if (typeof binding.value === 'string') {
+				printElement = 'body'
+			}else if (typeof binding.value === 'string') {
 				printElement = binding.value;
 			} else if (typeof binding.value === 'object') {
 				printElement = binding.value.el;

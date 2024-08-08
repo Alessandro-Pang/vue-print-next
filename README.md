@@ -304,8 +304,7 @@ app.mount('#app');
 ### 2. `VuePrintNext` 必传参`el`、`url`、`asyncUrl` 其中一个参数, 不支持全屏打印?
 
 `v-print` 指令允许不传入任何参数，此时会打印整个页面，
-但 `VuePrintNext` 类必须传入 `el`、`url`、`asyncUrl` 其中一个参数参数，这是因为考虑到当需要手动调用全屏打印时，
-用户完全可以直接使用 `window.print()` 方法进行打印，而不需要使用 `VuePrintNext` 类。
+但 `VuePrintNext` 类必须传入 `el`、`url`、`asyncUrl` 其中一个参数参数，如果想要全屏打印传入 `'body'` 即可。
 
 ### 3. 不支持打印窗口的确认和取消按钮的回调？
 
