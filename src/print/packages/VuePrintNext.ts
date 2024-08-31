@@ -1,7 +1,7 @@
 import {PrintAreaOption, PrintAreaWindow, Standards} from '../../../types';
 
 const FUNC_NAME = '[VuePrintNext]'
-
+let printCount = 0;
 export default class VuePrintNext {
 	// html 文档标准
 	private readonly standards: Standards = {
@@ -16,8 +16,6 @@ export default class VuePrintNext {
 	private previewBody: HTMLElement | null = null;
 	// 预览窗口的 关闭按钮
 	private close: HTMLElement | null = null;
-	// 调用次数，用于生成唯一 Id
-	private counter = 0;
 	// 用户设置
 	private readonly settings: PrintAreaOption;
 
@@ -52,14 +50,17 @@ export default class VuePrintNext {
 	}
 
 	private init() {
-		this.counter++;
-		this.iframeId = `printArea_${this.counter}`;
+		this.iframeId = `printArea_${++printCount}`;
 
 		const {el, url} = this.settings;
-		if (el || url) {
-			const printUrl = el ? '' : url || '';
-			const printAreaWindow = this.getPrintWindow(printUrl);
-			el && this.write(printAreaWindow.doc)
+		if (el) {
+			const printAreaWindow = this.getPrintWindow('');
+			this.write(printAreaWindow.doc)
+			this.settings.preview ? this.previewIframeLoad() : this.print(printAreaWindow);
+			return
+		}
+		if (url) {
+			const printAreaWindow = this.getPrintWindow(url);
 			this.settings.preview ? this.previewIframeLoad() : this.print(printAreaWindow);
 			return
 		}
@@ -90,7 +91,7 @@ export default class VuePrintNext {
 	}
 
 	private previewIframeLoad() {
-		const box = document.getElementById('vue-pirnt-next-previewBox');
+		const box = document.getElementById('vue-print-next-previewBox');
 		if (!box) return;
 
 		const iframe = box.querySelector('iframe');
@@ -112,7 +113,6 @@ export default class VuePrintNext {
 		const iframeWin = (iframeDom as HTMLIFrameElement)?.contentWindow;
 		if (!iframeWin) return;
 		const _loaded = () => {
-			// setTimeout 用于处理异步 url 无法成功打开 print 弹框问题
 			const timer = setTimeout(() => {
 				iframeWin.focus();
 				this.settings.openCallback?.();
@@ -120,7 +120,7 @@ export default class VuePrintNext {
 				iframeDom.remove(); // 删除iframe元素
 				this.settings.closeCallback?.();
 				clearTimeout(timer)
-			})
+			}, 0)
 		};
 
 		this.settings.beforeOpenCallback?.();
@@ -326,7 +326,7 @@ export default class VuePrintNext {
 
 	// 显示预览窗口
 	private previewBoxShow() {
-		const box = document.getElementById('vue-pirnt-next-previewBox');
+		const box = document.getElementById('vue-print-next-previewBox');
 		if (box) {
 			document.querySelector('html')?.setAttribute('style', 'overflow: hidden');
 			box.style.display = 'block';
@@ -335,7 +335,7 @@ export default class VuePrintNext {
 
 	// 隐藏预览窗口
 	private previewBoxHide() {
-		const box = document.getElementById('vue-pirnt-next-previewBox');
+		const box = document.getElementById('vue-print-next-previewBox');
 		if (box) {
 			document.querySelector('html')?.setAttribute('style', 'overflow: visible;');
 			box.querySelector('iframe')?.remove();
@@ -345,7 +345,7 @@ export default class VuePrintNext {
 
 	// 创建或获取打印预览的框架
 	private previewBox(): { close: HTMLElement | null; previewBody: HTMLElement | null } {
-		let box = document.getElementById('vue-pirnt-next-previewBox');
+		let box = document.getElementById('vue-print-next-previewBox');
 		if (box) {
 			box.querySelector('iframe')?.remove();
 			return {close: box.querySelector('.previewClose'), previewBody: box.querySelector('.previewBody')};
@@ -353,7 +353,7 @@ export default class VuePrintNext {
 
 		// 创建预览框架
 		box = document.createElement('div');
-		box.setAttribute('id', 'vue-pirnt-next-previewBox');
+		box.setAttribute('id', 'vue-print-next-previewBox');
 		box.setAttribute(
 			'style',
 			'position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: white; display: none; z-index: ' + this.settings.zIndex
