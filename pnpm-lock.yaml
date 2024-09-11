@@ -76,6 +76,12 @@ importers:
     devDependencies:
       vitepress: 1.3.2
 
+  docs:
+    specifiers:
+      vitepress: ^1.3.2
+    devDependencies:
+      vitepress: 1.3.2
+
 packages:
 
   /@achrinza/node-ipc/9.2.9:
@@ -2478,8 +2484,8 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.3.4_@types+node@20.14.11
-      vue: 3.4.33_typescript@5.5.3
+      vite: 5.3.4
+      vue: 3.4.33
     dev: true
 
   /@volar/language-core/2.3.4:
@@ -3217,7 +3223,7 @@ packages:
     dependencies:
       '@vue/compiler-ssr': 3.4.33
       '@vue/shared': 3.4.33
-      vue: 3.4.33_typescript@5.5.3
+      vue: 3.4.33
     dev: true
 
   /@vue/shared/3.4.30:
