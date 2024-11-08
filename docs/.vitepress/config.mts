@@ -8,7 +8,7 @@ export default defineConfig({
 	description: "Vue Print Next Document",
 	lastUpdated: true,
 	themeConfig: {
-		logo: '/logo.png',
+		logo: '/vue-print-next/docs/logo.png',
 
 		// https://vitepress.dev/reference/default-theme-config
 		socialLinks: [
