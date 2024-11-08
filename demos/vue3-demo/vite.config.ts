@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig((conf) => {
   const isProd = conf.mode === 'production';
   return {
-    base: isProd ? '/vue-print-next/#/vue3-demo' :'/',
+    base: isProd ? '/vue-print-next/vue3-demo' :'/',
     plugins: [vue()],
   }
 })
