@@ -5,6 +5,8 @@ Vue 打印插件，简单、快速、方便、轻巧，支持 Vue 2 和 Vue 3。
 本插件基于 [vue3-print-nb](https://github.com/Power-kxLee/vue3-print-nb) 开发，并使用 TypeScript 完全重写，以更好地支持
 Vue 3 的 setup 函数。
 
+在线文档 : [https://alexpang.cn/vue-print-next/docs](https://alexpang.cn/vue-print-next/docs)
+
 ## 特性
 
 - 支持指令调用和手动调用 `VuePrintNext` 方法进行打印。
@@ -20,7 +22,7 @@ Vue 3 的 setup 函数。
 - **Vue2：** /demos/vue2-demo
 - **Vue3：** /demos/vue3-demo
 
-在线 demo : [https://alexpang.cn/vue-print-next](https://alexpang.cn/vue-print-next/)
+在线 demo : [https://alexpang.cn/vue-print-next/vue3-demo](https://alexpang.cn/vue-print-next/vue3-demo)
 
 ## 安装
 
@@ -296,63 +298,7 @@ app.mount('#app');
 
 ## FAQ
 
-### 1. 插件、方法支持 Vue2 吗？
-
-该插件对 Vue2 的指令插件机制做了兼容，是可以在 Vue2 环境下使用的，但由于本身是为了 Vue3 而设计的，所以在没有处理 IE
-浏览器的兼容，如果想考虑兼容的情况下还是使用 [vue-print-nb](https://github.com/Power-kxLee/vue2-print-nb) 插件。
-
-### 2. `VuePrintNext` 必传参`el`、`url`、`asyncUrl` 其中一个参数, 不支持全屏打印?
-
-`v-print` 指令允许不传入任何参数，此时会打印整个页面，
-但 `VuePrintNext` 类必须传入 `el`、`url`、`asyncUrl` 其中一个参数参数，如果想要全屏打印传入 `'body'` 即可。
-
-### 3. 不支持打印窗口的确认和取消按钮的回调？
-
-因为打印窗口的确认和取消按钮是由浏览器提供的，所以无法直接在 `VuePrintNext`
-类中监听点击事件进行回调，所以只提供了 `closeCallback` 回调函数无论在确认还是取消时都会触发 `closeCallback`。
-
-### 4. 其他框架下（原生JS）下能否调用？
-
-`VuePrintNext` 是一个纯 JS 实现的类，原则上与框架无关，所以可以在任何框架、或无框架下使用，用户只需要通过调用 `VuePrintNext`
-即可，区别是其他框架下无法继承指令、插件模式，只能通过 API 调用。
-
-### 5. 关于 url 加载的一些问题
-
-#### 5.1 动画还没完成就触发打印了
-
-通过 url 打印时，canvas 动画、 css 动画，可能还在执行中就进行打印了，导致打印的内容与预期不符。
-
-建议通过 `preview: true` 打开预览窗口，并等待动画执行完成后进行打印。
-
-#### 5.2 URL 跨域问题
-
-`iframe` 无法对跨域站点触发 `print` 方法，这是浏览器的安全策略导致的，
-
-我们可以通过一个折中的方法去实现，在页面中内嵌一个 `iframe` 去加载这个页面，再通过 `el: 'iframe'` 去将该页面进行打印。
-
-### 6. 为什么打印出来的内容样式被改了？
-
-如果你发现，当你实际打印出来的样式与预期的样式不一致，那很有可能是受到了你的公共样式影响，比如下面这些配置：
-
-- 当 body 设置 flex 后，如果你想要打印的容器不是固定宽度，你会发现打印的内容的宽度没有占满。
-
-```css
-body {
-    display: flex;
-}
-```
-
-- 当 html、body 设置为 hidden 后，会导致打印时无法完全展示（无法分页）
-
-```css
-html, body {
-    overflow: hidden;
-}
-```
-
-### 7.如何检查准备打印的元素？
-
-当遇到实际打印的元素与预期的不一致时，可以通过 `preview: true` 打开预览窗口后进行检查，预览窗口中的样式即是准备打印的样式。
+常见问题文档 : [https://alexpang.cn/vue-print-next/docs](https://alexpang.cn/vue-print-next/docs/guide/faq.html)
 
 ## License
 
