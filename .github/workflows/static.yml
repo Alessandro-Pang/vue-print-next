@@ -37,7 +37,7 @@ jobs:
       - run: pnpm install
       - run: pnpm build
       - run: pnpm -r build
-      - run: mkdir web && cp -r ./demos/vue3-demo/dist ./web/demo && cp -r ./docs/.vitepress/dist ./web/docs
+      - run: mkdir web && cp -r ./demos/vue3-demo/dist ./web/vue3-demo && cp -r ./docs/.vitepress/dist ./web/docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
