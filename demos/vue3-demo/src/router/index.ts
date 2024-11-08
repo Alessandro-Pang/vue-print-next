@@ -9,6 +9,7 @@ import PrintForm from '../views/PrintForm.vue'
 import PrintIframe from '../views/PrintIframe.vue'
 import PrintTable from '../views/PrintTable.vue'
 import PrintPdf from "../views/PrintPdf.vue";
+import PrintBaiduMap from "../views/PrintBaiduMap.vue";
 export const routes = [
 	{path: '/', component: PrintBasic, meta: {title:'基本打印用例'}},
 	{path: '/print-basic2', component: PrintBasic2, meta: {title:'基本打印用例2'}},
@@ -19,6 +20,8 @@ export const routes = [
 	{path: '/print-async-url', component: PrintAsyncUrl, meta: {title:'异步 URL 打印示例'}},
 	{path: '/print-form', component: PrintForm, meta: {title:'Form 表单打印示例'}},
 	{path: '/print-iframe', component: PrintIframe, meta: {title:'Iframe 嵌套打印示例'}},
+	{path: '/print-baidu-map', component: PrintBaiduMap, meta: {title:'百度地图打印示例'}},
+
 ]
 
 const router = createRouter({
