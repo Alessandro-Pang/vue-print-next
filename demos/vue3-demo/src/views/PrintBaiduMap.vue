@@ -1,4 +1,5 @@
-<script setup>
+<script setup lang="ts">
+//@ts-nocheck
 import {vPrint} from "vue-print-next";
 
 // 初始化地图资源
