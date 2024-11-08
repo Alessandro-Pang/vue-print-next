@@ -40,7 +40,7 @@ for (let i = 0; i < 1000; i++) {
 }
 
 function handleBasicPrint() {
-  new VuePrintNext({el: 'table', preview: true})
+  new VuePrintNext({el: 'table'})
 }
 </script>
 

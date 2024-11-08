@@ -14,7 +14,7 @@
   "description": "This is a directive wrapper for printed, Simple, fast, convenient, light.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Alessandro-Pang/vue-print-next"
+    "url": "git+https://github.com/Alessandro-Pang/vue-print-next.git"
   },
   "homepage": "https://github.com/Alessandro-Pang/vue-print-next#readme",
   "bugs": "https://github.com/Alessandro-Pang/vue-print-next/issues",
@@ -40,6 +40,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
+    "build:watch": "vue-tsc -b && vite build --watch",
     "serve": "vite preview"
   },
   "packageManager": "^pnpm@7.0.0",
