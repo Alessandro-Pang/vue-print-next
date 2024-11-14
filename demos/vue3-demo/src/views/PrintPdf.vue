@@ -2,7 +2,7 @@
 import {vPrint} from "vue-print-next";
 
 const printOps = {
-  url: '/vue3-print.pdf',
+  url: 'vue3-print.pdf',
   preview: true
 }
 </script>
@@ -10,7 +10,7 @@ const printOps = {
 <template>
   <div>
     <h3>打印指定 URL 中的内容</h3>
-    <object data="/vue3-print.pdf" type="application/pdf" width="620" height="600"></object>
+    <object data="vue3-print.pdf" type="application/pdf" width="620" height="600"></object>
     <br>
     目前仅支持预览后打印 PDF
     <br>
