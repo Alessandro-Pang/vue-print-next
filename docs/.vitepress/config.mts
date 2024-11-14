@@ -122,7 +122,6 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
 			text: '高级',
 			collapsed: false,
 			items: [
-				{text: '快速开始', link: 'getting-started'},
 				{text: '生命周期', link: 'life-cycle'},
 			]
 		},
