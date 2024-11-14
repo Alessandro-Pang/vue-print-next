@@ -300,6 +300,22 @@ app.mount('#app');
 
 常见问题文档 : [https://alexpang.cn/vue-print-next/docs](https://alexpang.cn/vue-print-next/docs/guide/faq.html)
 
+## Star History
+
+<a href="https://star-history.com/#Alessandro-Pang/vue-print-next&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Alessandro-Pang/vue-print-next&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Alessandro-Pang/vue-print-next&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Alessandro-Pang/vue-print-next&type=Date" />
+ </picture>
+</a>
+
+## Supporters
+
+[![Stargazers repo roster for @Alessandro-Pang/vue-print-next](https://reporoster.com/stars/dark/Alessandro-Pang/vue-print-next)](https://github.com/Alessandro-Pang/vue-print-next/stargazers)
+
+[![Forkers repo roster for @Alessandro-Pang/vue-print-next](https://reporoster.com/forks/dark/Alessandro-Pang/vue-print-next)](https://github.com/Alessandro-Pang/vue-print-next/network/members)
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
