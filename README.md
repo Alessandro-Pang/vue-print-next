@@ -296,10 +296,6 @@ app.mount('#app');
 </script>
 ```
 
-## FAQ
-
-常见问题文档 : [https://alexpang.cn/vue-print-next/docs](https://alexpang.cn/vue-print-next/docs/guide/faq.html)
-
 ## Star History
 
 <a href="https://star-history.com/#Alessandro-Pang/vue-print-next&Date">
