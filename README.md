@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="/logo.png" alt="">
-  <h1>Vue Print Next</h1>
+  <img src="./public/logo.png" alt="logo" style="width: 70px">
+  <h1 style="margin: 4px 0 16px 0">Vue Print Next</h1>
   <a href="https://www.npmjs.com/package/vue-print-next">
     <img alt="NPM Version" src="https://img.shields.io/npm/v/vue-print-next?color=orange">
   </a>
