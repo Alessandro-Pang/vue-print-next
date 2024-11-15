@@ -1,4 +1,18 @@
-# Vue Print Next
+<div align="center">
+  <img src="/logo.png" alt="">
+  <h1>Vue Print Next</h1>
+  <a href="https://www.npmjs.com/package/vue-print-next">
+    <img alt="NPM Version" src="https://img.shields.io/npm/v/vue-print-next?color=orange">
+  </a>
+  <a href="https://www.npmjs.com/package/vue-print-next">
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/d18m/vue-print-next">
+  </a>
+  <a href="https://www.npmjs.com/package/vue-print-next">
+    <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/vue-print-next">
+  </a>
+</div>
+
+![Alt](https://repobeats.axiom.co/api/embed/d78c098d0c6aded6d25e2603961030f7a1a96e64.svg "Repobeats analytics image")
 
 Vue 打印插件，简单、快速、方便、轻巧，支持 Vue 2 和 Vue 3。
 
