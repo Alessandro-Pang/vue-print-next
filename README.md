@@ -308,9 +308,21 @@ app.mount('#app');
 
 ## Supporters
 
-[![Stargazers repo roster for @Alessandro-Pang/vue-print-next](https://reporoster.com/stars/dark/Alessandro-Pang/vue-print-next)](https://github.com/Alessandro-Pang/vue-print-next/stargazers)
+<a href="https://github.com/Alessandro-Pang/vue-print-next/stargazers">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://reporoster.com/stars/dark/Alessandro-Pang/vue-print-next" />
+   <source media="(prefers-color-scheme: light)" srcset="https://reporoster.com/stars/light/Alessandro-Pang/vue-print-next" />
+   <img alt="Star History" src="https://reporoster.com/stars/light/Alessandro-Pang/vue-print-next" />
+ </picture>
+</a>
 
-[![Forkers repo roster for @Alessandro-Pang/vue-print-next](https://reporoster.com/forks/dark/Alessandro-Pang/vue-print-next)](https://github.com/Alessandro-Pang/vue-print-next/network/members)
+<a href="https://github.com/Alessandro-Pang/vue-print-next/network/members">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://reporoster.com/forks/dark/Alessandro-Pang/vue-print-next" />
+   <source media="(prefers-color-scheme: light)" srcset="https://reporoster.com/forks/light/Alessandro-Pang/vue-print-next" />
+   <img alt="Fork History" src="https://reporoster.com/forks/light/Alessandro-Pang/vue-print-next" />
+ </picture>
+</a>
 
 ## License
 

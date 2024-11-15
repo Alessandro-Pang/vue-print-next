@@ -16,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/Alessandro-Pang/vue-print-next.git"
   },
-  "homepage": "https://github.com/Alessandro-Pang/vue-print-next#readme",
+  "homepage": "https://alexpang.cn/vue-print-next/docs/",
   "bugs": "https://github.com/Alessandro-Pang/vue-print-next/issues",
   "types": "types/index.d.ts",
   "files": [
