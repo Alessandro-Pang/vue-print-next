@@ -123,6 +123,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
 			collapsed: false,
 			items: [
 				{text: '生命周期', link: 'life-cycle'},
+				{text: '实现原理', link: 'impl-principle'},
 			]
 		},
 		{text: 'API 参考', link: 'api'},
