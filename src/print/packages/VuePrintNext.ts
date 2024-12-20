@@ -1,4 +1,4 @@
-import {PrintAreaOption, PrintAreaWindow, Standards} from '../../../types';
+import { PrintAreaOption, PrintAreaWindow, Standards } from '../../../types';
 
 const FUNC_NAME = '[VuePrintNext]'
 let printCount = 0;
@@ -20,74 +20,49 @@ export default class VuePrintNext {
 	private readonly settings: PrintAreaOption;
 
 	constructor(option: PrintAreaOption) {
-		const vue = option.vue;
-		const {standard, zIndex, previewTitle, previewPrintBtnLabel, preview, popTitle, ...otherOptions} = option;
+		// Destructure and set default values for settings
+		const { vue, standard = 'html5', zIndex = 20002, previewTitle = '打印预览', previewPrintBtnLabel = '打印', preview = false, popTitle = document.title, ...otherOptions } = option;
 		this.settings = {
-			standard: standard || 'html5',
-			zIndex: zIndex || 20002,
-			previewTitle: previewTitle || '打印预览',
-			previewPrintBtnLabel: previewPrintBtnLabel || '打印',
-			preview: preview || false,
-			popTitle: popTitle || document.title,
+			standard,
+			zIndex,
+			previewTitle,
+			previewPrintBtnLabel,
+			preview,
+			popTitle,
 			...otherOptions,
-			previewBeforeOpenCallback() {
-				option.previewBeforeOpenCallback?.(vue);
-			},
-			previewOpenCallback() {
-				option.previewOpenCallback?.(vue);
-			},
-			openCallback() {
-				option.openCallback?.(vue);
-			},
-			closeCallback() {
-				option.closeCallback?.(vue);
-			},
-			beforeOpenCallback() {
-				option.beforeOpenCallback?.(vue);
-			},
+			previewBeforeOpenCallback: () => option.previewBeforeOpenCallback?.(vue),
+			previewOpenCallback: () => option.previewOpenCallback?.(vue),
+			openCallback: () => option.openCallback?.(vue),
+			closeCallback: () => option.closeCallback?.(vue),
+			beforeOpenCallback: () => option.beforeOpenCallback?.(vue),
 		};
 		this.init();
 	}
 
 	private init() {
 		this.iframeId = `printArea_${++printCount}`;
+		const { el, url, asyncUrl } = this.settings;
 
-		const {el, url} = this.settings;
 		if (el) {
-			const printAreaWindow = this.getPrintWindow('');
-			this.write(printAreaWindow.doc)
-			this.settings.preview ? this.previewIframeLoad() : this.print(printAreaWindow);
-			return
+			this.handlePrintWindow('');
+		} else if (url) {
+			this.handlePrintWindow(url);
+		} else if (asyncUrl) {
+			asyncUrl((url) => this.handlePrintWindow(url), this.settings.vue);
+		} else {
+			throw new Error(`${FUNC_NAME}: Either "el", "url", or "asyncUrl" parameter must be provided in the settings.`);
 		}
-		if (url) {
-			const printAreaWindow = this.getPrintWindow(url);
-			this.settings.preview ? this.previewIframeLoad() : this.print(printAreaWindow);
-			return
-		}
-		if (this.settings.asyncUrl) {
-			this.settings.asyncUrl((url) => {
-				const printAreaWindow = this.getPrintWindow(url); // 创建iframe
-				this.settings.preview ? this.previewIframeLoad() : this.print(printAreaWindow);
-			}, this.settings.vue);
-			return
-		}
-
-		throw new Error(`${FUNC_NAME}: Either "el"、"url" or "asyncUrl" parameter must be provided in the settings.`);
 	}
 
-	private addEvent(
-		element: HTMLElement | null,
-		type: string,
-		callback: EventListenerOrEventListenerObject
-	): void {
+	private handlePrintWindow(url: string) {
+		const printAreaWindow = this.getPrintWindow(url);
+		!url && this.write(printAreaWindow.doc);
+		this.settings.preview ? this.previewIframeLoad() : this.print(printAreaWindow);
+	}
+
+	private addEvent(element: HTMLElement | null, type: string, callback: EventListenerOrEventListenerObject): void {
 		if (!element) return;
-		if (element.addEventListener) {
-			element.addEventListener(type, callback, false);
-		} else if ((element as any).attachEvent) {
-			(element as any).attachEvent('on' + type, callback);
-		} else {
-			(element as any)['on' + type] = callback;
-		}
+		element.addEventListener(type, callback, false);
 	}
 
 	private previewIframeLoad() {
@@ -132,17 +107,15 @@ export default class VuePrintNext {
 	 * @private
 	 */
 	private getNoPrintMediaStyle(): string {
-		const noPrintSelector = this.settings.noPrintSelector;
-		if (!noPrintSelector) return ''
-		const isArray = Array.isArray(noPrintSelector);
-		const isString = typeof noPrintSelector === 'string';
-		if (!isArray && !isString) {
-			console.error(new TypeError(`${FUNC_NAME}: The "noPrintSelector" must be either a string or an array of strings. Please check your settings.`));
-			return ''
+		const { noPrintSelector } = this.settings;
+		if (!noPrintSelector) return '';
+		const selectors = Array.isArray(noPrintSelector) ? noPrintSelector : [noPrintSelector];
+		const validSelectors = selectors.filter((selector) => selector.trim());
+		if (!validSelectors.length) {
+			console.error(new TypeError(`${FUNC_NAME}: The "noPrintSelector" must be a non-empty string or an array of strings.`));
+			return '';
 		}
-		const noPrintSelectorList = Array.isArray(noPrintSelector) ? noPrintSelector : [noPrintSelector];
-		const selectorStr = noPrintSelectorList.filter((selector) => selector.trim()).join(',');
-		return `${selectorStr} { display: none; }`;
+		return `${validSelectors.join(',')} { display: none; }`;
 	}
 
 	private write(PADocument: Document) {
@@ -173,35 +146,26 @@ export default class VuePrintNext {
 	}
 
 	private getHead(): string {
-		const extraHead = (this.settings.extraHead || '')
-			.split(',')
-			.filter((m) => m.length > 0)
+		const { extraHead = '', extraCss = '', popTitle } = this.settings;
+		const links = Array.from(document.querySelectorAll('link[href$=".css"]'))
+			.map((item) => `<link type="text/css" rel="stylesheet" href='${(item as HTMLLinkElement).href}'>`)
 			.join('');
-
-		const links = Array.from(document.querySelectorAll('link'))
-			.filter((item) => item.href.includes('.css'))
-			.map((item) => `<link type="text/css" rel="stylesheet" href='${item.href}'>`)
+		const styles = Array.from(document.querySelectorAll('style'))
+			.map((style) => style.outerHTML)
 			.join('');
-
-		const styles =  Array.from(document.querySelectorAll('style'))
-			.map((style)=>style.outerHTML)
-			.join('')
-
-		const extraCss = (this.settings.extraCss || '')
-			.split(',')
-			.filter((m) => m.trim().length > 0)
+		const extraCssLinks = extraCss.split(',')
+			.filter((m) => m.trim())
 			.map((m) => `<link type="text/css" rel="stylesheet" href='${m.trim()}'>`)
 			.join('');
-
 		const printMediaStyle = this.getPrintMediaStyle();
-		const noPrintMediaStyle = this.getNoPrintMediaStyle()
+		const noPrintMediaStyle = this.getNoPrintMediaStyle();
+
 		return `<head>
-							<title>${this.settings.popTitle}</title>
-							${extraHead}${links}
-							${styles}
-							<style type="text/css">${noPrintMediaStyle}${printMediaStyle}</style>
-							${extraCss}
-						</head>`;
+					<title>${popTitle}</title>
+					${extraHead}${links}${styles}
+					<style type="text/css">${noPrintMediaStyle}${printMediaStyle}</style>
+					${extraCssLinks}
+				</head>`;
 	}
 
 	/**
@@ -243,7 +207,7 @@ export default class VuePrintNext {
 	 */
 	removeScriptHandler(clonedElement: HTMLElement) {
 		const clonedScripts = clonedElement.querySelectorAll('script')
-		clonedScripts.forEach((script)=>{
+		clonedScripts.forEach((script) => {
 			script.remove()
 		})
 	}
@@ -313,7 +277,7 @@ export default class VuePrintNext {
 		});
 	}
 
-	// 生成并返回打印窗口的 iframe 和文档对象
+	// 生成并返回打印窗口的 iframe 和文档对
 	private getPrintWindow(url: string): PrintAreaWindow {
 		const iframe = this.createIframe(url);
 		// @ts-ignore
@@ -321,7 +285,7 @@ export default class VuePrintNext {
 		if (!doc) {
 			throw new Error(`${FUNC_NAME}: Unable to find the document object within the created iframe. Please ensure the iframe is correctly created and loaded.`);
 		}
-		return {f: iframe, win: iframe.contentWindow || iframe, doc};
+		return { f: iframe, win: iframe.contentWindow || iframe, doc };
 	}
 
 	// 显示预览窗口
@@ -348,7 +312,7 @@ export default class VuePrintNext {
 		let box = document.getElementById('vue-print-next-previewBox');
 		if (box) {
 			box.querySelector('iframe')?.remove();
-			return {close: box.querySelector('.previewClose'), previewBody: box.querySelector('.previewBody')};
+			return { close: box.querySelector('.previewClose'), previewBody: box.querySelector('.previewBody') };
 		}
 
 		// 创建预览框架
@@ -376,7 +340,7 @@ export default class VuePrintNext {
 
 		document.body.appendChild(box);
 
-		return {close: this.close, previewBody: this.previewBody};
+		return { close: this.close, previewBody: this.previewBody };
 	}
 
 	// 创建iframe元素
@@ -388,10 +352,9 @@ export default class VuePrintNext {
 		if (!this.settings.preview) {
 			document.body.appendChild(iframe);
 		} else {
-			iframe.setAttribute('style', 'border: 0px; flex: 1;');
-			const {close, previewBody} = this.previewBox();
-			// 添加iframe到预览弹窗
-			if (previewBody) previewBody.appendChild(iframe);
+			iframe.style.cssText = 'border: 0px; flex: 1;';
+			const { close, previewBody } = this.previewBox();
+			previewBody?.appendChild(iframe);
 			this.addEvent(close, 'click', this.previewBoxHide.bind(this));
 		}
 		return iframe;
