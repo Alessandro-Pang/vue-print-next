@@ -1,0 +1,40 @@
+name: '📚 Docs Feedback'
+description: Improve documentation to make it more user-friendly and accessible / 助力打造更易于上手操作以及便捷查阅的文档
+labels: ['status: waiting for maintainer', 'docs-feedback']
+title: '[docs] '
+body:
+  - type: input
+    id: page-url
+    attributes:
+      label: Related Page / 相关页面
+      description: Which page of the documentation is this about? / 这是关于文档的哪个页面？
+      placeholder: https://alexpang.cn/vue-print-next/docs/
+    validations:
+      required: true
+  - type: dropdown
+    id: issue-kind
+    attributes:
+      label: Kind of Issue / 问题类型
+      description: What kind of problem are you facing? / 您遇到了什么类型的问题？
+      options:
+        - Unclear explanations / 解释不清
+        - Missing information / 信息缺失
+        - Broken demo / 示例损坏
+        - Other / 其他
+    validations:
+      required: true
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Issue Description / 问题描述
+      description: |
+        Let us know what went wrong when you were using this documentation and what we could do to improve it / 请告知您在使用此文档时遇到的问题以及我们可以改进的地方
+      placeholder: |
+        Please describe the issue in detail. / 请详细描述问题。
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / 上下文
+      description: What are you trying to accomplish? Providing context helps us come up with a solution that is more useful in the real world / 您希望实现什么目标？提供上下文有助于我们提出更实用的解决方案
+      placeholder: |
+        Describe your goal or task. / 描述您的目标或任务。

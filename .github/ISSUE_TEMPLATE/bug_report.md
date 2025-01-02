@@ -1,38 +1,94 @@
----
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
+name: '🐞 Bug report'
+description: Create a report to help us improve.
+title: '[Bug]: '
+labels: ['status: waiting for maintainer']
+body:
+- type: markdown
+  attributes:
+  value: |
+    Report errors and exceptions found in the project.
 
----
+    Before submitting a new bug/issue, please check the links below to see if there is a solution or if the issue has already been reported:
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+    在提交新 issue 之前，先通过以下链接检查是否存在相同问题:
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+    > [Issues](https://github.com/Alessandro-Pang/vue-print-next/issues) | [Closed Issues](https://github.com/Alessandro-Pang/vue-print-next/issues?q=is%3Aissue+is%3Aclosed)
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+- type: textarea
+  id: description
+  attributes:
+  label: Describe the bug / 问题描述
+  placeholder: |
+    Please provide a clear and concise description of the bug you encountered. Include screenshots if they help explain the problem better.
+    请提供清晰简洁的问题描述。如果可以的话，请添加截图以便更好地说明问题。
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+    If you need to share code, please use Markdown code block syntax as shown below:
+    如果包含代码块，请使用下面展示的 Markdown 代码块语法：
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+    ```javascript
+    // Your code here
+    ```
+  validations:
+  required: true
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+- type: input
+  id: link
+  attributes:
+  label: Reproduction link / 复现链接
+  placeholder: |
+    Provide a link to a minimal reproduction of the issue, such as on CodeSandbox or StackBlitz.
+    CodeSandbox / StackBlitz / ...
 
-**Additional context**
-Add any other context about the problem here.
+    提供一个最小复现问题的链接，例如 CodeSandbox 或 StackBlitz。
+  validations:
+  required: false
+
+- type: textarea
+  id: steps
+  attributes:
+  label: Steps to Reproduce the Bug or Issue / 重现步骤
+  placeholder: |
+    List the steps to reproduce the bug. For example:
+    1. Go to '...'
+    2. Click on '...'
+    3. Scroll down to '...'
+    4. See error
+  validations:
+  required: false
+
+- type: dropdown
+  id: version
+  attributes:
+  label: Version / 版本
+  options:
+  - Please select / 请选择
+  - 1.x
+  - 0.x
+  validations:
+  required: true
+
+- type: checkboxes
+  id: OS
+  attributes:
+  label: OS / 操作系统
+  options:
+  - label: macOS
+  - label: Windows
+  - label: Linux
+  - label: Others / 其他
+  validations:
+  required: true
+
+- type: checkboxes
+  id: Browser
+  attributes:
+  label: Browser / 浏览器
+  options:
+  - label: Chrome
+  - label: Edge
+  - label: Firefox
+  - label: Safari (Limited support / 有限支持)
+  - label: IE (Nonsupport / 不支持)
+  - label: Others / 其他
+  validations:
+  required: true

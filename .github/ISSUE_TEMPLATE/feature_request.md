@@ -1,20 +1,21 @@
----
-name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
+name: '💡 Feature Request'
+description: I have a suggestion (and may want to implement it) / 我有一个建议（或者想参与贡献）
+title: '[Feat]: '
+labels: ['status: waiting for maintainer']
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the feature / 功能描述
+    validations:
+      required: true
 
----
-
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
-
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
+  - type: dropdown
+    attributes:
+      label: Are you willing to contribute? / 是否愿意参与贡献？
+      options:
+        - Please select / 请选择
+        - ✅ Yes / 是
+        - ❌ No / 否
+    validations:
+      required: true
