@@ -1,5 +1,5 @@
 name: '🐞 Bug report'
-description: Create a report to help us improve.
+description: Create a report to help us improve / 创建报告以帮助我们改进
 title: '[Bug]: '
 labels: ['status: waiting for maintainer']
 body:
