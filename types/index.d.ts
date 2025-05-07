@@ -1,4 +1,17 @@
-import type {App, DirectiveBinding} from "vue";
+import type { App, DirectiveBinding } from 'vue';
+
+// 纸张常见尺寸类型
+export type PaperSize = 'A0' | 'A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6' | 'A7' | 'A8' | 'Letter' | 'Legal' | 'Tabloid' | 'custom';
+
+// 纸张方向类型
+export type Orientation = 'portrait' | 'landscape';
+
+// 自定义尺寸接口
+export interface CustomSize {
+	width: string;
+	height: string;
+	unit?: 'mm' | 'cm' | 'in' | 'px';
+}
 
 export interface PrintAreaOption {
 	// 局部打印的元素，支持 css 选择器或 dom 节点
@@ -25,6 +38,12 @@ export interface PrintAreaOption {
 	previewPrintBtnLabel?: string;
 	// 预览窗口的 z-index
 	zIndex?: number;
+	// 纸张尺寸，默认为 A4
+	paperSize?: PaperSize;
+	// 纸张方向，默认为纵向
+	orientation?: Orientation;
+	// 自定义纸张尺寸，仅当 paperSize 为 'custom' 时生效
+	customSize?: CustomSize;
 	// 预览窗口打开之前的 callback
 	previewBeforeOpenCallback?: (vue?: any) => void;
 	// 预览窗口打开之后的 callback

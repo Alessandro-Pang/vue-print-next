@@ -2,6 +2,22 @@ import { PrintAreaOption, PrintAreaWindow, Standards } from '../../../types';
 
 const FUNC_NAME = '[VuePrintNext]'
 let printCount = 0;
+
+// 预设常见纸张尺寸（单位：mm）
+const PAPER_SIZES = {
+	A0: { width: '841mm', height: '1189mm' },
+	A1: { width: '594mm', height: '841mm' },
+	A2: { width: '420mm', height: '594mm' },
+	A3: { width: '297mm', height: '420mm' },
+	A4: { width: '210mm', height: '297mm' },
+	A5: { width: '148mm', height: '210mm' },
+	A6: { width: '105mm', height: '148mm' },
+	A7: { width: '74mm', height: '105mm' },
+	A8: { width: '52mm', height: '74mm' },
+	Letter: { width: '215.9mm', height: '279.4mm' },
+	Legal: { width: '215.9mm', height: '355.6mm' },
+	Tabloid: { width: '279.4mm', height: '431.8mm' }
+};
 export default class VuePrintNext {
 	// html 文档标准
 	private readonly standards: Standards = {
@@ -21,7 +37,19 @@ export default class VuePrintNext {
 
 	constructor(option: PrintAreaOption) {
 		// Destructure and set default values for settings
-		const { vue, standard = 'html5', zIndex = 20002, previewTitle = '打印预览', previewPrintBtnLabel = '打印', preview = false, popTitle = document.title, ...otherOptions } = option;
+		const { 
+			vue, 
+			standard = 'html5', 
+			zIndex = 20002, 
+			previewTitle = '打印预览', 
+			previewPrintBtnLabel = '打印', 
+			preview = false, 
+			popTitle = document.title,
+			paperSize = 'A4',
+			orientation = 'portrait',
+			customSize,
+			...otherOptions 
+		} = option;
 		this.settings = {
 			standard,
 			zIndex,
@@ -29,6 +57,9 @@ export default class VuePrintNext {
 			previewPrintBtnLabel,
 			preview,
 			popTitle,
+			paperSize,
+			orientation,
+			customSize,
 			...otherOptions,
 			previewBeforeOpenCallback: () => option.previewBeforeOpenCallback?.(vue),
 			previewOpenCallback: () => option.previewOpenCallback?.(vue),
@@ -140,9 +171,34 @@ export default class VuePrintNext {
 	 * @private
 	 */
 	private getPrintMediaStyle() {
+		const { paperSize = 'A4', orientation = 'portrait', customSize } = this.settings;
+		
 		// 修复打印时背景色失效
-		const fixBackgroundColorFailure = `body {-webkit-print-color-adjust: exact; -moz-print-color-adjust: exact; -ms-print-color-adjust: exact; print-color-adjust: exact;}`
-		return `${fixBackgroundColorFailure}`
+		const fixBackgroundColorFailure = `body {-webkit-print-color-adjust: exact; -moz-print-color-adjust: exact; -ms-print-color-adjust: exact; print-color-adjust: exact;}`;
+		
+		// 获取纸张尺寸
+		let paperSizeStyle = '';
+		if (paperSize === 'custom' && customSize) {
+			const { width, height, unit = 'mm' } = customSize;
+			const w = width.endsWith(unit) ? width : `${width}${unit}`;
+			const h = height.endsWith(unit) ? height : `${height}${unit}`;
+			paperSizeStyle = orientation === 'portrait' 
+				? `@page { size: ${w} ${h}; }`
+				: `@page { size: ${h} ${w}; }`;
+		} else if (paperSize in PAPER_SIZES) {
+			const size = PAPER_SIZES[paperSize as keyof typeof PAPER_SIZES];
+			paperSizeStyle = orientation === 'portrait' 
+				? `@page { size: ${size.width} ${size.height}; }`
+				: `@page { size: ${size.height} ${size.width}; }`;
+		} else {
+			// 默认使用 A4
+			const defaultSize = PAPER_SIZES.A4;
+			paperSizeStyle = orientation === 'portrait' 
+				? `@page { size: ${defaultSize.width} ${defaultSize.height}; }`
+				: `@page { size: ${defaultSize.height} ${defaultSize.width}; }`;
+		}
+		
+		return `${fixBackgroundColorFailure}${paperSizeStyle}`;
 	}
 
 	private getHead(): string {

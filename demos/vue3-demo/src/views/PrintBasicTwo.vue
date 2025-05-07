@@ -1,5 +1,13 @@
+<!--
+ * @Author: zi.yang
+ * @Date: 2024-06-29 20:44:16
+ * @LastEditors: zi.yang
+ * @LastEditTime: 2025-05-07 20:04:42
+ * @Description: 
+ * @FilePath: /vue-print-next/demos/vue3-demo/src/views/PrintBasicTwo.vue
+-->
 <script setup lang="ts">
-import {vPrint} from "vue-print-next";
+import { vPrint } from 'vue-print-next';
 </script>
 <template>
   <div class="printable" id="print">
