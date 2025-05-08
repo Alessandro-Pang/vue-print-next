@@ -18,6 +18,9 @@ const PAPER_SIZES = {
 	Legal: { width: '215.9mm', height: '355.6mm' },
 	Tabloid: { width: '279.4mm', height: '431.8mm' }
 };
+
+const commonBtnStyle = (size = 32) => `width: ${size}px; height: ${size}px; border: none; background: transparent; cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease; padding: 0; outline: none;`;
+
 export default class VuePrintNext {
 	// html 文档标准
 	private readonly standards: Standards = {
@@ -32,6 +35,12 @@ export default class VuePrintNext {
 	private previewBody: HTMLElement | null = null;
 	// 预览窗口的 关闭按钮
 	private close: HTMLElement | null = null;
+	// 预览窗口的缩放比例
+	private scale: number = 1;
+	// 预览窗口是否为深色模式
+	private isDarkMode: boolean = false;
+	// 预览窗口是否为全屏模式
+	private isFullscreen: boolean = true; // 默认为全屏模式
 	// 用户设置
 	private readonly settings: PrintAreaOption;
 
@@ -48,8 +57,17 @@ export default class VuePrintNext {
 			paperSize = 'A4',
 			orientation = 'portrait',
 			customSize,
+			darkMode = false,
+			windowMode = false,
+			defaultScale = 1,
 			...otherOptions 
 		} = option;
+		
+		// 设置初始状态
+		this.isDarkMode = darkMode;
+		this.isFullscreen = !windowMode; // 窗口模式时，不是全屏模式
+		this.scale = defaultScale;
+		
 		this.settings = {
 			standard,
 			zIndex,
@@ -60,6 +78,9 @@ export default class VuePrintNext {
 			paperSize,
 			orientation,
 			customSize,
+			darkMode,
+			windowMode,
+			defaultScale,
 			...otherOptions,
 			previewBeforeOpenCallback: () => option.previewBeforeOpenCallback?.(vue),
 			previewOpenCallback: () => option.previewOpenCallback?.(vue),
@@ -349,7 +370,36 @@ export default class VuePrintNext {
 		const box = document.getElementById('vue-print-next-previewBox');
 		if (box) {
 			document.querySelector('html')?.setAttribute('style', 'overflow: hidden');
+			
+			// 添加过渡动画效果
+			box.style.opacity = '0';
 			box.style.display = 'block';
+			
+			// 使用setTimeout确保过渡效果生效
+			setTimeout(() => {
+				box.style.transition = 'opacity 0.3s ease';
+				box.style.opacity = '1';
+				
+				// 应用初始主题设置 - 修复深色模式
+				if (this.isDarkMode) {
+					// 因为toggleTheme会切换状态，所以如果已经是深色模式，需要先切换回浅色模式
+					this.isDarkMode = false;
+					this.toggleTheme();
+				}
+				
+				// 应用初始全屏/弹窗模式 - 修复窗口模式
+				if (!this.isFullscreen) {
+					// 如果设置了窗口模式，确保应用窗口模式样式
+					// 因为toggleFullscreen会切换状态，所以如果已经是窗口模式，需要先切换回全屏模式
+					this.isFullscreen = true;
+					this.toggleFullscreen();
+				}
+				
+				// 应用初始缩放比例
+				if (this.scale !== 1) {
+					this.updatePreviewScale();
+				}
+			}, 10);
 		}
 	}
 
@@ -357,9 +407,43 @@ export default class VuePrintNext {
 	private previewBoxHide() {
 		const box = document.getElementById('vue-print-next-previewBox');
 		if (box) {
-			document.querySelector('html')?.setAttribute('style', 'overflow: visible;');
-			box.querySelector('iframe')?.remove();
-			box.style.display = 'none';
+			// 添加淡出动画
+			box.style.opacity = '0';
+			
+			setTimeout(() => {
+				// 恢复页面滚动
+				document.querySelector('html')?.setAttribute('style', 'overflow: visible;');
+				
+				// 查找iframe容器并移除iframe
+				const paperContainer = box.querySelector('.paperContainer');
+				paperContainer?.querySelector('iframe')?.remove();
+				box.style.display = 'none';
+				
+				// 重置按钮状态
+				const printBtn: HTMLButtonElement | null = box.querySelector('.previewBodyUtilPrintBtn');
+				if (printBtn) {
+					printBtn.style.backgroundColor = '#1890ff';
+					printBtn.style.boxShadow = 'none';
+				}
+				
+				// 重置缩放
+				this.scale = 1;
+				
+				// 重置深色模式
+				if (this.isDarkMode) {
+					this.toggleTheme();
+				}
+				
+				// 重置全屏模式
+				if (this.isFullscreen) {
+					this.isFullscreen = false;
+					box.style.width = '100%';
+					box.style.height = '100%';
+					box.style.top = '0';
+					box.style.left = '0';
+					box.style.borderRadius = '0';
+				}
+			}, 300); // 与过渡动画时间匹配
 		}
 	}
 
@@ -376,17 +460,42 @@ export default class VuePrintNext {
 		box.setAttribute('id', 'vue-print-next-previewBox');
 		box.setAttribute(
 			'style',
-			'position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: white; display: none; z-index: ' + this.settings.zIndex
+			'position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.98); display: none; z-index: ' + this.settings.zIndex + '; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); transition: background-color 0.3s ease;'
 		);
+		box.setAttribute('data-theme', 'light');
 
 		// 预览框架的头部
 		const previewHeader = document.createElement('div');
 		previewHeader.setAttribute('class', 'previewHeader');
-		previewHeader.setAttribute('style', 'padding: 5px 20px;');
-		previewHeader.innerHTML = this.settings.previewTitle || '';
+		previewHeader.setAttribute('style', 'padding: 12px 24px; background: #fff; border-bottom: 1px solid #eaeaea; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); transition: background-color 0.3s ease, border-color 0.3s ease;');
+		
+		// 标题容器
+		const titleContainer = document.createElement('div');
+		titleContainer.setAttribute('style', 'font-size: 16px; font-weight: 500; color: #333; transition: color 0.3s ease;');
+		titleContainer.innerHTML = this.settings.previewTitle || '';
+
+		// 工具栏容器
+		const toolsContainer = document.createElement('div');
+		toolsContainer.setAttribute('style', 'display: flex; align-items: center; gap: 12px;');
+
+		// 添加缩放控制
+		const zoomControls = this.createZoomControls();
+		toolsContainer.appendChild(zoomControls);
+
+		// 添加主题切换按钮
+		const themeToggle = this.createThemeToggle();
+		toolsContainer.appendChild(themeToggle);
+
+		// 添加全屏切换按钮
+		const fullscreenToggle = this.createFullscreenToggle();
+		toolsContainer.appendChild(fullscreenToggle);
 
 		// 关闭按钮
 		this.close = this.createCloseButton();
+		
+		// 将标题和工具栏添加到头部
+		previewHeader.appendChild(titleContainer);
+		previewHeader.appendChild(toolsContainer);
 		previewHeader.appendChild(this.close);
 		box.appendChild(previewHeader);
 
@@ -408,10 +517,43 @@ export default class VuePrintNext {
 		if (!this.settings.preview) {
 			document.body.appendChild(iframe);
 		} else {
-			iframe.style.cssText = 'border: 0px; flex: 1;';
+			iframe.style.cssText = 'border: 0px; width: 100%; height: 100%; background: white; transition: background-color 0.3s ease;';
 			const { close, previewBody } = this.previewBox();
-			previewBody?.appendChild(iframe);
+			
+			// 查找纸张容器中的iframe容器并添加iframe
+			const paperContainer = previewBody?.querySelector('.paperContainer');
+			const iframeContainer = paperContainer?.querySelector('div');
+			iframeContainer?.appendChild(iframe);
+			
+			// 设置初始缩放
+			this.scale = 1;
+			this.updatePreviewScale();
+			
+			// 添加关闭事件
 			this.addEvent(close, 'click', this.previewBoxHide.bind(this));
+			
+			// 监听iframe加载完成事件，更新深色模式
+			this.addEvent(iframe, 'load', () => {
+				if (this.isDarkMode) {
+					// 为iframe内容添加深色模式样式
+					try {
+						const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+						if (iframeDoc) {
+							const darkModeStyle = iframeDoc.createElement('style');
+							darkModeStyle.textContent = 'body { color-scheme: dark; }'; 
+							iframeDoc.head.appendChild(darkModeStyle);
+						}
+					} catch (e) {
+						console.warn('无法为iframe内容添加深色模式样式', e);
+					}
+				}
+				
+				// 更新页码信息
+				const pageInfo = document.querySelector('.pageInfo');
+				if (pageInfo) {
+					// pageInfo.textContent = '第 1 页';
+				}
+			});
 		}
 		return iframe;
 	}
@@ -420,43 +562,453 @@ export default class VuePrintNext {
 	private createCloseButton(): HTMLElement {
 		const close = document.createElement('div');
 		close.setAttribute('class', 'previewClose');
-		close.setAttribute('style', 'position: absolute; top: 5px; right: 20px; width: 25px; height: 20px; cursor: pointer;');
+		close.setAttribute('style', 'width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background-color 0.2s ease, color 0.3s ease;');
+		close.addEventListener('mouseover', () => {
+			close.style.backgroundColor = this.isDarkMode ? '#444' : '#f0f0f0';
+		});
+		close.addEventListener('mouseout', () => {
+			close.style.backgroundColor = 'transparent';
+		});
 
 		const closeBefore = document.createElement('div');
 		const closeAfter = document.createElement('div');
-		const closeStyles = 'position: absolute; width: 3px; height: 100%; background: #040404; top: 0px; left: 50%;';
+		const closeStyles = 'position: relative; width: 2px; height: 16px; background: #666; border-radius: 1px; transition: background-color 0.2s ease;';
 
 		closeBefore.setAttribute('class', 'closeBefore');
-		closeBefore.setAttribute('style', `${closeStyles} transform: rotate(45deg);`);
+		closeBefore.setAttribute('style', `${closeStyles} transform: rotate(45deg); margin-left: -1px;`);
 
 		closeAfter.setAttribute('class', 'closeAfter');
-		closeAfter.setAttribute('style', `${closeStyles} transform: rotate(-45deg);`);
+		closeAfter.setAttribute('style', `${closeStyles} transform: rotate(-45deg); margin-left: -1px;`);
 
 		close.appendChild(closeBefore);
 		close.appendChild(closeAfter);
+		
+		close.addEventListener('mouseover', () => {
+			closeBefore.style.backgroundColor = this.isDarkMode ? '#fff' : '#333';
+			closeAfter.style.backgroundColor = this.isDarkMode ? '#fff' : '#333';
+		});
+		close.addEventListener('mouseout', () => {
+			closeBefore.style.backgroundColor = this.isDarkMode ? '#999' : '#666';
+			closeAfter.style.backgroundColor = this.isDarkMode ? '#999' : '#666';
+		});
 
 		return close;
+	}
+
+	// 创建缩放控制
+	private createZoomControls(): HTMLElement {
+		const zoomContainer = document.createElement('div');
+		zoomContainer.setAttribute('class', 'zoomControls');
+		zoomContainer.setAttribute('style', 'display: flex; align-items: center; gap: 8px;');
+
+		// 缩小按钮
+		const zoomOutBtn = document.createElement('button');
+		zoomOutBtn.setAttribute('class', 'zoomOutBtn');
+		zoomOutBtn.setAttribute('style', commonBtnStyle(28));
+		zoomOutBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
+		zoomOutBtn.addEventListener('mouseover', () => {
+			zoomOutBtn.style.backgroundColor = this.isDarkMode ? '#444' : '#f0f0f0';
+		});
+		zoomOutBtn.addEventListener('mouseout', () => {
+			zoomOutBtn.style.backgroundColor = 'transparent';
+		});
+		zoomOutBtn.addEventListener('click', () => {
+			this.scale = Math.max(0.5, this.scale - 0.1);
+			this.updatePreviewScale();
+		});
+
+		// 缩放显示
+		const zoomDisplay = document.createElement('span');
+		zoomDisplay.setAttribute('class', 'zoomDisplay');
+		zoomDisplay.setAttribute('style', 'font-size: 14px; min-width: 40px; text-align: center;');
+		zoomDisplay.textContent = '100%';
+
+		// 放大按钮
+		const zoomInBtn = document.createElement('button');
+		zoomInBtn.setAttribute('class', 'zoomInBtn');
+		zoomInBtn.setAttribute('style', commonBtnStyle(28));
+		zoomInBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
+		zoomInBtn.addEventListener('mouseover', () => {
+			zoomInBtn.style.backgroundColor = this.isDarkMode ? '#444' : '#f0f0f0';
+		});
+		zoomInBtn.addEventListener('mouseout', () => {
+			zoomInBtn.style.backgroundColor = 'transparent';
+		});
+		zoomInBtn.addEventListener('click', () => {
+			this.scale = Math.min(2, this.scale + 0.1);
+			this.updatePreviewScale();
+		});
+
+		// 重置按钮
+		const zoomResetBtn = document.createElement('button');
+		zoomResetBtn.setAttribute('class', 'zoomResetBtn');
+		zoomResetBtn.setAttribute('style', 'font-size: 12px; padding: 2px 6px; border: none; background: transparent; cursor: pointer; border-radius: 4px; transition: background-color 0.2s ease;');
+		zoomResetBtn.textContent = '重置';
+		zoomResetBtn.addEventListener('mouseover', () => {
+			zoomResetBtn.style.backgroundColor = this.isDarkMode ? '#444' : '#f0f0f0';
+		});
+		zoomResetBtn.addEventListener('mouseout', () => {
+			zoomResetBtn.style.backgroundColor = 'transparent';
+		});
+		zoomResetBtn.addEventListener('click', () => {
+			this.scale = 1;
+			this.updatePreviewScale();
+		});
+
+		zoomContainer.appendChild(zoomOutBtn);
+		zoomContainer.appendChild(zoomDisplay);
+		zoomContainer.appendChild(zoomInBtn);
+		zoomContainer.appendChild(zoomResetBtn);
+
+		return zoomContainer;
+	}
+
+	// 更新预览缩放比例
+	private updatePreviewScale(): void {
+		const box = document.getElementById('vue-print-next-previewBox');
+		if (!box) return;
+
+		// 更新缩放显示
+		const zoomDisplay = box.querySelector('.zoomDisplay');
+		if (zoomDisplay) {
+			zoomDisplay.textContent = `${Math.round(this.scale * 100)}%`;
+		}
+
+		// 更新预览内容缩放
+		const paperContainer = box.querySelector('.paperContainer');
+		if (paperContainer) {
+			(paperContainer as HTMLElement).style.transform = `scale(${this.scale})`;
+			(paperContainer as HTMLElement).style.transformOrigin = 'center top';
+		}
+	}
+
+	// 创建主题切换按钮
+	private createThemeToggle(): HTMLElement {
+		const themeToggle = document.createElement('button');
+		themeToggle.setAttribute('class', 'themeToggle');
+		themeToggle.setAttribute('style', commonBtnStyle());
+		themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+		themeToggle.setAttribute('title', '切换深色/浅色模式');
+
+		themeToggle.addEventListener('mouseover', () => {
+			themeToggle.style.backgroundColor = this.isDarkMode ? '#444' : '#f0f0f0';
+		});
+		themeToggle.addEventListener('mouseout', () => {
+			themeToggle.style.backgroundColor = 'transparent';
+		});
+		themeToggle.addEventListener('click', () => {
+			this.toggleTheme();
+		});
+
+		return themeToggle;
+	}
+
+	// 切换深色/浅色主题
+	private toggleTheme(): void {
+		this.isDarkMode = !this.isDarkMode;
+		const box = document.getElementById('vue-print-next-previewBox');
+		if (!box) return;
+
+		if (this.isDarkMode) {
+			box.setAttribute('data-theme', 'dark');
+			box.style.backgroundColor = 'rgba(30, 30, 30, 0.98)';
+			
+			// 更新头部样式
+			const header = box.querySelector('.previewHeader');
+			if (header) {
+				(header as HTMLElement).style.backgroundColor = '#242424';
+				(header as HTMLElement).style.borderColor = '#333';
+			}
+
+			// 更新标题颜色
+			const title = box.querySelector('.previewHeader > div:first-child');
+			if (title) {
+				(title as HTMLElement).style.color = '#fff';
+			}
+
+			// 更新工具栏颜色
+			const tools = box.querySelectorAll('.previewHeader button, .previewHeader svg, .zoomDisplay, .zoomResetBtn');
+			tools.forEach(tool => {
+				(tool as HTMLElement).style.color = '#fff';
+			});
+
+			// 更新主体样式
+			const bodyUtil = box.querySelector('.previewBodyUtil');
+			if (bodyUtil) {
+				(bodyUtil as HTMLElement).style.backgroundColor = '#242424';
+				(bodyUtil as HTMLElement).style.borderColor = '#333';
+			}
+
+			// 更新关闭按钮颜色
+			const closeBefore = box.querySelector('.closeBefore');
+			const closeAfter = box.querySelector('.closeAfter');
+			if (closeBefore) {
+				(closeBefore as HTMLElement).style.backgroundColor = '#fff';
+			}
+			if (closeAfter) {
+				(closeAfter as HTMLElement).style.backgroundColor = '#fff';
+			}
+
+			// 更新内容区背景
+			const contentContainer = box.querySelector('.previewBody > div:last-child');
+			if (contentContainer) {
+				(contentContainer as HTMLElement).style.backgroundColor = '#1a1a1a';
+			}
+
+			// 更新页码信息颜色
+			const pageInfo = box.querySelector('.pageInfo');
+			if (pageInfo) {
+				(pageInfo as HTMLElement).style.color = '#ccc';
+			}
+
+			// 更新主题切换图标
+			const themeToggle = box.querySelector('.themeToggle');
+			if (themeToggle) {
+				themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+			}
+		} else {
+			box.setAttribute('data-theme', 'light');
+			box.style.backgroundColor = 'rgba(250, 250, 250, 0.98)';
+			
+			// 更新头部样式
+			const header = box.querySelector('.previewHeader');
+			if (header) {
+				(header as HTMLElement).style.backgroundColor = '#fff';
+				(header as HTMLElement).style.borderColor = '#eaeaea';
+			}
+
+			// 更新标题颜色
+			const title = box.querySelector('.previewHeader > div:first-child');
+			if (title) {
+				(title as HTMLElement).style.color = '#333';
+			}
+
+			// 更新工具栏颜色
+			const tools = box.querySelectorAll('.previewHeader button, .previewHeader svg, .zoomDisplay, .zoomResetBtn');
+			tools.forEach(tool => {
+				(tool as HTMLElement).style.color = '#333';
+			});
+
+			// 更新主体样式
+			const bodyUtil = box.querySelector('.previewBodyUtil');
+			if (bodyUtil) {
+				(bodyUtil as HTMLElement).style.backgroundColor = '#fff';
+				(bodyUtil as HTMLElement).style.borderColor = '#eaeaea';
+			}
+
+			// 更新关闭按钮颜色
+			const closeBefore = box.querySelector('.closeBefore');
+			const closeAfter = box.querySelector('.closeAfter');
+			if (closeBefore) {
+				(closeBefore as HTMLElement).style.backgroundColor = '#666';
+			}
+			if (closeAfter) {
+				(closeAfter as HTMLElement).style.backgroundColor = '#666';
+			}
+
+			// 更新内容区背景
+			const contentContainer = box.querySelector('.previewBody > div:last-child');
+			if (contentContainer) {
+				(contentContainer as HTMLElement).style.backgroundColor = '#f5f5f5';
+			}
+
+			// 更新页码信息颜色
+			const pageInfo = box.querySelector('.pageInfo');
+			if (pageInfo) {
+				(pageInfo as HTMLElement).style.color = '#666';
+			}
+
+			// 更新主题切换图标
+			const themeToggle = box.querySelector('.themeToggle');
+			if (themeToggle) {
+				themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+			}
+		}
+	}
+
+	// 创建全屏切换按钮
+	private createFullscreenToggle(): HTMLElement {
+		const fullscreenToggle = document.createElement('button');
+		fullscreenToggle.setAttribute('class', 'fullscreenToggle');
+		fullscreenToggle.setAttribute('style', commonBtnStyle());
+		fullscreenToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>';
+		fullscreenToggle.setAttribute('title', '切换全屏/弹窗模式');
+
+		fullscreenToggle.addEventListener('mouseover', () => {
+			fullscreenToggle.style.backgroundColor = this.isDarkMode ? '#444' : '#f0f0f0';
+		});
+		fullscreenToggle.addEventListener('mouseout', () => {
+			fullscreenToggle.style.backgroundColor = 'transparent';
+		});
+		fullscreenToggle.addEventListener('click', () => {
+			this.toggleFullscreen();
+		});
+
+		return fullscreenToggle;
+	}
+
+	// 切换全屏/弹窗模式
+	private toggleFullscreen(): void {
+		this.isFullscreen = !this.isFullscreen;
+		const box = document.getElementById('vue-print-next-previewBox');
+		if (!box) return;
+
+		if (!this.isFullscreen) {
+			// 切换到弹窗模式
+			box.style.width = '80%';
+			box.style.height = '80%';
+			box.style.top = '10%';
+			box.style.left = '10%';
+			box.style.borderRadius = '8px';
+			box.style.boxShadow = '0 0 30px rgba(0, 0, 0, 0.2)';
+
+			// 更新全屏图标
+			const fullscreenToggle = box.querySelector('.fullscreenToggle');
+			if (fullscreenToggle) {
+				fullscreenToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 3 3 3 3 8"></polyline><polyline points="21 8 21 3 16 3"></polyline><polyline points="3 16 3 21 8 21"></polyline><polyline points="16 21 21 21 21 16"></polyline></svg>';
+			}
+		} else {
+			// 切换到全屏模式
+			box.style.width = '100%';
+			box.style.height = '100%';
+			box.style.top = '0';
+			box.style.left = '0';
+			box.style.borderRadius = '0';
+			box.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.1)';
+
+			// 更新全屏图标
+			const fullscreenToggle = box.querySelector('.fullscreenToggle');
+			if (fullscreenToggle) {
+				fullscreenToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>';
+			}
+		}
 	}
 
 	// 创建预览主体
 	private createPreviewBody(): HTMLElement {
 		const previewBody = document.createElement('div');
 		previewBody.className = 'previewBody';
-		previewBody.style.cssText = 'display: flex; flex-direction: column; height: 100%;';
+		previewBody.style.cssText = 'display: flex; flex-direction: column; height: calc(100% - 56px);';
 
 		const previewBodyUtil = document.createElement('div');
 		previewBodyUtil.className = 'previewBodyUtil';
-		previewBodyUtil.style.cssText = 'height: 32px; background: #474747; position: relative;';
+		previewBodyUtil.style.cssText = 'height: 48px; background: #fff; position: relative; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid #eaeaea; transition: background-color 0.3s ease, border-color 0.3s ease;';
 
-		const previewBodyUtilPrintBtn = document.createElement('div');
+		// 左侧工具区域
+		const leftTools = document.createElement('div');
+		leftTools.className = 'leftTools';
+		leftTools.style.cssText = 'display: flex; align-items: center; gap: 16px;';
+
+		// 打印按钮
+		const previewBodyUtilPrintBtn = document.createElement('button');
 		previewBodyUtilPrintBtn.className = 'previewBodyUtilPrintBtn';
 		previewBodyUtilPrintBtn.style.cssText =
-			'position: absolute; padding: 2px 10px; margin-top: 3px; left: 24px; font-size: 14px; color: white; cursor: pointer; background: rgba(0,0,0,.12); border: 1px solid rgba(0,0,0,.35); box-shadow: inset 0 1px 0 hsla(0,0%,100%,.05), inset 0 0 1px hsla(0,0%,100%,.15);';
+			'padding: 8px 16px; font-size: 14px; color: white; cursor: pointer; background: #1890ff; border: none; border-radius: 4px; transition: all 0.3s ease; outline: none; font-weight: 500; display: flex; align-items: center; justify-content: center;';
 		previewBodyUtilPrintBtn.innerHTML = this.settings.previewPrintBtnLabel || '';
+		
+		// 添加打印图标
+		const printIcon = document.createElement('span');
+		printIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>';
+		
+		// 添加悬停效果
+		previewBodyUtilPrintBtn.addEventListener('mouseover', () => {
+			previewBodyUtilPrintBtn.style.backgroundColor = '#40a9ff';
+			previewBodyUtilPrintBtn.style.boxShadow = '0 2px 8px rgba(24, 144, 255, 0.3)';
+		});
+		previewBodyUtilPrintBtn.addEventListener('mouseout', () => {
+			previewBodyUtilPrintBtn.style.backgroundColor = '#1890ff';
+			previewBodyUtilPrintBtn.style.boxShadow = 'none';
+		});
+		
+		previewBodyUtilPrintBtn.insertBefore(printIcon, previewBodyUtilPrintBtn.firstChild);
+		leftTools.appendChild(previewBodyUtilPrintBtn);
 
-		previewBodyUtil.appendChild(previewBodyUtilPrintBtn);
+		// 纸张信息显示
+		const paperInfo = document.createElement('div');
+		paperInfo.className = 'paperInfo';
+		paperInfo.style.cssText = 'font-size: 13px; color: #666; display: flex; align-items: center; transition: color 0.3s ease;';
+		
+		// 获取纸张信息
+		const { paperSize = 'A4', orientation = 'portrait', customSize } = this.settings;
+		let paperSizeText = '';
+		
+		if (paperSize === 'custom' && customSize) {
+			const { width, height, unit = 'mm' } = customSize;
+			paperSizeText = `自定义 (${width}${unit} × ${height}${unit})`;
+		} else {
+			paperSizeText = paperSize;
+		}
+		
+		paperInfo.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${paperSizeText} - ${orientation === 'portrait' ? '纵向' : '横向'}`;
+		
+		leftTools.appendChild(paperInfo);
+		previewBodyUtil.appendChild(leftTools);
+
+		// 右侧页面导航
+		const pageNavigation = document.createElement('div');
+		pageNavigation.className = 'pageNavigation';
+		pageNavigation.style.cssText = 'display: flex; align-items: center; gap: 8px;';
+
+		// 页码显示
+		const pageInfo = document.createElement('span');
+		pageInfo.className = 'pageInfo';
+		pageInfo.style.cssText = 'font-size: 13px; color: #666; transition: color 0.3s ease;';
+		// pageInfo.textContent = '第 1 页';
+
+		pageNavigation.appendChild(pageInfo);
+		previewBodyUtil.appendChild(pageNavigation);
 		previewBody.appendChild(previewBodyUtil);
 
+		// 添加内容容器
+		const contentContainer = document.createElement('div');
+		contentContainer.className = 'contentContainer';
+		contentContainer.style.cssText = 'flex: 1; padding: 24px; overflow: auto; background: #f5f5f5; display: flex; justify-content: center; transition: background-color 0.3s ease;';
+
+		// 添加纸张容器，按照纸张大小显示
+		const paperContainer = document.createElement('div');
+		paperContainer.className = 'paperContainer';
+		paperContainer.style.cssText = 'background: white; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); transition: box-shadow 0.3s ease; transform-origin: center top; margin-bottom: 24px;';
+
+		// 设置纸张尺寸和方向
+		this.setPaperSize(paperContainer);
+
+		// 添加iframe容器
+		const iframeContainer = document.createElement('div');
+		iframeContainer.style.cssText = 'width: 100%; height: 100%; overflow: hidden;';
+		paperContainer.appendChild(iframeContainer);
+		contentContainer.appendChild(paperContainer);
+		previewBody.appendChild(contentContainer);
+
 		return previewBody;
+	}
+
+	// 设置纸张尺寸和方向
+	private setPaperSize(container: HTMLElement): void {
+		const { paperSize = 'A4', orientation = 'portrait', customSize } = this.settings;
+		let width, height;
+
+		if (paperSize === 'custom' && customSize) {
+			const { width: w, height: h, unit = 'mm' } = customSize;
+			width = w.endsWith(unit) ? w : `${w}${unit}`;
+			height = h.endsWith(unit) ? h : `${h}${unit}`;
+		} else if (paperSize in PAPER_SIZES) {
+			const size = PAPER_SIZES[paperSize as keyof typeof PAPER_SIZES];
+			width = size.width;
+			height = size.height;
+		} else {
+			// 默认使用 A4
+			const defaultSize = PAPER_SIZES.A4;
+			width = defaultSize.width;
+			height = defaultSize.height;
+		}
+
+		// 根据方向设置尺寸
+		if (orientation === 'portrait') {
+			container.style.width = width;
+			container.style.height = height;
+		} else {
+			container.style.width = height;
+			container.style.height = width;
+		}
 	}
 }

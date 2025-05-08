@@ -44,6 +44,12 @@ export interface PrintAreaOption {
 	orientation?: Orientation;
 	// 自定义纸张尺寸，仅当 paperSize 为 'custom' 时生效
 	customSize?: CustomSize;
+	// 是否默认使用深色模式
+	darkMode?: boolean;
+	// 是否默认使用弹窗模式（非全屏）
+	windowMode?: boolean;
+	// 默认缩放比例
+	defaultScale?: number;
 	// 预览窗口打开之前的 callback
 	previewBeforeOpenCallback?: (vue?: any) => void;
 	// 预览窗口打开之后的 callback
