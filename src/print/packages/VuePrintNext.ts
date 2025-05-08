@@ -547,12 +547,6 @@ export default class VuePrintNext {
 						console.warn('无法为iframe内容添加深色模式样式', e);
 					}
 				}
-				
-				// 更新页码信息
-				const pageInfo = document.querySelector('.pageInfo');
-				if (pageInfo) {
-					// pageInfo.textContent = '第 1 页';
-				}
 			});
 		}
 		return iframe;
@@ -943,20 +937,6 @@ export default class VuePrintNext {
 		
 		leftTools.appendChild(paperInfo);
 		previewBodyUtil.appendChild(leftTools);
-
-		// 右侧页面导航
-		const pageNavigation = document.createElement('div');
-		pageNavigation.className = 'pageNavigation';
-		pageNavigation.style.cssText = 'display: flex; align-items: center; gap: 8px;';
-
-		// 页码显示
-		const pageInfo = document.createElement('span');
-		pageInfo.className = 'pageInfo';
-		pageInfo.style.cssText = 'font-size: 13px; color: #666; transition: color 0.3s ease;';
-		// pageInfo.textContent = '第 1 页';
-
-		pageNavigation.appendChild(pageInfo);
-		previewBodyUtil.appendChild(pageNavigation);
 		previewBody.appendChild(previewBodyUtil);
 
 		// 添加内容容器

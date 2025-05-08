@@ -81,7 +81,9 @@ export class VuePrintNext {
 	private iframeId: string;
 	private previewBody: HTMLElement | null;
 	private close: HTMLElement | null;
-	private counter: number;
+	private scale: number;
+	private isDarkMode: boolean;
+	private isFullscreen: boolean;
 	private settings: PrintAreaOption;
 	constructor(option: PrintAreaOption);
 
