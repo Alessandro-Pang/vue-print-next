@@ -427,7 +427,7 @@ export default class VuePrintNext {
 				}
 				
 				// 重置缩放
-				this.scale = 1;
+				this.scale = this.settings.defaultScale || 1;
 				
 				// 重置深色模式
 				if (this.isDarkMode) {
@@ -526,7 +526,6 @@ export default class VuePrintNext {
 			iframeContainer?.appendChild(iframe);
 			
 			// 设置初始缩放
-			this.scale = 1;
 			this.updatePreviewScale();
 			
 			// 添加关闭事件
@@ -645,7 +644,7 @@ export default class VuePrintNext {
 			zoomResetBtn.style.backgroundColor = 'transparent';
 		});
 		zoomResetBtn.addEventListener('click', () => {
-			this.scale = 1;
+			this.scale = this.settings.defaultScale || 1;
 			this.updatePreviewScale();
 		});
 

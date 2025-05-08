@@ -165,6 +165,12 @@ app.mount('#app');
 | `url`                       | `string`                  | 打印指定的网址内容                           | -          |
 | `asyncUrl`                  | `function`                | 异步加载 URL 内容的方法                      | -          |
 | `zIndex`                    | `number`                  | 预览窗口的 `z-index`值                    | 20002      |
+| `paperSize`                 | `string`                  | 纸张尺寸，可选值包括 'A0' 到 'A8'、'Letter'、'Legal'、'Tabloid'、'custom' | 'A4'       |
+| `orientation`               | `string`                  | 纸张方向，可选值为 'portrait'（纵向）或 'landscape'（横向） | 'portrait' |
+| `customSize`                | `object`                  | 自定义纸张尺寸，仅当 paperSize 为 'custom' 时生效 | -          |
+| `darkMode`                  | `boolean`                 | 是否默认使用深色模式                          | `false`    |
+| `windowMode`                | `boolean`                 | 是否默认使用弹窗模式（非全屏）                     | `false`    |
+| `defaultScale`              | `number`                  | 默认缩放比例                              | 1          |
 | `openCallback`              | `function`                | 打印窗口打开时的回调                          | -          |
 | `closeCallback`             | `function`                | 打印窗口关闭时的回调                          | -          |
 | `beforeOpenCallback`        | `function`                | 打印窗口打开前的回调（打印预览使用）                  | -          |
@@ -306,6 +312,77 @@ app.mount('#app');
         resolve('https://example.com/print-content');
       }, 2000);
     }
+  }
+</script>
+```
+
+### 设置纸张尺寸和方向
+
+可以通过 `paperSize` 和 `orientation` 参数设置打印纸张的尺寸和方向：
+
+```vue
+<template>
+  <div id="printMe">
+    <p>这是需要打印的内容</p>
+  </div>
+  <button v-print="printObj">A4 横向打印</button>
+</template>
+
+<script setup>
+  const printObj = {
+    el: '#printMe',
+    paperSize: 'A4',           // 设置纸张尺寸为 A4
+    orientation: 'landscape',   // 设置纸张方向为横向
+    preview: true               // 启用预览模式
+  }
+</script>
+```
+
+### 自定义纸张尺寸
+
+当需要使用非标准纸张尺寸时，可以设置 `paperSize` 为 `'custom'` 并提供 `customSize` 参数：
+
+```vue
+<template>
+  <div id="printMe">
+    <p>这是需要打印的内容</p>
+  </div>
+  <button v-print="printObj">自定义尺寸打印</button>
+</template>
+
+<script setup>
+  const printObj = {
+    el: '#printMe',
+    paperSize: 'custom',        // 设置为自定义尺寸
+    customSize: {
+      width: '100',             // 宽度
+      height: '150',            // 高度
+      unit: 'mm'                // 单位：mm、cm、in、px
+    },
+    preview: true
+  }
+</script>
+```
+
+### 深色模式和窗口模式
+
+可以通过 `darkMode` 和 `windowMode` 参数设置预览界面的显示模式：
+
+```vue
+<template>
+  <div id="printMe">
+    <p>这是需要打印的内容</p>
+  </div>
+  <button v-print="printObj">深色模式预览</button>
+</template>
+
+<script setup>
+  const printObj = {
+    el: '#printMe',
+    preview: true,
+    darkMode: true,             // 启用深色模式
+    windowMode: true,           // 使用弹窗模式（非全屏）
+    defaultScale: 0.8           // 设置默认缩放比例为 80%
   }
 </script>
 ```

@@ -262,3 +262,98 @@
     }
   });
   ```
+
+## `paperSize`
+
+- **类型**: `string`
+- **说明**: 设置打印纸张的尺寸。可选值包括 'A0'、'A1'、'A2'、'A3'、'A4'、'A5'、'A6'、'A7'、'A8'、'Letter'、'Legal'、'Tabloid' 和 'custom'。当设置为 'custom' 时，需要配合 `customSize` 参数使用。
+- **默认值**: `'A4'`
+- **示例**:
+
+  ```typescript
+  new VuePrintNext({ 
+    el: '#printMe', 
+    paperSize: 'A4' // 设置纸张尺寸为 A4
+  });
+  ```
+
+## `orientation`
+
+- **类型**: `string`
+- **说明**: 设置打印纸张的方向。可选值为 'portrait'（纵向）或 'landscape'（横向）。
+- **默认值**: `'portrait'`
+- **示例**:
+
+  ```typescript
+  new VuePrintNext({ 
+    el: '#printMe', 
+    orientation: 'landscape' // 设置纸张方向为横向
+  });
+  ```
+
+## `customSize`
+
+- **类型**: `object`
+- **说明**: 设置自定义纸张尺寸，仅当 `paperSize` 设置为 'custom' 时生效。对象包含以下属性：
+  - `width`: 宽度值（字符串）
+  - `height`: 高度值（字符串）
+  - `unit`: 单位，可选值为 'mm'、'cm'、'in' 或 'px'（可选，默认为 'mm'）
+- **默认值**: 无
+- **示例**:
+
+  ```typescript
+  new VuePrintNext({ 
+    el: '#printMe', 
+    paperSize: 'custom',
+    customSize: {
+      width: '100',
+      height: '150',
+      unit: 'mm'
+    }
+  });
+  ```
+
+## `darkMode`
+
+- **类型**: `boolean`
+- **说明**: 是否默认使用深色模式显示预览界面。
+- **默认值**: `false`
+- **示例**:
+
+  ```typescript
+  new VuePrintNext({ 
+    el: '#printMe', 
+    preview: true,
+    darkMode: true // 启用深色模式
+  });
+  ```
+
+## `windowMode`
+
+- **类型**: `boolean`
+- **说明**: 是否默认使用弹窗模式（非全屏）显示预览界面。
+- **默认值**: `false`
+- **示例**:
+
+  ```typescript
+  new VuePrintNext({ 
+    el: '#printMe', 
+    preview: true,
+    windowMode: true // 使用弹窗模式
+  });
+  ```
+
+## `defaultScale`
+
+- **类型**: `number`
+- **说明**: 设置预览界面的默认缩放比例。
+- **默认值**: `1`
+- **示例**:
+
+  ```typescript
+  new VuePrintNext({ 
+    el: '#printMe', 
+    preview: true,
+    defaultScale: 0.8 // 设置默认缩放比例为 80%
+  });
+  ```

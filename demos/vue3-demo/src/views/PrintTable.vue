@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {vPrint, VuePrintNext} from "vue-print-next";
+import { vPrint, VuePrintNext } from 'vue-print-next';
 
 type TableHeadItem = {
   label: string;
@@ -40,7 +40,7 @@ for (let i = 0; i < 1000; i++) {
 }
 
 function handleBasicPrint() {
-  new VuePrintNext({el: 'table'})
+  new VuePrintNext({el: 'table', defaultScale: 0.8, preview: true })
 }
 </script>
 
