@@ -31,8 +31,11 @@ const isPrinting = ref(false);
   >
     <template #help-text>
       <div class="help-text">
-        <i class="tip-icon">💡</i> 点击下方按钮将打印
-        <a href="/#/print-form" class="link">/#/print-form</a> 页面的内容
+        <i class="tip-icon">💡</i>
+        <span>
+          点击下方按钮将打印
+          <a href="/#/print-form" class="link">/#/print-form</a> 页面的内容
+        </span>
       </div>
     </template>
 

@@ -41,7 +41,7 @@ const printOps: PrintAreaOption = {
         <span class="btn-icon">⚙️</span> 方法打印
       </button>
       <button class="print-btn accent" v-print="printOps">
-        <span class="btn-icon">🔍</span> 忽略图片打印
+        <span class="btn-icon">🔍</span> 忽略图片
       </button>
     </template>
 
@@ -140,7 +140,7 @@ const printOps: PrintAreaOption = {
 }
 
 .hint-text {
-  margin-top: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
   color: var(--text-secondary);
   font-size: 0.9rem;
 }
