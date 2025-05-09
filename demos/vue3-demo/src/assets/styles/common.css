@@ -1,0 +1,349 @@
+/* 
+ * 统一样式文件 - vue-print-next 演示项目
+ * 为所有示例页面提供一致的设计风格
+ */
+
+/* 基础变量 */
+:root {
+  --primary-color: #3a7bd5;
+  --primary-gradient: linear-gradient(45deg, #3a7bd5, #00d2ff);
+  --secondary-color: #6c5ce7;
+  --secondary-gradient: linear-gradient(45deg, #6c5ce7, #a29bfe);
+  --accent-color: #fd746c;
+  --accent-gradient: linear-gradient(45deg, #fd746c, #ff9068);
+  --success-color: #0ba360;
+  --success-gradient: linear-gradient(45deg, #0ba360, #3cba92);
+  --warning-color: #f2994a;
+  --warning-gradient: linear-gradient(45deg, #f2994a, #f2c94c);
+  --danger-color: #eb3349;
+  --danger-gradient: linear-gradient(45deg, #eb3349, #f45c43);
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --bg-light: #f8f9fa;
+  --bg-white: #ffffff;
+  --border-color: #e0e0e0;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+}
+
+/* 通用容器样式 */
+.print-container {
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  background-color: var(--bg-white);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-normal);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 页面标题样式 */
+.page-title {
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+  font-weight: 600;
+  position: relative;
+  padding-bottom: var(--spacing-md);
+}
+
+.page-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-image: var(--primary-gradient);
+  border-radius: 3px;
+}
+
+.page-description {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* 卡片容器 */
+.card-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .card-container {
+    flex-direction: row;
+  }
+}
+
+.card {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-lg);
+  transition: var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* 打印内容区域 */
+.print-content {
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  background-color: var(--bg-light);
+  transition: var(--transition-normal);
+}
+
+/* 按钮组 */
+.buttons-group {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+/* 按钮样式 */
+.print-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+  transition: var(--transition-normal);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+  min-width: 120px;
+  cursor: pointer;
+}
+
+.print-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.print-btn.primary {
+  background-image: var(--primary-gradient);
+  color: white;
+  border: none;
+}
+
+.print-btn.secondary {
+  background-image: var(--secondary-gradient);
+  color: white;
+  border: none;
+}
+
+.print-btn.accent {
+  background-image: var(--accent-gradient);
+  color: white;
+  border: none;
+}
+
+.print-btn.success {
+  background-image: var(--success-gradient);
+  color: white;
+  border: none;
+}
+
+.print-btn.warning {
+  background-image: var(--warning-gradient);
+  color: white;
+  border: none;
+}
+
+.print-btn.danger {
+  background-image: var(--danger-gradient);
+  color: white;
+  border: none;
+}
+
+.print-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-icon {
+  margin-right: var(--spacing-sm);
+  font-size: 1.1rem;
+}
+
+.btn-icon.loading {
+  animation: spin 1.5s infinite linear;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 表格样式 */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-color);
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  border-radius: var(--border-radius-sm);
+}
+
+.data-table th {
+  background-color: #f0f0f0;
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 12px 8px;
+  border-bottom: 2px solid var(--border-color);
+  transition: background-color var(--transition-fast);
+}
+
+.data-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-fast);
+}
+
+.data-table tbody tr:hover {
+  background-color: rgba(58, 123, 213, 0.05);
+}
+
+.data-table .row-even {
+  background-color: var(--bg-light);
+}
+
+/* 表单样式 */
+.form-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+label {
+  display: inline-block;
+  text-align: left;
+  margin-right: var(--spacing-md);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+input, select, textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition-fast);
+  width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.2);
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* 提示文本 */
+.help-text {
+  background-color: rgba(242, 201, 76, 0.1);
+  border-left: 4px solid var(--warning-color);
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.tip-icon {
+  margin-right: var(--spacing-sm);
+  font-size: 1.2rem;
+  color: var(--warning-color);
+}
+
+/* 动画效果 */
+.fade-in {
+  animation: fadeIn var(--transition-slow) ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .buttons-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .print-btn {
+    width: 100%;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .form-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  label {
+    width: 100%;
+    text-align: left;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .card-container {
+    flex-direction: column;
+  }
+}
+
+/* 工具类 */
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.d-flex { display: flex; }
+.flex-column { flex-direction: column; }
+.justify-center { justify-content: center; }
+.align-center { align-items: center; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-grow { flex-grow: 1; }

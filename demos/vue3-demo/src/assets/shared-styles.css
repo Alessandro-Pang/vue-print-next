@@ -1,0 +1,378 @@
+/* 共享样式文件 - 用于统一所有打印示例页面的样式 */
+
+/* 卡片容器样式 */
+.print-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+/* 页面标题样式 */
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.page-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-image: linear-gradient(45deg, #fc4a1a, #b21f1f, #fdbb2d);
+  border-radius: 3px;
+}
+
+/* 设置面板样式 */
+.settings-panel {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.settings-panel:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 设置组样式 */
+.setting-group {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.setting-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.setting-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* 输入控件样式 */
+.select-input, .text-input, .number-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s;
+  background-color: #fff;
+}
+
+.select-input:focus, .text-input:focus, .number-input:focus {
+  border-color: #646cff;
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.2);
+  outline: none;
+}
+
+/* 单选和复选框组样式 */
+.radio-group, .checkbox-group {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.radio-group label, .checkbox-group label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.radio-group input, .checkbox-group input {
+  margin-right: 8px;
+}
+
+/* 范围滑块样式 */
+.range-input {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  background: #e0e0e0;
+  border-radius: 3px;
+  outline: none;
+  margin: 10px 0;
+}
+
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #646cff;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  background: #747bff;
+}
+
+/* 按钮样式 */
+.print-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin: 0 8px 8px 0;
+  background-color: #646cff;
+  color: white;
+}
+
+.print-btn:hover {
+  background-color: #747bff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.print-btn.primary {
+  background-color: #1890ff;
+}
+
+.print-btn.primary:hover {
+  background-color: #40a9ff;
+}
+
+.print-btn.secondary {
+  background-color: #52c41a;
+}
+
+.print-btn.secondary:hover {
+  background-color: #73d13d;
+}
+
+.print-btn.accent {
+  background-color: #722ed1;
+}
+
+.print-btn.accent:hover {
+  background-color: #9254de;
+}
+
+/* 打印内容区域样式 */
+.print-content {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+/* 打印部分样式 */
+.print-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px dashed #d9d9d9;
+}
+
+.print-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* 特性卡片样式 */
+.feature-card {
+  background-color: #f9f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* 代码示例样式 */
+.code-example {
+  background-color: #f5f5f5;
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 15px;
+  overflow-x: auto;
+  border-left: 3px solid #646cff;
+}
+
+.code-example pre {
+  margin: 0;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+code {
+  background-color: #f0f0f0;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  color: #d56161;
+  font-size: 0.9em;
+}
+
+/* 帮助文本样式 */
+.help-text {
+  font-size: 13px;
+  color: #666;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .print-container {
+    padding: 15px;
+  }
+  
+  .settings-panel {
+    padding: 15px;
+  }
+  
+  .custom-size-inputs {
+    grid-template-columns: 1fr;
+  }
+  
+  .buttons-group, .section-buttons {
+    flex-direction: column;
+  }
+  
+  .print-btn {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+/* 深色模式预览样式 */
+.preview-example {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+.preview-example.dark {
+  background-color: #333;
+  color: #fff;
+  border-color: #555;
+}
+
+/* 表格样式 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+table th {
+  background-color: #f5f5f5;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+table td {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  transition: background-color 0.2s;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover td {
+  background-color: #f0f7ff;
+}
+
+table caption {
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #333;
+}
+
+table tfoot {
+  background-color: #f5f5f5;
+  font-weight: 500;
+}
+
+/* 自定义尺寸输入组 */
+.custom-size-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+/* 纸张可视化 */
+.paper-visualization {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.paper-preview {
+  position: relative;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.paper-preview:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+}
+
+.paper-label {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.paper-orientation {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
