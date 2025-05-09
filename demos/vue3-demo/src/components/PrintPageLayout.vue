@@ -2,7 +2,7 @@
 // 统一布局组件，用于包装所有打印示例页面
 import { defineProps } from 'vue';
 
-const props = defineProps({
+defineProps({
   // 页面标题
   title: {
     type: String,
