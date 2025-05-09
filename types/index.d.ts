@@ -8,8 +8,8 @@ export type Orientation = 'portrait' | 'landscape';
 
 // 自定义尺寸接口
 export interface CustomSize {
-	width: string;
-	height: string;
+	width: string | number;
+	height: string | number;
 	unit?: 'mm' | 'cm' | 'in' | 'px';
 }
 
@@ -44,6 +44,8 @@ export interface PrintAreaOption {
 	orientation?: Orientation;
 	// 自定义纸张尺寸，仅当 paperSize 为 'custom' 时生效
 	customSize?: CustomSize;
+	// 预览窗口的纸张尺寸，默认跟随paperSize，可单独设置
+	previewSize?: PaperSize | CustomSize;
 	// 是否默认使用深色模式
 	darkMode?: boolean;
 	// 是否默认使用弹窗模式（非全屏）

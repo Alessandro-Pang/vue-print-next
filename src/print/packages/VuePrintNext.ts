@@ -21,6 +21,13 @@ const PAPER_SIZES = {
 
 const commonBtnStyle = (size = 32) => `width: ${size}px; height: ${size}px; border: none; background: transparent; cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease; padding: 0; outline: none;`;
 
+const getFormatSize = (size: string | number, unit: string) => {
+	if (typeof size === 'number' || !isNaN(Number(size))) return `${size}${unit}`;
+	const sizeUnit = size.toString().match(/[a-zA-Z]+/g)?.[0];
+	if(!sizeUnit || !(sizeUnit in PAPER_SIZES)) return `${size}mm`;
+	return size;
+}
+
 export default class VuePrintNext {
 	// html 文档标准
 	private readonly standards: Standards = {
@@ -57,6 +64,7 @@ export default class VuePrintNext {
 			paperSize = 'A4',
 			orientation = 'portrait',
 			customSize,
+			previewSize,
 			darkMode = false,
 			windowMode = false,
 			defaultScale = 1,
@@ -78,6 +86,7 @@ export default class VuePrintNext {
 			paperSize,
 			orientation,
 			customSize,
+			previewSize,
 			darkMode,
 			windowMode,
 			defaultScale,
@@ -201,8 +210,10 @@ export default class VuePrintNext {
 		let paperSizeStyle = '';
 		if (paperSize === 'custom' && customSize) {
 			const { width, height, unit = 'mm' } = customSize;
-			const w = width.endsWith(unit) ? width : `${width}${unit}`;
-			const h = height.endsWith(unit) ? height : `${height}${unit}`;
+			// 处理宽度，支持number和string类型
+			const w = typeof width === 'number' ? `${width}${unit}` : (width.toString().endsWith(unit) ? width : `${width}${unit}`);
+			// 处理高度，支持number和string类型
+			const h = typeof height === 'number' ? `${height}${unit}` : (height.toString().endsWith(unit) ? height : `${height}${unit}`);
 			paperSizeStyle = orientation === 'portrait' 
 				? `@page { size: ${w} ${h}; }`
 				: `@page { size: ${h} ${w}; }`;
@@ -922,12 +933,28 @@ export default class VuePrintNext {
 		paperInfo.style.cssText = 'font-size: 13px; color: #666; display: flex; align-items: center; transition: color 0.3s ease;';
 		
 		// 获取纸张信息
-		const { paperSize = 'A4', orientation = 'portrait', customSize } = this.settings;
+		const { paperSize = 'A4', orientation = 'portrait', customSize, previewSize } = this.settings;
 		let paperSizeText = '';
 		
-		if (paperSize === 'custom' && customSize) {
+		// 优先使用预览尺寸（如果设置了）
+		if (previewSize) {
+			// 如果previewSize是字符串，表示使用预设尺寸
+			if (typeof previewSize === 'string') {
+				paperSizeText = previewSize;
+			} else if (previewSize.width && previewSize.height) {
+				// 如果是自定义尺寸对象
+				const { width, height, unit = 'mm' } = previewSize;
+				// 确保显示时正确处理number类型
+				const displayWidth = getFormatSize(width, unit);
+				const displayHeight = getFormatSize(height, unit);
+				paperSizeText = `自定义 (${displayWidth} × ${displayHeight})`;
+			}
+		} else if (paperSize === 'custom' && customSize) {
 			const { width, height, unit = 'mm' } = customSize;
-			paperSizeText = `自定义 (${width}${unit} × ${height}${unit})`;
+			// 确保显示时正确处理number类型
+			const displayWidth = getFormatSize(width, unit);
+			const displayHeight = getFormatSize(height, unit);
+			paperSizeText = `自定义 (${displayWidth} × ${displayHeight})`;
 		} else {
 			paperSizeText = paperSize;
 		}
@@ -963,22 +990,44 @@ export default class VuePrintNext {
 
 	// 设置纸张尺寸和方向
 	private setPaperSize(container: HTMLElement): void {
-		const { paperSize = 'A4', orientation = 'portrait', customSize } = this.settings;
-		let width, height;
+		const { paperSize = 'A4', orientation = 'portrait', customSize, previewSize } = this.settings;
+		const defaultSize = PAPER_SIZES.A4;
+		let width = defaultSize.width;
+		let height = defaultSize.height;
 
-		if (paperSize === 'custom' && customSize) {
+		// 优先使用预览尺寸（如果设置了）
+		if (previewSize) {
+			// 如果previewSize是字符串，表示使用预设尺寸
+			if (typeof previewSize === 'string') {
+				if (previewSize in PAPER_SIZES) {
+					const size = PAPER_SIZES[previewSize as keyof typeof PAPER_SIZES];
+					width = size.width;
+					height = size.height;
+				} else {
+					// 如果指定的预设尺寸不存在，使用A4
+					const defaultSize = PAPER_SIZES.A4;
+					width = defaultSize.width;
+					height = defaultSize.height;
+				}
+			} else if (previewSize.width && previewSize.height) {
+				// 如果是自定义尺寸对象
+				const { width: w, height: h, unit = 'mm' } = previewSize;
+				// 处理宽度，支持number和string类型
+				width = getFormatSize(w, unit);
+				// 处理高度，支持number和string类型
+				height = getFormatSize(h, unit);
+			}
+		} else if (paperSize === 'custom' && customSize) {
+			// 如果没有设置预览尺寸，则使用打印尺寸
 			const { width: w, height: h, unit = 'mm' } = customSize;
-			width = w.endsWith(unit) ? w : `${w}${unit}`;
-			height = h.endsWith(unit) ? h : `${h}${unit}`;
+			// 处理宽度，支持number和string类型
+			width = getFormatSize(w, unit);
+			// 处理高度，支持number和string类型
+			height = getFormatSize(h, unit);
 		} else if (paperSize in PAPER_SIZES) {
 			const size = PAPER_SIZES[paperSize as keyof typeof PAPER_SIZES];
 			width = size.width;
 			height = size.height;
-		} else {
-			// 默认使用 A4
-			const defaultSize = PAPER_SIZES.A4;
-			width = defaultSize.width;
-			height = defaultSize.height;
 		}
 
 		// 根据方向设置尺寸

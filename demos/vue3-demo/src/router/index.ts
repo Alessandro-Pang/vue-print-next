@@ -19,6 +19,7 @@ import PrintForm from '../views/PrintForm.vue';
 import PrintIframe from '../views/PrintIframe.vue';
 import PrintPaperSizes from '../views/PrintPaperSizes.vue';
 import PrintPdf from '../views/PrintPdf.vue';
+import PrintPreviewSize from '../views/PrintPreviewSize.vue';
 import PrintTable from '../views/PrintTable.vue';
 import PrintUrl from '../views/PrintUrl.vue';
 
@@ -36,6 +37,7 @@ export const routes = [
 	{path: '/print-advanced', component: PrintAdvanced, meta: {title:'高级打印功能示例'}},
 	{path: '/print-paper-sizes', component: PrintPaperSizes, meta: {title:'纸张尺寸打印示例'}},
 	{path: '/print-callbacks', component: PrintCallbacks, meta: {title:'打印回调函数示例'}},
+	{path: '/print-preview-size', component: PrintPreviewSize, meta: {title:'预览尺寸设置示例'}},
 ]
 
 const router = createRouter({

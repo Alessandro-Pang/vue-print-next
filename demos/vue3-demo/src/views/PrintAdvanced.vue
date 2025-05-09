@@ -5,15 +5,7 @@ import type { Orientation, PaperSize } from 'vue-print-next';
 import { VuePrintNext } from 'vue-print-next';
 
 import PrintPageLayout from '../components/PrintPageLayout.vue';
-
-// 可用的纸张尺寸
-const paperSizes = [
-  { value: 'A4', label: 'A4 (210mm × 297mm)' },
-  { value: 'A3', label: 'A3 (297mm × 420mm)' },
-  { value: 'Letter', label: 'Letter (215.9mm × 279.4mm)' },
-  { value: 'Legal', label: 'Legal (215.9mm × 355.6mm)' },
-  { value: 'custom', label: '自定义尺寸' },
-];
+import { paperSizes } from '../utils/common';
 
 // 当前选择的纸张尺寸
 const selectedPaperSize: Ref<PaperSize> = ref('A4');
