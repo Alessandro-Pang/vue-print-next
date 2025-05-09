@@ -463,6 +463,11 @@ export default class VuePrintNext {
 		let box = document.getElementById('vue-print-next-previewBox');
 		if (box) {
 			box.querySelector('iframe')?.remove();
+			// 重新设置纸张尺寸，确保应用最新的previewSize设置
+			const paperContainer = box.querySelector('.paperContainer');
+			if (paperContainer) {
+				this.setPaperSize(paperContainer as HTMLElement);
+			}
 			return { close: box.querySelector('.previewClose'), previewBody: box.querySelector('.previewBody') };
 		}
 
