@@ -4,6 +4,8 @@ import { ref, Ref } from 'vue';
 import type { Orientation, PaperSize } from 'vue-print-next';
 import { VuePrintNext } from 'vue-print-next';
 
+import PrintPageLayout from '../components/PrintPageLayout.vue';
+
 // 可用的纸张尺寸
 const paperSizes = [
   { value: 'A0', label: 'A0 (841mm × 1189mm)' },
@@ -18,7 +20,7 @@ const paperSizes = [
   { value: 'Letter', label: 'Letter (215.9mm × 279.4mm)' },
   { value: 'Legal', label: 'Legal (215.9mm × 355.6mm)' },
   { value: 'Tabloid', label: 'Tabloid (279.4mm × 431.8mm)' },
-  { value: 'custom', label: '自定义尺寸' }
+  { value: 'custom', label: '自定义尺寸' },
 ];
 
 // 当前选择的纸张尺寸
@@ -51,29 +53,32 @@ function handlePrintPreview() {
     darkMode: darkMode.value,
     windowMode: windowMode.value,
     defaultScale: scale.value,
-    previewTitle: `${selectedPaperSize.value} ${orientation.value === 'portrait' ? '纵向' : '横向'} 打印预览`
+    previewTitle: `${selectedPaperSize.value} ${
+      orientation.value === 'portrait' ? '纵向' : '横向'
+    } 打印预览`,
   };
-  
+
   // 如果是自定义尺寸，添加customSize属性
   if (selectedPaperSize.value === 'custom') {
     Object.assign(printOptions, {
       customSize: {
         width: customWidth.value,
         height: customHeight.value,
-        unit: customUnit.value
-      }
+        unit: customUnit.value,
+      },
     });
   }
-  
+
   new VuePrintNext(printOptions);
 }
 </script>
 
 <template>
-  <div class="print-container fade-in">
-    <h2 class="page-title">纸张尺寸打印示例</h2>
-    <p class="page-description">本示例展示了如何使用vue-print-next设置不同的纸张尺寸和方向进行打印</p>
-    
+  <PrintPageLayout
+    :show-options="false"
+    title="纸张尺寸打印示例"
+    description="本示例展示了vue-print-next支持的不同纸张尺寸打印功能"
+  >
     <div class="card-container">
       <div class="print-options-card">
         <div class="card-header">
@@ -84,21 +89,35 @@ function handlePrintPreview() {
           <div class="setting-group">
             <label>纸张尺寸：</label>
             <select v-model="selectedPaperSize" class="select-input">
-              <option v-for="size in paperSizes" :key="size.value" :value="size.value">
+              <option
+                v-for="size in paperSizes"
+                :key="size.value"
+                :value="size.value"
+              >
                 {{ size.label }}
               </option>
             </select>
           </div>
-          
+
           <div class="setting-group" v-if="selectedPaperSize === 'custom'">
             <div class="custom-size-inputs">
               <div>
                 <label>宽度：</label>
-                <input type="number" v-model="customWidth" class="number-input" min="1" />
+                <input
+                  type="number"
+                  v-model="customWidth"
+                  class="number-input"
+                  min="1"
+                />
               </div>
               <div>
                 <label>高度：</label>
-                <input type="number" v-model="customHeight" class="number-input" min="1" />
+                <input
+                  type="number"
+                  v-model="customHeight"
+                  class="number-input"
+                  min="1"
+                />
               </div>
               <div>
                 <label>单位：</label>
@@ -111,7 +130,7 @@ function handlePrintPreview() {
               </div>
             </div>
           </div>
-          
+
           <div class="setting-group">
             <label>纸张方向：</label>
             <div class="radio-group">
@@ -125,7 +144,7 @@ function handlePrintPreview() {
               </label>
             </div>
           </div>
-          
+
           <div class="setting-group">
             <label>其他选项：</label>
             <div class="checkbox-group">
@@ -139,12 +158,19 @@ function handlePrintPreview() {
               </label>
             </div>
           </div>
-          
+
           <div class="setting-group">
             <label>缩放比例：{{ scale }}</label>
-            <input type="range" v-model="scale" min="0.5" max="2" step="0.1" class="range-input" />
+            <input
+              type="range"
+              v-model="scale"
+              min="0.5"
+              max="2"
+              step="0.1"
+              class="range-input"
+            />
           </div>
-          
+
           <div class="buttons-group">
             <button @click="handlePrintPreview" class="print-btn primary">
               <span class="btn-icon">🖨️</span> 打印预览
@@ -152,41 +178,59 @@ function handlePrintPreview() {
           </div>
         </div>
       </div>
-      
+
       <div class="print-content">
         <div id="paper-size-content" class="paper-content">
           <h3 class="content-title">纸张尺寸演示</h3>
-          <p>当前选择：{{ paperSizes.find(size => size.value === selectedPaperSize)?.label }}</p>
+          <p>
+            当前选择：{{
+              paperSizes.find((size) => size.value === selectedPaperSize)?.label
+            }}
+          </p>
           <p>纸张方向：{{ orientation === 'portrait' ? '纵向' : '横向' }}</p>
-          
+
           <div class="paper-visualization">
-            <div 
-              class="paper-preview" 
+            <div
+              class="paper-preview"
               :style="{
                 width: orientation === 'portrait' ? '200px' : '280px',
                 height: orientation === 'portrait' ? '280px' : '200px',
                 backgroundColor: darkMode ? '#333' : '#fff',
-                color: darkMode ? '#fff' : '#333'
+                color: darkMode ? '#fff' : '#333',
               }"
             >
               <div class="paper-label">
-                {{ selectedPaperSize === 'custom' 
-                  ? `自定义 (${customWidth}${customUnit} × ${customHeight}${customUnit})` 
-                  : paperSizes.find(size => size.value === selectedPaperSize)?.label }}
+                {{
+                  selectedPaperSize === 'custom'
+                    ? `自定义 (${customWidth}${customUnit} × ${customHeight}${customUnit})`
+                    : paperSizes.find(
+                        (size) => size.value === selectedPaperSize
+                      )?.label
+                }}
               </div>
               <div class="paper-orientation">
                 {{ orientation === 'portrait' ? '纵向' : '横向' }}
               </div>
             </div>
           </div>
-          
+
           <div class="paper-info">
             <h4>VuePrintNext 纸张尺寸支持</h4>
-            <p>VuePrintNext 支持多种标准纸张尺寸，包括 A 系列（A0-A8）、Letter、Legal 和 Tabloid。</p>
-            <p>您还可以通过 <code>paperSize: 'custom'</code> 和 <code>customSize</code> 属性设置自定义纸张尺寸。</p>
-            <p>纸张方向可以通过 <code>orientation</code> 属性设置为 <code>'portrait'</code>（纵向）或 <code>'landscape'</code>（横向）。</p>
+            <p>
+              VuePrintNext 支持多种标准纸张尺寸，包括 A
+              系列（A0-A8）、Letter、Legal 和 Tabloid。
+            </p>
+            <p>
+              您还可以通过 <code>paperSize: 'custom'</code> 和
+              <code>customSize</code> 属性设置自定义纸张尺寸。
+            </p>
+            <p>
+              纸张方向可以通过 <code>orientation</code> 属性设置为
+              <code>'portrait'</code>（纵向）或
+              <code>'landscape'</code>（横向）。
+            </p>
           </div>
-          
+
           <div class="paper-sizes-table">
             <h4>标准纸张尺寸参考</h4>
             <table class="data-table">
@@ -224,7 +268,7 @@ function handlePrintPreview() {
         </div>
       </div>
     </div>
-  </div>
+  </PrintPageLayout>
 </template>
 
 <style scoped>
@@ -241,7 +285,8 @@ function handlePrintPreview() {
   margin-top: 20px;
 }
 
-.paper-label, .paper-orientation {
+.paper-label,
+.paper-orientation {
   text-align: center;
   padding: 10px;
 }
@@ -251,7 +296,7 @@ function handlePrintPreview() {
   .paper-visualization {
     margin: 20px 0;
   }
-  
+
   .paper-preview {
     max-width: 100%;
   }

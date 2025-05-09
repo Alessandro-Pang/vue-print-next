@@ -2,51 +2,44 @@
  * @Author: zi.yang
  * @Date: 2024-06-29 20:44:16
  * @LastEditors: zi.yang
- * @LastEditTime: 2025-05-09 11:57:24
+ * @LastEditTime: 2025-05-09 17:49:31
  * @Description: 
  * @FilePath: /vue-print-next/demos/vue3-demo/src/views/PrintBasicTwo.vue
 -->
 <script setup lang="ts">
 import { vPrint } from 'vue-print-next';
+
+import PrintPageLayout from '../components/PrintPageLayout.vue';
 </script>
 <template>
-  <div class="print-container fade-in">
-    <h2 class="page-title">基础打印示例二</h2>
-    <p class="page-description">本示例展示了如何使用vue-print-next打印带有样式的内容</p>
-    
-    <div class="card-container">
-      <div class="print-options-card">
-        <div class="card-header">
-          <span class="card-icon">🖨️</span>
-          <h3>打印选项</h3>
-        </div>
-        <div class="card-content">
-          <div class="help-text">
-            <i class="tip-icon">💡</i> 点击下方按钮将打印右侧的歌词内容
-          </div>
-          
-          <div class="buttons-group">
-            <button v-print="{el: '#print'}" class="print-btn primary">
-              <span class="btn-icon">🖨️</span> 打印内容
-            </button>
-          </div>
-        </div>
+  <PrintPageLayout
+    title="基础打印示例二"
+    description="本示例展示了如何使用vue-print-next打印带有样式的内容"
+  >
+    <template #help-text>
+      <div class="help-text">
+        <i class="tip-icon">💡</i>
+        点击下方按钮将打印右侧的歌词内容
       </div>
-      
-      <div class="print-content" style="flex: 1">
-        <div class="printable" id="print">
-          <h1 class="song-title">葫芦娃</h1>
-          <p>葫芦娃 葫芦娃</p>
-          <p>一根藤上七朵花</p>
-          <p>风吹雨打都不怕 </p>
-          <p>啦啦啦啦</p>
-          <p>叮当当咚咚当当 葫芦娃</p>
-          <p>叮当当咚咚当当 本领大</p>
-          <p>啦啦啦啦</p>
-        </div>
-      </div>
+    </template>
+
+    <template #buttons>
+      <button class="print-btn primary" v-print="'#print-el'">
+        <span class="btn-icon">📄</span> 指令打印
+      </button>
+    </template>
+
+    <div class="printable" id="print-el">
+      <h1 class="song-title">葫芦娃</h1>
+      <p>葫芦娃 葫芦娃</p>
+      <p>一根藤上七朵花</p>
+      <p>风吹雨打都不怕</p>
+      <p>啦啦啦啦</p>
+      <p>叮当当咚咚当当 葫芦娃</p>
+      <p>叮当当咚咚当当 本领大</p>
+      <p>啦啦啦啦</p>
     </div>
-  </div>
+  </PrintPageLayout>
 </template>
 
 <style scoped>

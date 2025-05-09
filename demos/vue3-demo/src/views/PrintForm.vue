@@ -1,89 +1,99 @@
 <script setup lang="ts">
 import { vPrint } from 'vue-print-next';
 
+import PrintPageLayout from '../components/PrintPageLayout.vue';
+
 const printOps = {
   el: 'form',
-}
+};
 </script>
 
 <template>
-  <div class="print-container fade-in">
-    <div class="header-section">
-      <h2 class="page-title">表单打印示例</h2>
-      <p class="page-description">本示例展示了如何使用 vue-print-next 打印表单内容，支持各种表单元素的打印</p>
-    </div>
-    
-    <div class="card-container">
-      <div class="print-options-card">
-        <div class="card-header">
-          <span class="card-icon">⚙️</span>
-          <h3>打印选项</h3>
-        </div>
-        <div class="card-content">
-          <div class="help-text">
-            <i class="tip-icon">💡</i> 提示：点击下方按钮可以打印右侧的表单内容，包括所有表单元素。
-          </div>
-          
-          <div class="buttons-group">
-            <button v-print="printOps" class="print-btn primary">
-              <span class="btn-icon">🖨️</span> 打印表单
-            </button>
-          </div>
+  <PrintPageLayout
+    title="表单打印示例"
+    description="本示例展示了如何使用 vue-print-next 打印表单内容，支持各种表单元素的打印"
+  >
+    <template #help-text>
+      <div class="help-text">
+        <i class="tip-icon">💡</i>
+        提示：点击下方按钮可以打印右侧的表单内容，包括所有表单元素。
+      </div>
+    </template>
+
+    <template #buttons>
+      <button v-print="printOps" class="print-btn primary">
+        <span class="btn-icon">🖨️</span> 打印表单
+      </button>
+    </template>
+
+    <form>
+      <h3 class="form-title">用户信息表单</h3>
+
+      <div class="form-item">
+        <label for="name">姓名:</label>
+        <input
+          type="text"
+          id="name"
+          name="user_name"
+          class="text-input"
+          placeholder="请输入姓名"
+        />
+      </div>
+
+      <div class="form-item">
+        <label for="mail">邮箱:</label>
+        <input
+          type="email"
+          id="mail"
+          name="user_email"
+          placeholder="请输入邮箱"
+        />
+      </div>
+
+      <div class="form-item">
+        <label for="sex">性别:</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" id="sex-male" name="sex" /> 男
+          </label>
+          <label class="radio-label">
+            <input type="radio" id="sex-female" name="sex" checked /> 女
+          </label>
         </div>
       </div>
-      
-      <form class="print-content">
-        <h3 class="form-title">用户信息表单</h3>
-        
-        <div class="form-item">
-          <label for="name">姓名:</label>
-          <input type="text" id="name" name="user_name" class="text-input" placeholder="请输入姓名"/>
-        </div>
 
-        <div class="form-item">
-          <label for="mail">邮箱:</label>
-          <input type="email" id="mail" name="user_email" placeholder="请输入邮箱"/>
-        </div>
+      <div class="form-item">
+        <label for="select">选择:</label>
+        <select name="select" id="select">
+          <optgroup label="4-legged pets">
+            <option value="dog">Dog</option>
+            <option value="cat">Cat</option>
+            <option value="hamster" disabled>Hamster</option>
+          </optgroup>
+          <optgroup label="Flying pets">
+            <option value="parrot">Parrot</option>
+            <option value="macaw">Macaw</option>
+            <option value="albatross">Albatross</option>
+          </optgroup>
+        </select>
+      </div>
 
-        <div class="form-item">
-          <label for="sex">性别:</label>
-          <div class="radio-group">
-            <label class="radio-label">
-              <input type="radio" id="sex-male" name="sex"/> 男
-            </label>
-            <label class="radio-label">
-              <input type="radio" id="sex-female" name="sex" checked/> 女
-            </label>
-          </div>
-        </div>
+      <div class="form-item">
+        <label for="msg">消息:</label>
+        <textarea
+          id="msg"
+          name="user_message"
+          placeholder="请输入消息内容"
+        ></textarea>
+      </div>
 
-        <div class="form-item">
-          <label for="select">选择:</label>
-          <select name="select" id="select">
-            <optgroup label="4-legged pets">
-              <option value="dog">Dog</option>
-              <option value="cat">Cat</option>
-              <option value="hamster" disabled>Hamster</option>
-            </optgroup>
-            <optgroup label="Flying pets">
-              <option value="parrot">Parrot</option>
-              <option value="macaw">Macaw</option>
-              <option value="albatross">Albatross</option>
-            </optgroup>
-          </select>
-        </div>
-
-        <div class="form-item">
-          <label for="msg">消息:</label>
-          <textarea id="msg" name="user_message" placeholder="请输入消息内容"></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="print-btn secondary" style="width: 120px">提交表单</button>
-        </div>
-      </form>
-    </div>
-  </div>
+      <div class="form-actions">
+        <button type="button" class="print-btn secondary" style="width: 120px">
+          提交表单
+        </button>
+      </div>
+    </form>
+  </PrintPageLayout>
 </template>
 
 <style scoped>
@@ -95,7 +105,6 @@ form {
   background-color: var(--bg-white);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
   transition: var(--transition-normal);
 }
 
@@ -139,8 +148,8 @@ label {
   color: var(--text-secondary);
 }
 
-input[type="text"],
-input[type="email"],
+input[type='text'],
+input[type='email'],
 select,
 textarea {
   flex: 1;
@@ -151,8 +160,8 @@ textarea {
   font-size: 0.95rem;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
+input[type='text']:focus,
+input[type='email']:focus,
 select:focus,
 textarea:focus {
   outline: none;
@@ -195,26 +204,26 @@ textarea {
     max-width: 100%;
     padding: var(--spacing-md);
   }
-  
+
   .form-item {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   label {
     width: 100%;
     text-align: left;
     margin-bottom: var(--spacing-xs);
     margin-right: 0;
   }
-  
-  input[type="text"],
-  input[type="email"],
+
+  input[type='text'],
+  input[type='email'],
   select,
   textarea {
     width: 100%;
   }
-  
+
   .radio-group {
     width: 100%;
     margin-top: var(--spacing-xs);

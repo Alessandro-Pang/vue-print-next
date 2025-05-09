@@ -3,86 +3,84 @@ import { ref } from 'vue';
 
 import { PrintAreaOption, vPrint, VuePrintNext } from 'vue-print-next';
 
-const count = ref(0)
+import PrintPageLayout from '../components/PrintPageLayout.vue';
+
+const count = ref(0);
 
 function handleBasicPrint() {
-  new VuePrintNext({el: '#print-el', preview: true})
+  new VuePrintNext({ el: '#print-el', preview: true });
 }
 
 const printOps: PrintAreaOption = {
   el: '#print-el',
   // 打印忽略 img
-  noPrintSelector: ['img']
-}
+  noPrintSelector: ['img'],
+};
 </script>
 
 <template>
-  <div class="print-container fade-in">
-    <div class="header-section">
-      <h2 class="page-title">基本打印功能示例</h2>
-      <p class="page-description">本示例展示了vue-print-next的基本打印功能，包括全屏打印、指令打印和方法打印</p>
-    </div>
-    
-    <div class="card-container">
-      <div class="print-options-card">
-        <div class="card-header">
-          <span class="card-icon">⚙️</span>
-          <h3>打印选项</h3>
-        </div>
-        <div class="card-content">
-          <div class="help-text">
-            <i class="tip-icon">💡</i> 提示：点击下方按钮可以尝试不同的打印方式，包括忽略图片的打印选项。
-          </div>
-          
-          <div class="buttons-group">
-            <button class="print-btn" v-print>
-              <span class="btn-icon">🖨️</span> 全屏打印
-            </button>
-            <button class="print-btn primary" v-print="'#print-el'">
-              <span class="btn-icon">📄</span> 指令打印
-            </button>
-            <button class="print-btn secondary" @click="handleBasicPrint">
-              <span class="btn-icon">⚙️</span> 方法打印
-            </button>
-            <button class="print-btn accent" v-print="printOps">
-              <span class="btn-icon">🔍</span> 忽略图片打印
-            </button>
-          </div>
-        </div>
+  <PrintPageLayout
+    title="基本打印功能示例"
+    description="本示例展示了vue-print-next的基本打印功能，包括全屏打印、指令打印和方法打印"
+  >
+    <template #help-text>
+      <div class="help-text">
+        <i class="tip-icon">💡</i>
+        提示：点击下方按钮可以尝试不同的打印方式，包括忽略图片的打印选项。
       </div>
-      
-      <div id="print-el" class="print-content">
-        <div class="logo-container">
-          <a target="_blank">
-            <img src="/vite.svg" class="logo" alt="Vite logo"/>
-          </a>
-          <a target="_blank">
-            <img src="../assets/vue.svg" class="logo vue" alt="Vue logo"/>
-          </a>
-        </div>
+    </template>
 
-        <h3 class="content-title">测试基本打印功能</h3>
-        
-        <div class="demo-card">
-          <button type="button" class="counter-btn" @click="count++">count is {{ count }}</button>
-          <p class="hint-text">
-            Edit <code>components/HelloWorld.vue</code> to test HMR
-          </p>
-        </div>
+    <template #buttons>
+      <button class="print-btn" v-print>
+        <span class="btn-icon">🖨️</span> 全屏打印
+      </button>
+      <button class="print-btn primary" v-print="'#print-el'">
+        <span class="btn-icon">📄</span> 指令打印
+      </button>
+      <button class="print-btn secondary" @click="handleBasicPrint">
+        <span class="btn-icon">⚙️</span> 方法打印
+      </button>
+      <button class="print-btn accent" v-print="printOps">
+        <span class="btn-icon">🔍</span> 忽略图片打印
+      </button>
+    </template>
 
-        <div class="info-section">
-          <p>
-            Check out <a target="_blank" class="link">create-vue</a>, the official Vue + Vite starter
-          </p>
-          <p>
-            Learn more about IDE Support for Vue in the
-            <a target="_blank" class="link">Vue Docs Scaling up Guide</a>.
-          </p>
-          <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
-        </div>
+    <div id="print-el">
+      <div class="logo-container">
+        <a target="_blank">
+          <img src="/vite.svg" class="logo" alt="Vite logo" />
+        </a>
+        <a target="_blank">
+          <img src="../assets/vue.svg" class="logo vue" alt="Vue logo" />
+        </a>
+      </div>
+
+      <h3 class="content-title">测试基本打印功能</h3>
+
+      <div class="demo-card">
+        <button type="button" class="counter-btn" @click="count++">
+          count is {{ count }}
+        </button>
+        <p class="hint-text">
+          Edit <code>components/HelloWorld.vue</code> to test HMR
+        </p>
+      </div>
+
+      <div class="info-section">
+        <p>
+          Check out <a target="_blank" class="link">create-vue</a>, the official
+          Vue + Vite starter
+        </p>
+        <p>
+          Learn more about IDE Support for Vue in the
+          <a target="_blank" class="link">Vue Docs Scaling up Guide</a>.
+        </p>
+        <p class="read-the-docs">
+          Click on the Vite and Vue logos to learn more
+        </p>
       </div>
     </div>
-  </div>
+  </PrintPageLayout>
 </template>
 
 <style scoped>
@@ -175,7 +173,7 @@ const printOps: PrintAreaOption = {
   .logo {
     height: 80px;
   }
-  
+
   .logo-container {
     flex-direction: column;
     align-items: center;

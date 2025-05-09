@@ -81,7 +81,7 @@
 .card-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-sm);
 }
 
 @media (min-width: 768px) {

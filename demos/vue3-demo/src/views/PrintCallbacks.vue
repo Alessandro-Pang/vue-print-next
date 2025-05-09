@@ -3,9 +3,11 @@ import { ref } from 'vue';
 
 import { VuePrintNext } from 'vue-print-next';
 
+import PrintPageLayout from '../components/PrintPageLayout.vue';
+
 // 日志记录
 const logs = ref<string[]>([]);
-const clearLogs = () => logs.value = [];
+const clearLogs = () => (logs.value = []);
 
 // 添加日志
 const addLog = (message: string) => {
@@ -17,7 +19,7 @@ const addLog = (message: string) => {
 function handlePrintWithCallbacks() {
   clearLogs();
   addLog('开始打印流程');
-  
+
   new VuePrintNext({
     el: '#callback-content',
     preview: true,
@@ -41,7 +43,7 @@ function handlePrintWithCallbacks() {
     // 打印窗口关闭时的回调
     closeCallback: () => {
       addLog('closeCallback: 打印窗口关闭');
-    }
+    },
   });
 }
 
@@ -49,10 +51,10 @@ function handlePrintWithCallbacks() {
 function handlePrintWithContentModification() {
   clearLogs();
   addLog('开始打印流程 - 内容修改示例');
-  
+
   // 获取当前时间
   const currentTime = new Date().toLocaleString();
-  
+
   new VuePrintNext({
     el: '#callback-content',
     preview: true,
@@ -60,12 +62,12 @@ function handlePrintWithContentModification() {
     // 预览框架 iframe 加载前的回调 - 修改打印内容
     previewBeforeOpenCallback: () => {
       addLog('previewBeforeOpenCallback: 准备修改打印内容');
-      
+
       // 添加打印时间戳
       const timestampElement = document.createElement('div');
       timestampElement.className = 'print-timestamp';
       timestampElement.innerHTML = `<strong>打印时间：${currentTime}</strong>`;
-      
+
       // 将时间戳添加到打印内容中
       const contentElement = document.getElementById('callback-content');
       if (contentElement) {
@@ -76,38 +78,48 @@ function handlePrintWithContentModification() {
     // 打印完成后的回调 - 清理添加的内容
     closeCallback: () => {
       addLog('closeCallback: 打印完成，清理添加的内容');
-      
+
       // 移除之前添加的时间戳
       const timestampElement = document.querySelector('.print-timestamp');
       if (timestampElement) {
         timestampElement.remove();
         addLog('已移除打印时间戳');
       }
-    }
+    },
   });
 }
 </script>
 
 <template>
-  <div class="print-callbacks-container">
-    <h2>打印回调函数示例</h2>
-    
+  <PrintPageLayout
+    :show-options="false"
+    title="打印回调函数示例"
+    description="本示例展示了vue-print-next的各种打印回调函数的使用方法"
+  >
     <div class="content-and-logs">
       <div id="callback-content" class="print-content">
         <h3>VuePrintNext 回调函数演示</h3>
-        <p>VuePrintNext 提供了多个回调函数，可以在打印流程的不同阶段执行自定义逻辑。</p>
-        
+        <p>
+          VuePrintNext
+          提供了多个回调函数，可以在打印流程的不同阶段执行自定义逻辑。
+        </p>
+
         <div class="callback-info">
           <h4>可用的回调函数</h4>
           <ul>
-            <li><code>previewBeforeOpenCallback</code>：预览框架 iframe 加载前的回调</li>
-            <li><code>previewOpenCallback</code>：预览框架 iframe 加载完成后的回调</li>
+            <li>
+              <code>previewBeforeOpenCallback</code>：预览框架 iframe
+              加载前的回调
+            </li>
+            <li>
+              <code>previewOpenCallback</code>：预览框架 iframe 加载完成后的回调
+            </li>
             <li><code>beforeOpenCallback</code>：打印窗口打开前的回调</li>
             <li><code>openCallback</code>：打印窗口打开时的回调</li>
             <li><code>closeCallback</code>：打印窗口关闭时的回调</li>
           </ul>
         </div>
-        
+
         <div class="callback-usage">
           <h4>回调函数的应用场景</h4>
           <ol>
@@ -119,30 +131,35 @@ function handlePrintWithContentModification() {
           </ol>
         </div>
       </div>
-      
+
       <div class="logs-panel">
         <div class="logs-header">
           <h4>回调函数执行日志</h4>
           <button @click="clearLogs" class="clear-logs-btn">清除日志</button>
         </div>
         <div class="logs-content">
-          <div v-if="logs.length === 0" class="no-logs">暂无日志记录，请点击下方按钮开始打印</div>
+          <div v-if="logs.length === 0" class="no-logs">
+            暂无日志记录，请点击下方按钮开始打印
+          </div>
           <div v-for="(log, index) in logs" :key="index" class="log-item">
             {{ log }}
           </div>
         </div>
       </div>
     </div>
-    
+
     <div class="button-container">
       <button @click="handlePrintWithCallbacks" class="print-button">
         打印并观察回调函数执行
       </button>
-      <button @click="handlePrintWithContentModification" class="print-button content-mod">
+      <button
+        @click="handlePrintWithContentModification"
+        class="print-button content-mod"
+      >
         使用回调函数修改打印内容
       </button>
     </div>
-  </div>
+  </PrintPageLayout>
 </template>
 
 <style scoped>
@@ -170,7 +187,8 @@ function handlePrintWithContentModification() {
   box-shadow: var(--shadow-sm);
 }
 
-.callback-info, .callback-usage {
+.callback-info,
+.callback-usage {
   margin-top: var(--spacing-md);
   padding: var(--spacing-md);
   background-color: var(--bg-light);

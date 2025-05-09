@@ -1,75 +1,72 @@
+<!--
+ * @Author: zi.yang
+ * @Date: 2024-11-08 10:03:44
+ * @LastEditors: zi.yang
+ * @LastEditTime: 2025-05-09 17:44:41
+ * @Description: 
+ * @FilePath: /vue-print-next/demos/vue3-demo/src/views/PrintAsyncUrl.vue
+-->
 <script setup lang="ts">
 import { ref } from 'vue';
 
 import { PrintAreaOption, vPrint } from 'vue-print-next';
 
-const loading = ref(false)
-function getAsyncUrl(): Promise<string> {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve('/#/print-form')
-      loading.value = false
-    }, 1500)
-  })
-}
+import PrintPageLayout from '../components/PrintPageLayout.vue';
 
+const loading = ref(false);
+function getAsyncUrl(): Promise<string> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('/#/print-form');
+      loading.value = false;
+    }, 1500);
+  });
+}
 
 const printOps: PrintAreaOption = {
   asyncUrl: (callback: (url: string) => void): void => {
     loading.value = true;
-    getAsyncUrl().then(callback)
+    getAsyncUrl().then(callback);
   },
   preview: true,
-}
+};
 </script>
 
 <template>
-  <div class="print-container fade-in">
-    <h2 class="page-title">异步URL打印示例</h2>
-    <p class="page-description">本示例展示了如何使用异步方式获取URL并打印其内容，适用于需要动态生成打印内容的场景</p>
-    
-    <div class="card-container">
-      <div class="print-options-card">
-        <div class="card-header">
-          <span class="card-icon">🔄</span>
-          <h3>异步URL打印</h3>
-        </div>
-        <div class="card-content">
-          <div class="help-text">
-            <i class="tip-icon">💡</i> 点击下方按钮后，系统将在1.5秒后异步加载 <a href="/#/print-form" class="link">/#/print-form</a> 页面内容并打印
-          </div>
-          
-          <div class="buttons-group">
-            <button v-print="printOps" class="print-btn primary" :disabled="loading">
-              <span class="btn-icon" :class="{ 'loading': loading }">{{ loading ? '⏳' : '🖨️' }}</span>
-              {{ loading ? '加载中...' : '异步打印URL' }}
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="print-content">
-        <h3 class="content-title">异步URL打印说明</h3>
-        <p>异步URL打印功能允许您在打印前动态获取URL，这在以下场景特别有用：</p>
-        <ul>
-          <li>需要从服务器获取临时URL的场景</li>
-          <li>打印前需要生成或处理内容的场景</li>
-          <li>基于用户操作动态决定打印内容的场景</li>
-        </ul>
-        
-        <div class="code-example">
-          <h4>示例代码：</h4>
-          <pre><code>const printOps = {
+  <PrintPageLayout
+    title="异步URL打印示例"
+    description="本示例展示了vue-print-next的异步URL打印功能，支持动态加载远程内容"
+  >
+    <template #buttons>
+      <button v-print="printOps" class="print-btn primary" :disabled="loading">
+        <span class="btn-icon" :class="{ loading: loading }">{{
+          loading ? '⏳' : '🖨️'
+        }}</span>
+        {{ loading ? '加载中...' : '异步打印' }}
+      </button>
+    </template>
+
+    <div class="print-content">
+      <h3 class="content-title">异步URL打印说明</h3>
+      <p>异步URL打印功能允许您在打印前动态获取URL，这在以下场景特别有用：</p>
+      <ul>
+        <li>需要从服务器获取临时URL的场景</li>
+        <li>打印前需要生成或处理内容的场景</li>
+        <li>基于用户操作动态决定打印内容的场景</li>
+      </ul>
+
+      <div class="code-example">
+        <h4>示例代码：</h4>
+        <pre><code>const printOps = {
   asyncUrl: (callback) => {
     // 异步获取URL
     getAsyncUrl().then(callback)
   },
   preview: true
 }</code></pre>
-        </div>
       </div>
     </div>
-  </div>
+  </PrintPageLayout>
 </template>
 
 <style scoped>
