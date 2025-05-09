@@ -3,7 +3,6 @@ import { vPrint } from 'vue-print-next';
 
 const printOps = {
   el: 'form',
-  preview: true
 }
 </script>
 
@@ -80,7 +79,7 @@ const printOps = {
         </div>
 
         <div class="form-actions">
-          <button type="button" class="print-btn secondary">提交表单</button>
+          <button type="button" class="print-btn secondary" style="width: 120px">提交表单</button>
         </div>
       </form>
     </div>
@@ -164,10 +163,10 @@ textarea:focus {
 .radio-group {
   display: flex;
   gap: var(--spacing-md);
-  flex: 1;
 }
 
 .radio-label {
+  width: 100px;
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);

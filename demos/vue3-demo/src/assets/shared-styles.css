@@ -99,6 +99,7 @@
 }
 
 .radio-group input, .checkbox-group input {
+  width: 20px;
   margin-right: 8px;
 }
 

@@ -85,13 +85,12 @@ const printOps: PrintAreaOption = {
   </div>
 </template>
 
-<style >
+<style scoped>
 /* 特定页面样式 */
 .logo-container {
-  display: flex;
+  display: flex !important;
   justify-content: center;
-  gap: var(--spacing-lg);
-  margin: var(--spacing-lg) 0;
+  flex-direction: row !important;
 }
 
 .logo {
