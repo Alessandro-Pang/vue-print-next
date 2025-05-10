@@ -227,57 +227,55 @@ function handlePrintPreview() {
       </button>
     </template>
 
-    <div id="preview-size-content" class="print-content">
-      <div class="preview-size-demo">
-        <h2>预览尺寸设置示例</h2>
-        <div class="size-comparison">
-          <div class="size-box">
-            <h3>打印尺寸</h3>
-            <div class="paper-info">
-              <p>
-                {{
-                  selectedPaperSize === 'custom'
-                    ? `自定义 (${customWidth}${customUnit} × ${customHeight}${customUnit})`
-                    : paperSizes.find(
-                        (size) => size.value === selectedPaperSize
-                      )?.label
-                }}
-              </p>
-              <p>{{ orientation === 'portrait' ? '纵向' : '横向' }}</p>
-            </div>
-          </div>
-
-          <div class="size-box">
-            <h3>预览尺寸</h3>
-            <div class="paper-info">
-              <p>
-                {{
-                  useCustomPreviewSize
-                    ? `自定义 (${previewCustomWidth}${previewCustomUnit} × ${previewCustomHeight}${previewCustomUnit})`
-                    : paperSizes.find(
-                        (size) => size.value === selectedPreviewSize
-                      )?.label
-                }}
-              </p>
-              <p>{{ orientation === 'portrait' ? '纵向' : '横向' }}</p>
-            </div>
+    <div class="preview-size-demo">
+      <h2>预览尺寸设置示例</h2>
+      <div class="size-comparison">
+        <div class="size-box">
+          <h3>打印尺寸</h3>
+          <div class="paper-info">
+            <p>
+              {{
+                selectedPaperSize === 'custom'
+                  ? `自定义 (${customWidth}${customUnit} × ${customHeight}${customUnit})`
+                  : paperSizes.find((size) => size.value === selectedPaperSize)
+                      ?.label
+              }}
+            </p>
+            <p>{{ orientation === 'portrait' ? '纵向' : '横向' }}</p>
           </div>
         </div>
 
-        <div class="feature-description">
-          <h3>预览尺寸功能说明</h3>
-          <p>
-            VuePrintNext
-            支持单独设置预览尺寸，使预览窗口的纸张大小可以与实际打印的纸张大小不同。
-          </p>
-          <p>这个功能在以下场景特别有用：</p>
-          <ul>
-            <li>当打印内容较小，但希望在预览时有更大的视图</li>
-            <li>当打印使用特殊尺寸，但希望在预览时使用标准尺寸</li>
-            <li>当需要在不同设备上提供更好的预览体验</li>
-          </ul>
-          <p>使用方法：</p>
-          <pre>
+        <div class="size-box">
+          <h3>预览尺寸</h3>
+          <div class="paper-info">
+            <p>
+              {{
+                useCustomPreviewSize
+                  ? `自定义 (${previewCustomWidth}${previewCustomUnit} × ${previewCustomHeight}${previewCustomUnit})`
+                  : paperSizes.find(
+                      (size) => size.value === selectedPreviewSize
+                    )?.label
+              }}
+            </p>
+            <p>{{ orientation === 'portrait' ? '纵向' : '横向' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-description">
+        <h3>预览尺寸功能说明</h3>
+        <p>
+          VuePrintNext
+          支持单独设置预览尺寸，使预览窗口的纸张大小可以与实际打印的纸张大小不同。
+        </p>
+        <p>这个功能在以下场景特别有用：</p>
+        <ul>
+          <li>当打印内容较小，但希望在预览时有更大的视图</li>
+          <li>当打印使用特殊尺寸，但希望在预览时使用标准尺寸</li>
+          <li>当需要在不同设备上提供更好的预览体验</li>
+        </ul>
+        <p>使用方法：</p>
+        <pre>
 {
   // 打印尺寸设置
   paperSize: 'A4',
@@ -290,8 +288,8 @@ function handlePrintPreview() {
   // 2. 使用自定义尺寸
   previewSize: { width: '420', height: '594', unit: 'mm' }
 }
-          </pre>
-        </div>
+          </pre
+        >
       </div>
     </div>
   </PrintPageLayout>
