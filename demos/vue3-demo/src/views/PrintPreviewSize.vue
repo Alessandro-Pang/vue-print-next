@@ -227,7 +227,7 @@ function handlePrintPreview() {
       </button>
     </template>
 
-    <div class="preview-size-demo">
+    <div id="preview-size-content" class="preview-size-demo">
       <h2>预览尺寸设置示例</h2>
       <div class="size-comparison">
         <div class="size-box">

@@ -630,7 +630,7 @@ export default class VuePrintNext {
 				iframeDoc.head.appendChild(darkModeStyle);
 			}
 		} catch (e) {
-			console.warn('无法为iframe内容添加深色模式样式', e);
+			console.warn('[VuePrintNext] Failed to apply dark mode style to iframe content', e);
 		}
 	}
 
