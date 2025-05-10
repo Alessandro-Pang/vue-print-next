@@ -1,4 +1,4 @@
-import {DefaultTheme, defineConfig} from 'vitepress'
+import { DefaultTheme, defineConfig } from 'vitepress';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -123,6 +123,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
 			collapsed: false,
 			items: [
 				{text: '生命周期', link: 'life-cycle'},
+				{text: '预览工具', link: 'preview-tools'},
 				{text: '实现原理', link: 'impl-principle'},
 			]
 		},

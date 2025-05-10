@@ -171,6 +171,7 @@ app.mount('#app');
 | `darkMode`                  | `boolean`                 | 是否默认使用深色模式                          | `false`    |
 | `windowMode`                | `boolean`                 | 是否默认使用弹窗模式（非全屏）                     | `false`    |
 | `defaultScale`              | `number`                  | 默认缩放比例                              | 1          |
+| `previewTools`              | `object \| boolean`                  | 预览工具栏配置，控制显示哪些工具按钮（zoom、theme、fullscreen） | `{ zoom: true, theme: true, fullscreen: true }` |
 | `openCallback`              | `function`                | 打印窗口打开时的回调                          | -          |
 | `closeCallback`             | `function`                | 打印窗口关闭时的回调                          | -          |
 | `beforeOpenCallback`        | `function`                | 打印窗口打开前的回调（打印预览使用）                  | -          |

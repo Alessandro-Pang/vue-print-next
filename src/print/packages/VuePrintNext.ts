@@ -104,9 +104,9 @@ export default class VuePrintNext {
 			darkMode = false,
 			windowMode = false,
 			defaultScale = 1,
+			previewTools = { zoom: true, theme: true, fullscreen: true },
 			...otherOptions 
 		} = option;
-		
 		// 设置初始状态
 		this.isDarkMode = darkMode;
 		this.isFullscreen = !windowMode; // 窗口模式时，不是全屏模式
@@ -126,6 +126,7 @@ export default class VuePrintNext {
 			darkMode,
 			windowMode,
 			defaultScale,
+			previewTools,
 			...otherOptions,
 			previewBeforeOpenCallback: () => option.previewBeforeOpenCallback?.(vue),
 			previewOpenCallback: () => option.previewOpenCallback?.(vue),
@@ -246,9 +247,7 @@ export default class VuePrintNext {
 		let paperSizeStyle = '';
 		if (paperSize === 'custom' && customSize) {
 			const { width, height, unit = 'mm' } = customSize;
-			// 处理宽度，支持number和string类型
 			const w = typeof width === 'number' ? `${width}${unit}` : (width.toString().endsWith(unit) ? width : `${width}${unit}`);
-			// 处理高度，支持number和string类型
 			const h = typeof height === 'number' ? `${height}${unit}` : (height.toString().endsWith(unit) ? height : `${height}${unit}`);
 			paperSizeStyle = orientation === 'portrait' 
 				? `@page { size: ${w} ${h}; }`
@@ -512,6 +511,15 @@ export default class VuePrintNext {
 		let box = document.getElementById('vue-print-next-previewBox');
 		if (box) {
 			box.querySelector('iframe')?.remove();
+			
+			// 更新预览头部，确保应用最新的previewTools配置
+			const oldHeader = box.querySelector('.previewHeader');
+			if (oldHeader) {
+				const newHeader = this.createPreviewHeader();
+				box.replaceChild(newHeader, oldHeader);
+				this.close = newHeader.querySelector('.previewClose');
+			}
+			
 			// 重新设置纸张尺寸，确保应用最新的previewSize设置
 			const paperContainer = box.querySelector('.paperContainer');
 			if (paperContainer) {
@@ -522,7 +530,7 @@ export default class VuePrintNext {
 			if (paperInfo) {
 				paperInfo.innerHTML = SVG_ICONS.paper + this.getPaperSizeText();
 			}
-			return { close: box.querySelector('.previewClose'), previewBody: box.querySelector('.previewBody') };
+			return { close: this.close, previewBody: box.querySelector('.previewBody') };
 		}
 
 		// 创建预览框架
@@ -562,17 +570,48 @@ export default class VuePrintNext {
 		const toolsContainer = document.createElement('div');
 		toolsContainer.setAttribute('style', 'display: flex; align-items: center; gap: 12px;');
 
-		// 添加缩放控制
-		const zoomControls = this.createZoomControls();
-		toolsContainer.appendChild(zoomControls);
+		// 获取预览工具配置
+		const defaultTools = { zoom: true, theme: true, fullscreen: true };
+		
+		// 处理预览工具配置
+		// 1. 如果 previewTools 为 false，则禁用所有工具按钮
+		// 2. 如果 previewTools 为对象，则合并默认配置
+		// 3. 其他情况使用默认配置
+		let toolsConfig;
+		
+		if (this.settings.previewTools === false) {
+			// 如果明确设置为 false，禁用所有工具按钮
+			toolsConfig = { zoom: false, theme: false, fullscreen: false };
+		} else if (typeof this.settings.previewTools === 'object' && this.settings.previewTools !== null) {
+			// 如果是对象，合并默认配置
+			const userConfig = this.settings.previewTools;
+			toolsConfig = {
+				zoom: userConfig.zoom !== false,
+				theme: userConfig.theme !== false,
+				fullscreen: userConfig.fullscreen !== false
+			};
+		} else {
+			// 默认情况下启用所有工具
+			toolsConfig = { ...defaultTools };
+		}
 
-		// 添加主题切换按钮
-		const themeToggle = this.createThemeToggle();
-		toolsContainer.appendChild(themeToggle);
+		// 有条件地添加缩放控制
+		if (toolsConfig.zoom) {
+			const zoomControls = this.createZoomControls();
+			toolsContainer.appendChild(zoomControls);
+		}
 
-		// 添加全屏切换按钮
-		const fullscreenToggle = this.createFullscreenToggle();
-		toolsContainer.appendChild(fullscreenToggle);
+		// 有条件地添加主题切换按钮
+		if (toolsConfig.theme) {
+			const themeToggle = this.createThemeToggle();
+			toolsContainer.appendChild(themeToggle);
+		}
+
+		// 有条件地添加全屏切换按钮
+		if (toolsConfig.fullscreen) {
+			const fullscreenToggle = this.createFullscreenToggle();
+			toolsContainer.appendChild(fullscreenToggle);
+		}
 
 		// 关闭按钮
 		this.close = this.createCloseButton();

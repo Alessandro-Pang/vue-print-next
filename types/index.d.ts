@@ -13,6 +13,16 @@ export interface CustomSize {
 	unit?: 'mm' | 'cm' | 'in' | 'px';
 }
 
+// 预览工具配置接口
+export interface PreviewToolsOption {
+	// 是否显示缩放控制
+	zoom?: boolean;
+	// 是否显示主题切换按钮
+	theme?: boolean;
+	// 是否显示全屏切换按钮
+	fullscreen?: boolean;
+}
+
 export interface PrintAreaOption {
 	// 局部打印的元素，支持 css 选择器或 dom 节点
 	el?: string | HTMLElement,
@@ -52,6 +62,8 @@ export interface PrintAreaOption {
 	windowMode?: boolean;
 	// 默认缩放比例
 	defaultScale?: number;
+	// 预览工具配置，控制显示哪些工具按钮，设置为false时关闭所有工具按钮
+	previewTools?: PreviewToolsOption | false;
 	// 预览窗口打开之前的 callback
 	previewBeforeOpenCallback?: (vue?: any) => void;
 	// 预览窗口打开之后的 callback
