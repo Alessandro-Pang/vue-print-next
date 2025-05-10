@@ -33,7 +33,7 @@ defineProps({
     <div class="card-container">
       <!-- 打印选项卡片 -->
       <div v-if="showOptions" class="print-options-card">
-        <div class="card-header">
+        <div class="card-header text-center">
           <span class="card-icon">⚙️</span>
           <h3>打印选项</h3>
         </div>

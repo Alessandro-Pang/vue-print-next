@@ -275,7 +275,8 @@ function handlePrintPreview() {
           <li>当需要在不同设备上提供更好的预览体验</li>
         </ul>
         <p>使用方法：</p>
-        <pre>
+        <div class="code-example">
+          <pre>
 {
   // 打印尺寸设置
   paperSize: 'A4',
@@ -288,8 +289,8 @@ function handlePrintPreview() {
   // 2. 使用自定义尺寸
   previewSize: { width: '420', height: '594', unit: 'mm' }
 }
-          </pre
-        >
+          </pre>
+        </div>
       </div>
     </div>
   </PrintPageLayout>
@@ -318,6 +319,7 @@ function handlePrintPreview() {
   border-radius: 8px;
   padding: 15px;
   background-color: #f9f9f9;
+  text-align: center;
 }
 
 .size-box h3 {

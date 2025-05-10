@@ -217,6 +217,7 @@
   margin-top: 15px;
   overflow-x: auto;
   border-left: 3px solid #646cff;
+  text-align: left;
 }
 
 .code-example pre {

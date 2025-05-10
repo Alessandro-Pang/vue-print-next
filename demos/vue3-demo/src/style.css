@@ -60,15 +60,8 @@ button:focus-visible {
 
 #app {
   margin: 0 auto;
-  text-align: center;
   height: 100%;
   width: 100%;
-}
-
-
-.a4-page {
-  width: 210mm;
-  height: 297mm;
 }
 
 .mt-m {

@@ -146,6 +146,7 @@ const printOps: PrintAreaOption = {
 }
 
 .info-section {
+  text-align: center;
   margin-top: var(--spacing-lg);
   padding-top: var(--spacing-md);
   border-top: 1px solid var(--border-color);
