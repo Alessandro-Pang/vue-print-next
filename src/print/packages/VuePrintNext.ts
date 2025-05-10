@@ -517,6 +517,11 @@ export default class VuePrintNext {
 			if (paperContainer) {
 				this.setPaperSize(paperContainer as HTMLElement);
 			}
+			// 更新纸张尺寸文本信息
+			const paperInfo = box.querySelector('.paperInfo');
+			if (paperInfo) {
+				paperInfo.innerHTML = SVG_ICONS.paper + this.getPaperSizeText();
+			}
 			return { close: box.querySelector('.previewClose'), previewBody: box.querySelector('.previewBody') };
 		}
 
