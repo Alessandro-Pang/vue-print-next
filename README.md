@@ -14,33 +14,40 @@
 
 ![Alt](https://repobeats.axiom.co/api/embed/d78c098d0c6aded6d25e2603961030f7a1a96e64.svg "Repobeats analytics image")
 
-Vue 打印插件，简单、快速、方便、轻巧，支持 Vue 2 和 Vue 3。
+> Vue 打印插件，简单、快速、方便、轻巧，支持 Vue 2 和 Vue 3。
 
-本插件基于 [vue3-print-nb](https://github.com/Power-kxLee/vue3-print-nb) 开发，并使用 TypeScript 完全重写，以更好地支持
-Vue 3 的 setup 函数。
+本插件基于 [vue3-print-nb](https://github.com/Power-kxLee/vue3-print-nb) 开发，并使用 TypeScript 完全重写，以更好地支持 Vue 3 的 setup 函数和组合式 API。
 
-在线文档 : [https://alexpang.cn/vue-print-next/docs](https://alexpang.cn/vue-print-next/docs)
+## 📚 文档
 
-## 特性
+在线文档：[https://alexpang.cn/vue-print-next/docs](https://alexpang.cn/vue-print-next/docs)
 
-- 支持指令调用和手动调用 `VuePrintNext` 方法进行打印。
-- 更好地支持 Vue 3 的 setup 函数。
-- 支持全局和局部内容打印，以及打印预览功能。
+## ✨ 特性
+
+- 支持 Vue 2 和 Vue 3，兼容性强
+- 支持指令调用和手动调用 `VuePrintNext` 方法进行打印
+- 完全支持 Vue 3 的 setup 函数和组合式 API
+- 支持全局和局部内容打印，以及打印预览功能
 - 支持设置指定 class 样式的元素忽略打印
-- 支持通过 css 选择器、手动传入 Dom 节点进行局部打印。
+- 支持通过 css 选择器、手动传入 Dom 节点进行局部打印
+- 支持自定义纸张尺寸和方向
+- 支持深色模式和窗口模式
+- 支持打印工具栏自定义配置
+- 支持响应式设计，适配不同设备
+- 提供丰富的回调函数，满足各种打印场景需求
 
-## Demo
+## 🔍 Demo
 
 项目中提供了 Vue2 和 Vue3 的 demo 源码，可以 clone 下本项目后进行查看
 
 - **Vue2：** /demos/vue2-demo
 - **Vue3：** /demos/vue3-demo
 
-在线 demo : [https://alexpang.cn/vue-print-next/vue3-demo](https://alexpang.cn/vue-print-next/vue3-demo)
+在线 demo：[https://alexpang.cn/vue-print-next/vue3-demo](https://alexpang.cn/vue-print-next/vue3-demo)
 
-## 安装
+## 📦 安装
 
-你可以通过 npm、 yarn 或 pnpm 安装该插件：
+你可以通过 npm、yarn 或 pnpm 安装该插件：
 
 ```bash
 npm install vue-print-next --save
@@ -50,11 +57,11 @@ yarn add vue-print-next
 pnpm add vue-print-next
 ```
 
-## 快速开始
+## 🚀 快速开始
 
 ### 1. 全局使用插件
 
-在你的 `main.ts` 文件中：
+在你的 `main.ts` 或 `main.js` 文件中：
 
 ```typescript
 import {createApp} from 'vue';
@@ -68,8 +75,7 @@ app.mount('#app');
 
 ### 2. Vue3 在组件中使用指令
 
-```vue
-
+```html
 <script setup>
   // 直接导入指令
   import {vPrint} from 'vue-print-next';
@@ -87,10 +93,9 @@ app.mount('#app');
 </template>
 ```
 
-### 2. Vue2 在组件中使用指令
+### 3. Vue2 在组件中使用指令
 
-```vue
-
+```html
 <script>
   import {vPrint} from "vue-print-next";
 
@@ -118,8 +123,7 @@ app.mount('#app');
 
 如果你需要更复杂的打印逻辑，可以直接使用 `VuePrintNext` 类：
 
-```vue
-
+```html
 <script setup>
   import {VuePrintNext} from 'vue-print-next';
 
@@ -138,7 +142,7 @@ app.mount('#app');
 </template>
 ```
 
-## API 详解
+## 📋 API 详解
 
 ### `vPrint` 指令
 
@@ -168,22 +172,21 @@ app.mount('#app');
 | `paperSize`                 | `string`                  | 纸张尺寸，可选值包括 'A0' 到 'A8'、'Letter'、'Legal'、'Tabloid'、'custom' | 'A4'       |
 | `orientation`               | `string`                  | 纸张方向，可选值为 'portrait'（纵向）或 'landscape'（横向） | 'portrait' |
 | `customSize`                | `object`                  | 自定义纸张尺寸，仅当 paperSize 为 'custom' 时生效 | -          |
-| `darkMode`                  | `boolean`                 | 是否默认使用深色模式                          | `false`    |
-| `windowMode`                | `boolean`                 | 是否默认使用弹窗模式（非全屏）                     | `false`    |
-| `defaultScale`              | `number`                  | 默认缩放比例                              | 1          |
-| `previewTools`              | `object \| boolean`                  | 预览工具栏配置，控制显示哪些工具按钮（zoom、theme、fullscreen） | `{ zoom: true, theme: true, fullscreen: true }` |
+| `darkMode`                  | `boolean`                 | 预览窗口是否默认使用深色模式                          | `false`    |
+| `windowMode`                | `boolean`                 | 预览窗口是否默认使用弹窗模式（非全屏）                     | `false`    |
+| `defaultScale`              | `number`                  | 预览窗口默认缩放比例                              | 1          |
+| `previewTools`              | `object \| boolean`       | 预览工具栏配置，控制显示哪些工具按钮（zoom、theme、fullscreen） | `{ zoom: true, theme: true, fullscreen: true }` |
 | `openCallback`              | `function`                | 打印窗口打开时的回调                          | -          |
 | `closeCallback`             | `function`                | 打印窗口关闭时的回调                          | -          |
 | `beforeOpenCallback`        | `function`                | 打印窗口打开前的回调（打印预览使用）                  | -          |
 | `previewBeforeOpenCallback` | `function`                | 预览框架 iframe 加载前的回调（预览使用）            | -          |
 | `previewOpenCallback`       | `function`                | 预览框架 iframe 加载完成后的回调（预览使用）          | -          |
 
-## 使用示例
+## 🌰 使用示例
 
 ### 打印整个页面
 
-```vue
-
+```html
 <button v-print>打印整个页面</button>
 ```
 
@@ -191,8 +194,7 @@ app.mount('#app');
 
 通过指定 `id` 参数打印局部内容：
 
-```vue
-
+```html
 <div id="printMe">
   <p>这是需要打印的内容</p>
 </div>
@@ -200,17 +202,19 @@ app.mount('#app');
 <button v-print="'#printMe'">打印局部内容</button>
 ```
 
+### 使用 ref 获取打印元素
+
 允许传入一个 dom 节点，如下，可以通过 `ref` 获取打印元素
 
-```vue
-
+```html
 <script setup lang="ts">
   import {ref, type Ref} from 'vue';
   import {VuePrintNext} from "vue-print-next";
 
+  const printEle = ref(null) as Ref<HTMLElement>;
+  
   function handlePrint() {
-    const printEle = ref(null) as Ref<HTMLElement>;
-    new VuePrintNext({el: printEle})
+    new VuePrintNext({el: printEle.value})
   }
 </script>
 
@@ -219,14 +223,13 @@ app.mount('#app');
     <p>这是需要打印的内容</p>
   </div>
 
-  <button v-print="handlePrint">打印局部内容</button>
+  <button @click="handlePrint">打印局部内容</button>
 </template>
 ```
 
 ### 传递对象参数
 
-```vue
-
+```html
 <template>
   <div>
     <div id="printMe">
@@ -256,8 +259,7 @@ app.mount('#app');
 
 通过指定 URL 打印，并确保你的 URL 符合同源策略：
 
-```vue
-
+```html
 <template>
   <button v-print="printObj">打印指定 URL</button>
 </template>
@@ -273,8 +275,7 @@ app.mount('#app');
 
 通过设置 `noPrintSelector` 参数忽略不需要打印的元素：
 
-```vue
-
+```html
 <template>
   <div id="printMe">
     <p>葫芦娃，葫芦娃</p>
@@ -300,8 +301,7 @@ app.mount('#app');
 
 如果你的 URL 需要异步加载，可以使用以下方法：
 
-```vue
-
+```html
 <template>
   <button v-print="printObj">异步加载 URL 并打印</button>
 </template>
@@ -321,7 +321,7 @@ app.mount('#app');
 
 可以通过 `paperSize` 和 `orientation` 参数设置打印纸张的尺寸和方向：
 
-```vue
+```html
 <template>
   <div id="printMe">
     <p>这是需要打印的内容</p>
@@ -343,7 +343,7 @@ app.mount('#app');
 
 当需要使用非标准纸张尺寸时，可以设置 `paperSize` 为 `'custom'` 并提供 `customSize` 参数：
 
-```vue
+```html
 <template>
   <div id="printMe">
     <p>这是需要打印的内容</p>
@@ -369,7 +369,7 @@ app.mount('#app');
 
 可以通过 `darkMode` 和 `windowMode` 参数设置预览界面的显示模式：
 
-```vue
+```html
 <template>
   <div id="printMe">
     <p>这是需要打印的内容</p>
@@ -388,7 +388,41 @@ app.mount('#app');
 </script>
 ```
 
-## Star History
+### 自定义预览工具栏
+
+可以通过 `previewTools` 参数自定义预览工具栏的显示：
+
+```html
+<template>
+  <div id="printMe">
+    <p>这是需要打印的内容</p>
+  </div>
+  <button v-print="printObj">自定义工具栏</button>
+</template>
+
+<script setup>
+  const printObj = {
+    el: '#printMe',
+    preview: true,
+    // 只显示缩放和主题切换按钮，不显示全屏按钮
+    previewTools: {
+      zoom: true,
+      theme: true,
+      fullscreen: false
+    }
+  }
+</script>
+```
+
+## 🤝 贡献指南
+
+1. Fork 本仓库
+2. 创建你的特性分支 (`git checkout -b feature/amazing-feature`)
+3. 提交你的更改 (`git commit -m 'Add some amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 开启一个 Pull Request
+
+## ⭐ Star History
 
 <a href="https://star-history.com/#Alessandro-Pang/vue-print-next&Date">
  <picture>
@@ -398,7 +432,7 @@ app.mount('#app');
  </picture>
 </a>
 
-## Supporters
+## 👥 Supporters
 
 <a href="https://github.com/Alessandro-Pang/vue-print-next/stargazers">
  <picture>
@@ -416,7 +450,7 @@ app.mount('#app');
  </picture>
 </a>
 
-## License
+## 📄 License
 
 [MIT](http://opensource.org/licenses/MIT)
 
