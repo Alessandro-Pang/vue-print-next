@@ -329,10 +329,9 @@ export default class VuePrintNext {
 	 * @param clonedElement
 	 */
 	removeScriptHandler(clonedElement: HTMLElement) {
-		const clonedScripts = clonedElement.querySelectorAll('script')
-		clonedScripts.forEach((script) => {
-			script.remove()
-		})
+		const clonedScripts = Array.from(clonedElement.querySelectorAll('script'));
+		if (clonedScripts.length === 0) return;
+		clonedScripts.forEach((script) => {	script.remove();});
 	}
 
 	/**
@@ -342,20 +341,61 @@ export default class VuePrintNext {
 	 * @private
 	 */
 	canvasToImgHandler(originalElement: HTMLElement, clonedElement: HTMLElement) {
-		const originalCanvases = originalElement.querySelectorAll('canvas');
-		const clonedCanvases = clonedElement.querySelectorAll('canvas');
+		try {
+			// 使用数组方法优化查询结果处理
+			const originalCanvases = Array.from(originalElement.querySelectorAll('canvas'));
+			const clonedCanvases = Array.from(clonedElement.querySelectorAll('canvas'));
+			
+			// 如果没有Canvas元素，直接返回
+			if (clonedCanvases.length === 0) return;
+			
+			// 收集需要更新的元素，批量处理DOM更新
+			let pendingUpdates: Array<{parent: Node, newElement: HTMLElement, oldElement: HTMLElement}> = [];
 
-		clonedCanvases.forEach((clonedCanvas, index) => {
-			const originalCanvas = originalCanvases[index];
-			const _parent = clonedCanvas.parentNode;
-			const _canvasUrl = originalCanvas.toDataURL('image/png');
-			const _img = new Image();
-			_img.className = 'canvasImg';
-			_img.style.display = 'block';
-			_img.src = _canvasUrl;
-			_parent?.appendChild(_img);
-			clonedCanvas.remove();
-		});
+			clonedCanvases.forEach((clonedCanvas, index) => {
+				const originalCanvas = originalCanvases[index];
+
+				if (!originalCanvas) {
+					console.warn(`${FUNC_NAME}: Canvas element mismatch, Canvas at index ${index} does not exist in the original element`);
+					return;
+				}
+
+				const _parent = clonedCanvas.parentNode;
+				if (!_parent) {
+					console.warn(`${FUNC_NAME}: Canvas parent element does not exist`);
+					return;
+				}
+
+				try {
+					// 使用try-catch捕获toDataURL可能的跨域错误
+					const _canvasUrl = originalCanvas.toDataURL('image/png');
+					const _img = new Image();
+					_img.className = 'canvasImg';
+					_img.style.display = 'block';
+					_img.src = _canvasUrl;
+					
+					// 收集需要更新的元素，而不是立即更新DOM
+					pendingUpdates.push({parent: _parent, newElement: _img, oldElement: clonedCanvas});
+				} catch (canvasError) {
+					console.error(`${FUNC_NAME}: Error processing Canvas:`, canvasError);
+					// 创建错误提示元素替代Canvas
+					const errorDiv = document.createElement('div');
+					errorDiv.className = 'canvas-error';
+					errorDiv.style.cssText = 'padding: 10px; border: 1px dashed #ff6b6b; color: #ff6b6b; text-align: center;';
+					errorDiv.textContent = 'Unable to load Canvas content, possibly due to cross-origin restrictions';
+					
+					// 收集需要更新的元素
+					pendingUpdates.push({parent: _parent, newElement: errorDiv, oldElement: clonedCanvas});
+				}
+			});
+			
+			// 批量处理DOM更新，减少重绘
+			pendingUpdates.forEach(({parent, newElement, oldElement}) => {
+				parent.replaceChild(newElement, oldElement);
+			});
+		} catch (error) {
+			console.error(`${FUNC_NAME}: Error occurred while processing Canvas elements:`, error);
+		}
 	}
 
 	/**
@@ -364,40 +404,71 @@ export default class VuePrintNext {
 	 * @param clonedElement
 	 * @private
 	 */
-
 	private formDataHandler(originalElement: HTMLElement, clonedElement: HTMLElement) {
-		const copiedInputs = clonedElement.querySelectorAll<
-			HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input,select,textarea');
-		let selectCount = -1;
+		try {
+			// 使用数组方法优化查询结果处理
+			const copiedInputs = Array.from(clonedElement.querySelectorAll<
+			HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input,select,textarea'));
+			
+			// 如果没有表单元素，直接返回
+			if (copiedInputs.length === 0) return;
+			
+			// 预先获取所有select元素，避免重复查询
+			const originalSelects = Array.from(originalElement.querySelectorAll<HTMLSelectElement>('select'));
+			let selectCount = -1;
 
-		copiedInputs.forEach((item) => {
-			const formValue = item.value;
-			let typeInput = item.getAttribute('type') ?? item.tagName.toLowerCase();
-			switch (typeInput) {
-				case 'select':
-					selectCount++;
-					const select = originalElement.querySelectorAll<HTMLSelectElement>('select')[selectCount];
-					if (select) {
-						const opSelectedIndex = select.selectedIndex;
-						(item as HTMLSelectElement).options[opSelectedIndex].setAttribute('selected', 'selected');
+			// 批量处理表单元素
+			copiedInputs.forEach((item) => {
+				try {
+					const formValue = item.value;
+					const typeInput = item.getAttribute('type') ?? item.tagName.toLowerCase();
+					
+					switch (typeInput) {
+						case 'select':
+							selectCount++;
+							if (selectCount < originalSelects.length) {
+								const select = originalSelects[selectCount];
+								const opSelectedIndex = select.selectedIndex;
+								const options = (item as HTMLSelectElement).options;
+								
+								if (options && options.length > opSelectedIndex && opSelectedIndex >= 0) {
+									options[opSelectedIndex].setAttribute('selected', 'selected');
+								} else if (options && options.length > 0) {
+									// 如果索引超出范围但有选项，默认选择第一个
+									options[0].setAttribute('selected', 'selected');
+									console.warn(`${FUNC_NAME}: Select element option index out of range, defaulting to first option`);
+								} else {
+									console.warn(`${FUNC_NAME}: Select element has no options`);
+								}
+							} else {
+								console.warn(`${FUNC_NAME}: Original select element not found at index ${selectCount}`);
+							}
+							break;
+						case 'textarea':
+							// 直接设置内容，避免不必要的try-catch
+							(item as HTMLTextAreaElement).innerHTML = formValue;
+							item.setAttribute('html', formValue);
+							break;
+						case 'radio':
+						case 'checkbox':
+							if ((item as HTMLInputElement).checked) {
+								item.setAttribute('checked', 'checked');
+							}
+							break;
+						default:
+							// 直接设置值，避免不必要的try-catch
+							(item as HTMLInputElement).value = formValue;
+							item.setAttribute('value', formValue);
+							break;
 					}
-					break;
-				case 'textarea':
-					(item as HTMLTextAreaElement).innerHTML = formValue;
-					item.setAttribute('html', formValue);
-					break;
-				case 'radio':
-				case 'checkbox':
-					if ((item as HTMLInputElement).checked) {
-						item.setAttribute('checked', 'checked');
-					}
-					break;
-				default:
-					(item as HTMLInputElement).value = formValue;
-					item.setAttribute('value', formValue);
-					break;
-			}
-		});
+				} catch (itemError) {
+					// 使用更具体的错误信息
+					console.error(`${FUNC_NAME}: Error processing form element (${item.tagName}):`, itemError);
+				}
+			});
+		} catch (error) {
+			console.error(`${FUNC_NAME}: Error occurred while processing form data:`, error);
+		}
 	}
 
 	// 生成并返回打印窗口的 iframe 和文档对
