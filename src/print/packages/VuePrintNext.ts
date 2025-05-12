@@ -912,7 +912,7 @@ export default class VuePrintNext {
 		}
 
 		// 重新应用所有按钮的悬浮效果，确保悬浮颜色与当前主题匹配
-		const allButtons = box.querySelectorAll('button');
+		const allButtons = box.querySelectorAll('button:not(.previewBodyUtilPrintBtn)');
 		allButtons.forEach(button => {
 			// 移除现有的mouseover和mouseout事件监听器
 			const newButton = button.cloneNode(true) as HTMLElement;
@@ -921,6 +921,20 @@ export default class VuePrintNext {
 			// 重新添加悬浮效果，使用当前的isDarkMode状态
 			addHoverEffect(newButton, this.isDarkMode);
 		});
+		
+		// 单独处理打印按钮，只更新样式而不替换元素，保留事件监听器
+		const printBtn = box.querySelector('.previewBodyUtilPrintBtn') as HTMLElement;
+		if (printBtn) {
+			// 只更新悬停效果的颜色，不替换元素
+			printBtn.addEventListener('mouseover', () => {
+				printBtn.style.backgroundColor = '#40a9ff';
+				printBtn.style.boxShadow = '0 2px 8px rgba(24, 144, 255, 0.3)';
+			});
+			printBtn.addEventListener('mouseout', () => {
+				printBtn.style.backgroundColor = '#1890ff';
+				printBtn.style.boxShadow = 'none';
+			});
+		}
 	}
 
 	// 创建全屏切换按钮
