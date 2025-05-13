@@ -129,6 +129,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
 		},
 		{text: 'API 参考', link: 'api'},
 		{text: '常见问题', link: 'faq'},
+		{text: '从 vue-print-nb 迁移', link: 'migration-from-vue-print-nb'},
 	]
 }
 
