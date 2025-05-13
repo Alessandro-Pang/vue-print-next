@@ -14,6 +14,8 @@
 
 ![Alt](https://repobeats.axiom.co/api/embed/d78c098d0c6aded6d25e2603961030f7a1a96e64.svg "Repobeats analytics image")
 
+[English](./README.en.md) | 简体中文
+
 > Vue 打印插件，简单、快速、方便、轻巧，支持 Vue 2 和 Vue 3。
 
 本插件基于 [vue3-print-nb](https://github.com/Power-kxLee/vue3-print-nb) 开发，并使用 TypeScript 完全重写，以更好地支持 Vue 3 的 setup 函数和组合式 API。
