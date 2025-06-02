@@ -64,6 +64,56 @@ const getFormatSize = (size: string | number, unit: string) => {
 	return size;
 }
 
+/**
+ * 修复 Safari 浏览器下 iframe 事件监听不生效的问题
+ * @param options 配置项
+ * @param options.immediateEvents 需要立即触发的事件类型（如 'load'）
+ * @param options.debug 是否打印调试信息
+ */
+export function patchSafariIframeEventListener(options?: {
+  immediateEvents?: string[];
+  debug?: boolean;
+}) {
+  const { immediateEvents = ['load'], debug = false } = options || {};
+
+  const originalAddEventListener = HTMLIFrameElement.prototype.addEventListener;
+
+  HTMLIFrameElement.prototype.addEventListener = function <T extends keyof HTMLElementEventMap>(
+    type: T,
+    listener: any,
+    options?: boolean | AddEventListenerOptions
+  ): void {
+    // 保留原始功能
+    originalAddEventListener.call(this, type, listener, options);
+
+    // Safari 特殊处理
+    if (typeof listener !== 'function') return;
+
+    try {
+      // 如果配置了 immediateEvents，并且 iframe 已经加载完成，则立即触发回调
+      if (
+        immediateEvents.includes(type as string) &&
+        this.contentWindow?.document.readyState === 'complete'
+      ) {
+        if (debug) {
+          console.log(`[Safari Iframe Patch] Triggering "${type}" immediately`);
+        }
+        listener.call(this, new Event(type) as HTMLElementEventMap[T]);
+      }
+    } catch (err) {
+      console.warn('[Safari Iframe Patch] Error:', err);
+    }
+  };
+
+  // 返回一个恢复方法，用于撤销补丁
+  return function restore() {
+    HTMLIFrameElement.prototype.addEventListener = originalAddEventListener;
+    if (debug) {
+      console.log('[Safari Iframe Patch] Restored original addEventListener');
+    }
+  };
+}
+
 export default class VuePrintNext {
 	// html 文档标准
 	private readonly standards: Standards = {
@@ -141,10 +191,7 @@ export default class VuePrintNext {
 		this.iframeId = `printArea_${++printCount}`;
 		const { el, url, asyncUrl } = this.settings;
 
-		// 主要用于修复 Safari 浏览器下 iframe 事件监听不生效的问题
-		HTMLIFrameElement.prototype.addEventListener = function(_: string, originFn: any){
-			originFn()
-		}
+		patchSafariIframeEventListener();
 
 		if (el) {
 			this.handlePrintWindow('');
