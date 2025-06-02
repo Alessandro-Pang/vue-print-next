@@ -910,22 +910,73 @@ export default class VuePrintNext {
 			(pageInfo as HTMLElement).style.color = themeConfig.pageInfoColor;
 		}
 
-		// 更新主题切换图标
-		const themeToggle = box.querySelector('.themeToggle');
-		if (themeToggle) {
-			themeToggle.innerHTML = themeConfig.themeIcon;
-		}
-
-		// 重新应用所有按钮的悬浮效果，确保悬浮颜色与当前主题匹配
-		const allButtons = box.querySelectorAll('button:not(.previewBodyUtilPrintBtn)');
-		allButtons.forEach(button => {
-			// 移除现有的mouseover和mouseout事件监听器
-			const newButton = button.cloneNode(true) as HTMLElement;
-			button.parentNode?.replaceChild(newButton, button);
+		// 单独处理主题切换按钮，确保事件监听器被正确重新绑定
+		const themeToggleBtn = box.querySelector('.themeToggle');
+		if (themeToggleBtn) {
+			const newThemeToggleBtn = themeToggleBtn.cloneNode(true) as HTMLElement;
+			newThemeToggleBtn.innerHTML = themeConfig.themeIcon;
+			themeToggleBtn.parentNode?.replaceChild(newThemeToggleBtn, themeToggleBtn);
 			
-			// 重新添加悬浮效果，使用当前的isDarkMode状态
-			addHoverEffect(newButton, this.isDarkMode);
-		});
+			// 重新添加悬浮效果和点击事件
+			addHoverEffect(newThemeToggleBtn, this.isDarkMode);
+			newThemeToggleBtn.addEventListener('click', () => {
+				this.toggleTheme();
+			});
+		}
+		
+		// 单独处理缩放按钮
+		const zoomInBtn = box.querySelector('.zoomInBtn');
+		if (zoomInBtn) {
+			const newZoomInBtn = zoomInBtn.cloneNode(true) as HTMLElement;
+			zoomInBtn.parentNode?.replaceChild(newZoomInBtn, zoomInBtn);
+			
+			// 重新添加悬浮效果和点击事件
+			addHoverEffect(newZoomInBtn, this.isDarkMode);
+			newZoomInBtn.addEventListener('click', () => {
+				this.scale = Math.min(2, this.scale + 0.1);
+				this.updatePreviewScale();
+			});
+		}
+		
+		const zoomOutBtn = box.querySelector('.zoomOutBtn');
+		if (zoomOutBtn) {
+			const newZoomOutBtn = zoomOutBtn.cloneNode(true) as HTMLElement;
+			zoomOutBtn.parentNode?.replaceChild(newZoomOutBtn, zoomOutBtn);
+			
+			// 重新添加悬浮效果和点击事件
+			addHoverEffect(newZoomOutBtn, this.isDarkMode);
+			newZoomOutBtn.addEventListener('click', () => {
+				this.scale = Math.max(0.5, this.scale - 0.1);
+				this.updatePreviewScale();
+			});
+		}
+		
+		const zoomResetBtn = box.querySelector('.zoomResetBtn');
+		if (zoomResetBtn) {
+			const newZoomResetBtn = zoomResetBtn.cloneNode(true) as HTMLElement;
+			zoomResetBtn.parentNode?.replaceChild(newZoomResetBtn, zoomResetBtn);
+			
+			// 重新添加悬浮效果和点击事件
+			addHoverEffect(newZoomResetBtn, this.isDarkMode);
+			newZoomResetBtn.addEventListener('click', () => {
+				this.scale = this.settings.defaultScale || 1;
+				this.updatePreviewScale();
+			});
+		}
+		
+		// 单独处理全屏切换按钮
+		const fullscreenToggleBtn = box.querySelector('.fullscreenToggle');
+		if (fullscreenToggleBtn) {
+			const newFullscreenToggleBtn = fullscreenToggleBtn.cloneNode(true) as HTMLElement;
+			newFullscreenToggleBtn.innerHTML = this.isFullscreen ? SVG_ICONS.fullscreen : SVG_ICONS.exitFullscreen;
+			fullscreenToggleBtn.parentNode?.replaceChild(newFullscreenToggleBtn, fullscreenToggleBtn);
+			
+			// 重新添加悬浮效果和点击事件
+			addHoverEffect(newFullscreenToggleBtn, this.isDarkMode);
+			newFullscreenToggleBtn.addEventListener('click', () => {
+				this.toggleFullscreen();
+			});
+		}
 		
 		// 单独处理打印按钮，只更新样式而不替换元素，保留事件监听器
 		const printBtn = box.querySelector('.previewBodyUtilPrintBtn') as HTMLElement;
