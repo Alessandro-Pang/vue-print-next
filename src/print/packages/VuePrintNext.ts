@@ -141,6 +141,11 @@ export default class VuePrintNext {
 		this.iframeId = `printArea_${++printCount}`;
 		const { el, url, asyncUrl } = this.settings;
 
+		// 主要用于修复 Safari 浏览器下 iframe 事件监听不生效的问题
+		HTMLIFrameElement.prototype.addEventListener = function(_: string, originFn: any){
+			originFn()
+		}
+
 		if (el) {
 			this.handlePrintWindow('');
 		} else if (url) {
