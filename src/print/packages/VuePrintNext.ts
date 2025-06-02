@@ -64,6 +64,16 @@ const getFormatSize = (size: string | number, unit: string) => {
 	return size;
 }
 
+function isSafari() {
+	try {
+			// 检测Safari特有的行为
+			return /^((?!chrome|android).)*safari/i.test(navigator.userAgent) &&
+						 navigator.vendor === 'Apple Computer, Inc.'
+	} catch(e) {
+			return false;
+	}
+}
+
 /**
  * 修复 Safari 浏览器下 iframe 事件监听不生效的问题
  * @param options 配置项
@@ -87,7 +97,7 @@ export function patchSafariIframeEventListener(options?: {
     originalAddEventListener.call(this, type, listener, options);
 
     // Safari 特殊处理
-    if (typeof listener !== 'function') return;
+    if (!isSafari() || typeof listener !== 'function') return;
 
     try {
       // 如果配置了 immediateEvents，并且 iframe 已经加载完成，则立即触发回调
@@ -98,7 +108,9 @@ export function patchSafariIframeEventListener(options?: {
         if (debug) {
           console.log(`[Safari Iframe Patch] Triggering "${type}" immediately`);
         }
-        listener.call(this, new Event(type) as HTMLElementEventMap[T]);
+				this.contentWindow.setTimeout(() => {
+          listener.call(this, new Event(type) as HTMLElementEventMap[T]);
+        });
       }
     } catch (err) {
       console.warn('[Safari Iframe Patch] Error:', err);
@@ -190,7 +202,7 @@ export default class VuePrintNext {
 	private init() {
 		this.iframeId = `printArea_${++printCount}`;
 		const { el, url, asyncUrl } = this.settings;
-
+	
 		patchSafariIframeEventListener();
 
 		if (el) {
@@ -751,7 +763,7 @@ export default class VuePrintNext {
 	private createIframe(url: string): HTMLIFrameElement {
 		const iframe = document.createElement('iframe');
 		iframe.id = this.iframeId;
-		iframe.src = url || new Date().getTime().toString();
+		iframe.src = url || 'about:blank';
 		
 		if (!this.settings.preview) {
 			// 非预览模式下，iframe隐藏并添加到body
