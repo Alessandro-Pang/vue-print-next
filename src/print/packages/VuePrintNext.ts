@@ -552,7 +552,10 @@ export default class VuePrintNext {
 		if (!box) return;
 		
 		// 禁用页面滚动
-		document.querySelector('html')?.setAttribute('style', 'overflow: hidden');
+		const html  = document.querySelector('html')
+		if(html) {
+			html.style.overflow = 'hidden';
+		}
 		
 		// 添加过渡动画效果
 		box.style.opacity = '0';
@@ -601,7 +604,10 @@ export default class VuePrintNext {
 		
 		setTimeout(() => {
 			// 恢复页面滚动
-			document.querySelector('html')?.setAttribute('style', 'overflow: visible;');
+			const html = document.querySelector('html')
+			if(html) {
+				html.style.overflow = 'visible';
+			}
 			
 			// 查找iframe容器并移除iframe
 			const paperContainer = box.querySelector('.paperContainer');
