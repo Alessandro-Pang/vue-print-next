@@ -84,6 +84,12 @@ const printOps: PrintAreaOption = {
 </template>
 
 <style scoped>
+@font-face {
+  font-family: 'Honk';
+  src: url('../assets/fonts/Honk-Regular-VariableFont_MORF,SHLN.ttf');
+  /* 测试跨域字体加载 */
+  /* src: url('https://fonts.gstatic.com/s/honk/v5/m8JdjftUea-X2z28WoXSaLU.ttf'); */
+}
 /* 特定页面样式 */
 .logo-container {
   display: flex !important;
@@ -150,6 +156,12 @@ const printOps: PrintAreaOption = {
   margin-top: var(--spacing-lg);
   padding-top: var(--spacing-md);
   border-top: 1px solid var(--border-color);
+
+  font-family: 'Honk', system-ui;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: 'MORF' 15, 'SHLN' 50;
 }
 
 .read-the-docs {
