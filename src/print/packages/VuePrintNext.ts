@@ -374,12 +374,13 @@ export default class VuePrintNext {
     const printMediaStyle = this.getPrintMediaStyle();
     const noPrintMediaStyle = this.getNoPrintMediaStyle();
 
-    return `<head>
-          <title>${popTitle}</title>
-          ${extraHead}${links}${styles}
-          <style type="text/css">${noPrintMediaStyle}${printMediaStyle}</style>
-          ${extraCssLinks}
-        </head>`;
+    const domStr = '<head>'
+          + `<title>${popTitle}</title>`
+          + extraHead + links + styles
+          + `<style type="text/css">${noPrintMediaStyle}${printMediaStyle}</style>`
+          + extraCssLinks
+          + '</head>';
+    return domStr;
   }
 
   /**
