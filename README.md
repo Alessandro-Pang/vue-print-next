@@ -341,6 +341,8 @@ app.mount('#app');
 </script>
 ```
 
+> **注意**：只有当明确传入了 `paperSize`、`orientation` 或 `customSize` 参数时，vue-print-next 才会强制应用页面尺寸设置。如果没有传入这些参数，将保持浏览器默认的打印设置控制，不会覆盖用户在浏览器打印对话框中的设置。
+
 ### 自定义纸张尺寸
 
 当需要使用非标准纸张尺寸时，可以设置 `paperSize` 为 `'custom'` 并提供 `customSize` 参数：

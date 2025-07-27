@@ -159,9 +159,6 @@ export default class VuePrintNext {
       previewPrintBtnLabel = '打印', 
       preview = false, 
       popTitle = document.title,
-      paperSize = 'A4',
-      orientation = 'portrait',
-      customSize,
       previewSize,
       darkMode = false,
       windowMode = false,
@@ -181,9 +178,6 @@ export default class VuePrintNext {
       previewPrintBtnLabel,
       preview,
       popTitle,
-      paperSize,
-      orientation,
-      customSize,
       previewSize,
       darkMode,
       windowMode,
@@ -329,31 +323,42 @@ export default class VuePrintNext {
    * @private
    */
   private getPrintMediaStyle() {
-    const { paperSize = 'A4', orientation = 'portrait', customSize } = this.settings;
+    const { paperSize, orientation, customSize } = this.settings;
     
     // 修复打印时背景色失效
     const fixBackgroundColorFailure = `body {-webkit-print-color-adjust: exact; -moz-print-color-adjust: exact; -ms-print-color-adjust: exact; print-color-adjust: exact;}`;
     
-    // 获取纸张尺寸
+    /**
+     * 只有当明确传入了 paperSize、orientation 或 customSize 时才启用页面尺寸控制
+     * @see https://github.com/Alessandro-Pang/vue-print-next/issues/22
+     */
+    const hasPageSizeSettings = this.settings.paperSize !== undefined || 
+                               this.settings.orientation !== undefined || 
+                               this.settings.customSize !== undefined;
+    
     let paperSizeStyle = '';
-    if (paperSize === 'custom' && customSize) {
-      const { width, height, unit = 'mm' } = customSize;
-      const w = typeof width === 'number' ? `${width}${unit}` : (width.toString().endsWith(unit) ? width : `${width}${unit}`);
-      const h = typeof height === 'number' ? `${height}${unit}` : (height.toString().endsWith(unit) ? height : `${height}${unit}`);
-      paperSizeStyle = orientation === 'portrait' 
-        ? `@page { size: ${w} ${h}; }`
-        : `@page { size: ${h} ${w}; }`;
-    } else if (paperSize in PAPER_SIZES) {
-      const size = PAPER_SIZES[paperSize as keyof typeof PAPER_SIZES];
-      paperSizeStyle = orientation === 'portrait' 
-        ? `@page { size: ${size.width} ${size.height}; }`
-        : `@page { size: ${size.height} ${size.width}; }`;
-    } else {
-      // 默认使用 A4
-      const defaultSize = PAPER_SIZES.A4;
-      paperSizeStyle = orientation === 'portrait' 
-        ? `@page { size: ${defaultSize.width} ${defaultSize.height}; }`
-        : `@page { size: ${defaultSize.height} ${defaultSize.width}; }`;
+    if (hasPageSizeSettings) {
+      const finalPaperSize = paperSize || 'A4';
+      const finalOrientation = orientation || 'portrait';
+      if (finalPaperSize === 'custom' && customSize) {
+        const { width, height, unit = 'mm' } = customSize;
+        const w = getFormatSize(width, unit);
+        const h = getFormatSize(height, unit);
+        paperSizeStyle = finalOrientation === 'portrait' 
+          ? `@page { size: ${w} ${h}; }`
+          : `@page { size: ${h} ${w}; }`;
+      } else if (finalPaperSize in PAPER_SIZES) {
+        const size = PAPER_SIZES[finalPaperSize as keyof typeof PAPER_SIZES];
+        paperSizeStyle = finalOrientation === 'portrait' 
+          ? `@page { size: ${size.width} ${size.height}; }`
+          : `@page { size: ${size.height} ${size.width}; }`;
+      } else {
+        // 默认使用 A4
+        const defaultSize = PAPER_SIZES.A4;
+        paperSizeStyle = orientation === 'portrait' 
+          ? `@page { size: ${defaultSize.width} ${defaultSize.height}; }`
+          : `@page { size: ${defaultSize.height} ${defaultSize.width}; }`;
+      }
     }
     
     return `${fixBackgroundColorFailure}${paperSizeStyle}`;
